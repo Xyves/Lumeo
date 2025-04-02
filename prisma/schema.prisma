@@ -1,0 +1,72 @@
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DB_PRISMA_URL") // uses connection pooling
+  directUrl = env("DB_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  Comments     Comment[]
+  Post         Post[]
+  Like         Like[]
+  following    Follower[] @relation("Following")
+  followers    Follower[] @relation("Followers")
+  Follower     Follower[]
+}
+
+model Follower {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  followedAt  DateTime @default(now())
+
+  follower  User    @relation("Followers", fields: [followerId], references: [id])
+  following User    @relation("Following", fields: [followingId], references: [id])
+  userId    String?
+  User      User?   @relation(fields: [userId], references: [id])
+
+  @@unique([followerId, followingId]) // Ensures a unique follow relationship
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  text      String
+  timestamp DateTime @default(now())
+  user      User     @relation(fields: [user_id], references: [id])
+  user_id   String
+  post      Post     @relation(fields: [post_id], references: [id])
+  post_id   String
+}
+
+model Post {
+  id           String    @id @default(uuid())
+  date         DateTime  @default(now())
+  content      String
+  image_url    String
+  likeCount    Int       @default(0)
+  commentCount Int       @default(0)
+  author       User      @relation(fields: [authorId], references: [id])
+  authorId     String
+  comments     Comment[]
+  likes        Like[]
+}
+
+model Like {
+  id      String   @id @default(uuid())
+  user    User     @relation(fields: [user_id], references: [id])
+  user_id String
+  post    Post     @relation(fields: [post_id], references: [id])
+  post_id String
+  date    DateTime @default(now())
+}
