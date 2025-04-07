@@ -7,7 +7,6 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DB_PRISMA_URL") // uses connection pooling
-  directUrl = env("DB_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
@@ -30,13 +29,12 @@ model Follower {
   followerId  String
   followingId String
   followedAt  DateTime @default(now())
-
   follower  User    @relation("Followers", fields: [followerId], references: [id])
   following User    @relation("Following", fields: [followingId], references: [id])
   userId    String?
   User      User?   @relation(fields: [userId], references: [id])
 
-  @@unique([followerId, followingId]) // Ensures a unique follow relationship
+  @@unique([followerId, followingId]) 
 }
 
 model Comment {
@@ -52,6 +50,7 @@ model Comment {
 model Post {
   id           String    @id @default(uuid())
   date         DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
   content      String
   image_url    String
   likeCount    Int       @default(0)
