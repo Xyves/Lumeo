@@ -1,6 +1,5 @@
 .embla {
   max-width: 100%;
-  margin: auto;
   --slide-height: 19rem;
   --slide-spacing: 1rem;
   --slide-size: 100%;
@@ -16,8 +15,9 @@
 }
 .embla__slide {
   transform: translate3d(0, 0, 0);
-  flex: 0 0 8%;;
+  flex: 0 0 15%;
   min-width: 0;
+  gap:5rem;
   padding-left: var(--slide-spacing);
   perspective: 800px;
 }
@@ -31,8 +31,9 @@
   align-items: center;
   justify-content: center;
   height: var(--slide-height);
-  user-select: none;  width: 100px; /* Make it a vertical rectangle */
-  height: 250px;
+  user-select: none; 
+   width: 100px; /* Make it a vertical rectangle */
+  height: 150px;
   background: #1e1e1e; /* Dark background like in the image */
   color: white;
   text-align: center;

@@ -59,3 +59,17 @@ h6 {
   isolation: isolate;
   height: 100%;
 }
+::-webkit-scrollbar{
+  width:10px
+}::-webkit-scrollbar-track {
+  background: #75726f
+}
+::-webkit-scrollbar-thumb {
+  background: #494848;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
