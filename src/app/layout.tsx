@@ -24,14 +24,14 @@ const inter = Inter({
 export default async function RootLayout({ children }: ChildrenProps) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} h-full flex flex-col justify-between`}
-      >
-        <Heading title="Lumeo" />
-        <section className="flex-1">
-          <QueryProvider>{children}</QueryProvider>
-        </section>
-        <MainFooter />
+      <body className={`${inter.className} bg-[#171006] overflow-hidden`}>
+        <div className="h-full flex flex-col justify-between w-[68%] mx-auto ">
+          <Heading title="NeonSphere " />
+          <section className="flex-1 h-full">
+            <QueryProvider>{children}</QueryProvider>
+          </section>
+          {/* <MainFooter /> */}
+        </div>
       </body>
     </html>
   );
