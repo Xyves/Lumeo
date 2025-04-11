@@ -1,25 +1,53 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   SendHorizontal,
   UserRound,
   House,
   UserRoundSearch,
   CircleUserRound,
+  EllipsisVertical,
+  LogOut,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, redirect, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+
+import { useTargetRef } from '@/context/RefContext';
+
+import AccountDropdown from './AccountDropdown';
 
 export default function Sidebar() {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
+  const { targetRef } = useTargetRef();
+  const scrollCallback = () => {
+    const { current } = targetRef;
+    if (pathname !== '/feed') {
+      router.push('/feed');
+    } else {
+      current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   return (
-    <div className="px-2   bg-[#171006] flex flex-col  flex-shrink justify-start ">
+    <div className="px-2 bg-[#171006] flex flex-col h-[100vh]   relative bg-green-500">
       <section className=" w-56 flex  ">
         <div className="flex flex-col p-2 gap-6  mx-auto">
           <Link
-            href="/home"
+            href="/feed"
             title="X"
             className={`${pathname === '/feed' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
           >
@@ -30,7 +58,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/search"
-            className={`${pathname === '/search' ? 'bg-green-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
+            className={`${pathname === '/search' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
           >
             <UserRoundSearch className="size-8" />
             <p className="overflow-visible text-xs sm:text-base truncate">
@@ -39,58 +67,63 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/profile"
-            className={`${pathname === '/profile' ? 'bg-green-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
+            className={`${pathname === '/profile' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
           >
             <UserRound className="size-8" />
             <p className="overflow-visible text-xs sm:text-base truncate">
               Profile
             </p>
           </Link>
-          <Link
-            href="/create"
-            className={`${pathname === '/create' ? 'bg-green-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
+          <button
+            onClick={() => scrollCallback()}
+            type="button"
+            className={`${pathname === '/create' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
           >
             <SendHorizontal className="size-8" />
             <p className="overflow-visible text-xs sm:text-base truncate">
               Create Post
             </p>
-          </Link>
-        </div>
-        {/* <ul className="w-full [&>li]:my-12 pr-12">
-          <li className="flex items-center">
-            <House className="size-8" />
-            <p>Home</p>
-          </li>
-          <button className="w-full">
-            <li className="flex items-center w-full">
-              <p className="mr-2">
-                <UserRoundSearch className="size-8" />
-              </p>
-              <p>Search</p>
-            </li>
-          </button>
-          <li className="flex items-center">
-            <p className="mr-2">
-              <User className="size-8" />
-            </p>
-            <p>Profile</p>
-          </li>
-          <li className="flex items-center">
-            <p className="mr-2">
-              <SendHorizontal className="size-8" />
-            </p>
-            <p>Post</p>
-          </li>
-        </ul> */}
-      </section>
-      <section className="flex mt-auto">
-        <div className="user-info items-end flex ml-8 mb-6">
-          <button className="px-10 py-7 w-36 bg-yellow-200">
-            <i />
-            <p>Name</p>
           </button>
         </div>
       </section>
+      <div className="user-info flex w-full  mt-auto" ref={menuRef}>
+        <Link href="/profile/23" className="w-full">
+          {open && <AccountDropdown />}
+          <button
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            className="w-full py-3 flex items-center   mb-16  pb-6"
+          >
+            {/* Name text */}
+            <Image
+              src="https://randomuser.me/api/portraits/men/35.jpg"
+              alt="profile icon"
+              width={36}
+              height={36}
+              className="rounded-full ml-2"
+            />
+            <p className="ml-2">Name</p>
+
+            {/* Spacer pushes right-side content to the end */}
+            <div className="flex-grow" />
+
+            {/* Ellipsis icon */}
+            <div
+              className="p-2"
+              onClick={e => {
+                e.stopPropagation();
+                e.preventDefault();
+                setOpen(!open);
+              }}
+            >
+              <EllipsisVertical />
+            </div>
+
+            {/* Profile Image on the FAR RIGHT */}
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
