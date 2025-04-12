@@ -51,7 +51,7 @@ model Post {
   date         DateTime  @default(now())
   updatedAt    DateTime? @updatedAt
   content      String
-  image_url    String
+  image_url    String?
   likeCount    Int       @default(0)
   commentCount Int       @default(0)
   authorId     String
