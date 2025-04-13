@@ -32,3 +32,7 @@ export interface CurrentUserProps {
     isAdmin: boolean;
   } | null;
 }
+export type LoginSchema = {
+  name: string;
+  password: string;
+};
