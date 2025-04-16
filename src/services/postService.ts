@@ -2,36 +2,60 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const getPaginatedPosts = async (page: number, pageSize: number = 5) => {
+export const getPosts = async (start : number , ) => {
   return prisma.post.findMany({
     take: 5,
+    skip:start,
     orderBy: { date: 'desc' },
-    skip: page * pageSize,
   });
 };
 export const createPost = ({
   id,
-  date,
   content,
   image_url,
   authorId,
 }: {
   id: string;
-  date: Date;
   content: string;
-  image_url: string;
+  image_url?: string;
   authorId: string;
 }) => {
   return prisma.post.create({
     data: {
       id,
-      date,
       content,
-      image_url,
+      ...(image_url != null && { image_url }),
       authorId,
     },
   });
 };
+
+
+export const likePost = async (post_id: string, user_id: string) => {
+  try {
+    const [likes, updatePost] = await prisma.$transaction([
+      prisma.like.create({
+        data: {
+          post_id,
+          user_id,
+        },
+      }),
+      prisma.post.update({
+        where: { id: post_id },
+        data: { likeCount: { increment: 1 } },
+      }),
+    ]);
+    return { likes, updatePost };
+  } catch (error) {
+    throw new Error('Failed to like the post.');
+  }
+};
+// Single post operations:
+export const getPost = async(id:string)=>{
+  return prisma.post.findFirst({
+    where:{id}
+  });
+}
 export const editPost = ({
   id,
   content,
@@ -54,30 +78,13 @@ export const editPost = ({
     },
   });
 };
-export const deletePost = ({ id }: { id: string }) => {
-  return prisma.post.delete({
+export const deletePost = ({ id,authorId }: { 
+  id: string;
+  authorId:string}) => {
+  return prisma.post.deleteMany({
     where: {
-      id,
+      AND: [{ id }, { authorId }],
     },
   });
-};
-export const likePost = async (post_id: string, user_id: string) => {
-  try {
-    const [likes, updatePost] = await prisma.$transaction([
-      prisma.like.create({
-        data: {
-          post_id,
-          user_id,
-        },
-      }),
-      prisma.post.update({
-        where: { id: post_id },
-        data: { likeCount: { increment: 1 } },
-      }),
-    ]);
-    return { likes, updatePost };
-  } catch (error) {
-    throw new Error('Failed to like the post.');
-  }
 };
 export const unlikePost = async(post_id: string, user_id: string)

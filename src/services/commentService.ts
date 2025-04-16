@@ -3,11 +3,12 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const findPostComments = (post_id: string) => {
+export const getComments = (post_id: string, limit: number, cursor: string) => {
   return prisma.comment.findMany({
     where: {
       post_id,
     },
+    take: Number(limit),
   });
 };
 const createPostComment = (text: string, user_id: string, post_id: string) => {

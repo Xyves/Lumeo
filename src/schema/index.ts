@@ -11,3 +11,4 @@ export const RegisterSchema = z.object({
     message: 'Password must be at least 6 characters long',
   }),
 });
+export type RegisterType = z.infer<typeof RegisterSchema>;
