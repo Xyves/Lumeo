@@ -6,13 +6,12 @@ import {
   UserRound,
   House,
   UserRoundSearch,
-  CircleUserRound,
   EllipsisVertical,
-  LogOut,
 } from 'lucide-react';
 import { usePathname, redirect, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
 import { useTargetRef } from '@/context/RefContext';
 
@@ -24,6 +23,10 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { targetRef } = useTargetRef();
+  const { data: session, status } = useSession();
+
+  if (status === 'loading') return null;
+
   const scrollCallback = () => {
     const { current } = targetRef;
     if (pathname !== '/feed') {
@@ -43,7 +46,7 @@ export default function Sidebar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   return (
-    <div className="px-2 bg-[#171006] flex flex-col h-[100vh]   relative bg-green-500">
+    <div className="px-2 bg-[#171006] flex flex-col h-[100vh]   relative ">
       <section className=" w-56 flex  ">
         <div className="flex flex-col p-2 gap-6  mx-auto">
           <Link
@@ -103,7 +106,11 @@ export default function Sidebar() {
               height={36}
               className="rounded-full ml-2"
             />
-            <p className="ml-2">Name</p>
+            {status === 'authenticated' ? (
+              <p className="ml-2">{session.user.name}</p>
+            ) : (
+              <p className="ml-2">Guest</p>
+            )}
 
             {/* Spacer pushes right-side content to the end */}
             <div className="flex-grow" />
