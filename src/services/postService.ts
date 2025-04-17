@@ -1,35 +1,38 @@
 import { PrismaClient } from '@prisma/client';
 
+import uploadFile from './cloudinaryService';
+
 const prisma = new PrismaClient();
 
-export const getPosts = async (start : number , ) => {
+export const getPosts = async (start: number) => {
   return prisma.post.findMany({
     take: 5,
-    skip:start,
+    skip: start,
     orderBy: { date: 'desc' },
   });
 };
-export const createPost = ({
-  id,
+export const createPost = async ({
   content,
-  image_url,
+  file,
   authorId,
 }: {
-  id: string;
   content: string;
-  image_url?: string;
+  file: File | null;
   authorId: string;
 }) => {
+  let cloudinaryResponse = null;
+  console.log(file);
+  if (file && file.size > 0) {
+    cloudinaryResponse = await uploadFile(file);
+  }
   return prisma.post.create({
     data: {
-      id,
       content,
-      ...(image_url != null && { image_url }),
+      image_url: cloudinaryResponse ? cloudinaryResponse.secure_url : null,
       authorId,
     },
   });
 };
-
 
 export const likePost = async (post_id: string, user_id: string) => {
   try {
@@ -51,11 +54,11 @@ export const likePost = async (post_id: string, user_id: string) => {
   }
 };
 // Single post operations:
-export const getPost = async(id:string)=>{
+export const getPost = async (id: string) => {
   return prisma.post.findFirst({
-    where:{id}
+    where: { id },
   });
-}
+};
 export const editPost = ({
   id,
   content,
@@ -78,13 +81,17 @@ export const editPost = ({
     },
   });
 };
-export const deletePost = ({ id,authorId }: { 
+export const deletePost = ({
+  id,
+  authorId,
+}: {
   id: string;
-  authorId:string}) => {
+  authorId: string;
+}) => {
   return prisma.post.deleteMany({
     where: {
       AND: [{ id }, { authorId }],
     },
   });
 };
-export const unlikePost = async(post_id: string, user_id: string)
+// export const unlikePost = async(post_id: string, user_id: string)
