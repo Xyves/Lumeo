@@ -1,18 +1,18 @@
+import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export default async function middleware(req: NextRequest) {
-  // const accessToken = req.cookies.get('accessToken')?.value;
-  // console.log('accessToken', accessToken);zz
-
-  const authUser = true;
-
-  if (!authUser)
-    return NextResponse.redirect(new URL('/unauthorized', req.url), req);
+  const accessToken = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+  if (!accessToken) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
 
   return NextResponse.next();
 }
-
 export const config = {
-  matcher: ['/dashboard', '/dashboard/:path*'],
+  matcher: ['/feed', '/search', '/profile/:path*'],
 };
