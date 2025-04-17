@@ -1,22 +1,25 @@
-import { PrismaClient } from '@prisma/client';
 import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
+import GithubProvider from 'next-auth/providers/github';
 
-const prisma = new PrismaClient();
+import { prismaDB } from '@/lib/prismaDB';
+
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prismaDB),
   providers: [
+    GithubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
         name: { label: 'name', type: 'text' },
-        // email: { label: 'email', type: 'email' },
         password: { label: 'password', type: 'password' },
       },
       async authorize(credentials) {
-        // check whether name and password are valid
         if (!credentials.name || !credentials.password) {
           return null;
         }
