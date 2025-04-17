@@ -1,6 +1,12 @@
 import React from 'react';
 import { MessageCircle, Heart } from 'lucide-react';
+import Zoom from 'react-medium-image-zoom';
+import '@/styles/zoom.css';
+import ReactTimeAgo from 'react-time-ago';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 
+TimeAgo.addDefaultLocale(en);
 export default function Post({ id, name, profile_url, time }) {
   return (
     <div
@@ -10,7 +16,9 @@ export default function Post({ id, name, profile_url, time }) {
       <section className="size-16 bg-green-500 w-full flex-row flex items-center ">
         <div className="h-full w-24 bg-yellow-500" />
         <p className="">{name}</p>
-        <p>- {time}</p>
+        <p>
+          - <ReactTimeAgo date={time} locale="en-US" />{' '}
+        </p>
         <div className="menu-bar ml-auto">
           {/* If user === the id of the user comment then add this line options edit delete */}
           X
@@ -19,9 +27,15 @@ export default function Post({ id, name, profile_url, time }) {
       <section className="  bg-blue-600 w-full flex-col flex justify-center ">
         <p className="p-2">Cool projects!</p>
         {profile_url ? (
-          <div className="w-11/12 mx-auto h-64 mb-3 bg-yellow-900 ">
-            <div className="px-3" />
-          </div>
+          <Zoom>
+            <div className="w-11/12 mx-auto h-44 mb-3 overflow-hidden ">
+              <img
+                src="/images/cyberpunkvector.png"
+                alt=""
+                className="h-44 w-full object-cover bg-no-repeat"
+              />
+            </div>
+          </Zoom>
         ) : (
           ''
         )}
