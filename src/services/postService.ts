@@ -4,12 +4,38 @@ import uploadFile from './cloudinaryService';
 
 const prisma = new PrismaClient();
 
-export const getPosts = async (start: number) => {
-  return prisma.post.findMany({
+export const getPostsWithUsers = async (start: number, userId: string) => {
+  console.log('working');
+  const posts = await prisma.post.findMany({
     take: 5,
     skip: start,
     orderBy: { date: 'desc' },
+    select: {
+      id: true,
+      image_url: true,
+      content: true,
+      date: true,
+      likeCount: true,
+      commentCount: true,
+      likes: {
+        where: {
+          user_id: userId,
+        },
+        select: {
+          id: true, // only need 1 to know it exists
+        },
+      },
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
   });
+  console.log('Fetched posts:', posts.length);
+  return posts;
 };
 export const createPost = async ({
   content,
