@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'randomuser.me',
       },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
     ],
   },
 };
