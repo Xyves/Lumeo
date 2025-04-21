@@ -1,66 +1,70 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { OrbitProgress } from 'react-loading-indicators';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import MainLayout from '@/layouts/MainLayout/MainLayout';
 import NewFollows from '@/components/Aside/NewFollowsers';
 import CreatePost from '@/components/Feed/CreatePost';
 import PostsList from '@/components/Feed/PostsList';
+import { usePostLoader } from '@/hooks/usePostLoader';
+import type { PostInterface, SessionInterface } from '@/types';
 
 export default function Feed() {
-  const { data: session, status } = useSession();
-  const [postss, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [start, setStart] = useState(0);
-  const loaderRef = useRef(null);
-  if (status === 'loading') return null;
-  const posts = [
-    {
-      id: 'd9f3a8k1',
-      name: 'User_rk3gq',
-      time: Date.now(),
-    },
-    {
-      id: '8h2k3mzl',
-      name: 'User_qp1vx',
-      time: Date.now(),
+  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState<PostInterface[]>([]);
+  const [start, setStart] = useState<number>(0);
+  const { data: session } = useSession();
+  console.log(session);
+  const pathname = usePathname();
+  const { loadPosts, updateStart } = usePostLoader();
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-      profile_url: 'https://example.com/profile/k9s4d8ja',
-    },
-    {
-      id: 'x7v2p90n',
-      name: 'User_w9lek',
-      time: Date.now(),
+ 
+  useEffect(() => {
+    if (start !== 0) {
+      if (session && session.user) {
+        delay(200);
+        loadPosts({
+          start,
+          userId: session.user.id,
+          setPosts,
+          setLoading,
+        });
+      }
+    }
+  }, [start]);
 
-      profile_url: 'https://example.com/profile/m8c3x6vz',
-    },
-    {
-      id: 'b3u7a4hs',
-      name: 'User_tz7nm',
-      time: Date.now(),
+  useEffect(() => {
+    loadPosts({
+      start: 0,
+      userId: session.user.id,
+      setPosts,
+      setLoading,
+    });
+  }, []);
 
-      profile_url: 'https://example.com/profile/c7h1s0gp',
-    },
-    {
-      id: 'n2d5x3lk',
-      name: 'User_vq8jt',
-      time: Date.now() * 0.97,
-
-      profile_url: 'https://example.com/profile/l0k9r2jf',
-    },
-  ];
-
+  const memoizedPosts = useMemo(() => posts, [posts]);
 
   return (
     <MainLayout>
-      <div className=" w-1/2 bg-[#1f1e1c] p-7 overflow-y-auto mb-24 ">
-        <CreatePost />
-        <PostsList posts={posts} />
+      <div className=" w-2/5 bg-[#1f1e1c] p-7 overflow-y-auto mb-24 mx-auto">
+        <CreatePost setPosts={setPosts} />
+        <PostsList
+          memoizedPosts={memoizedPosts}
+          setStart={setStart}
+          handleUpdateStart={updateStart}
+        />
+        {loading && (
+          <div className="loading-spinner flex justify-center">
+            <OrbitProgress variant="track-disc" speedPlus={2} easing="linear" />
+          </div>
+        )}
       </div>
-      {/* <Search /> */}
       <NewFollows />
+      {/* <Search /> */}
     </MainLayout>
   );
 }
