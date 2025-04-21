@@ -4,6 +4,7 @@ import { getProfile } from '@/services/userService';
 
 export async function GET(req: Request, { params }) {
   const { id } = await params;
+  console.log(id);
   try {
     const profile = await getProfile(id);
     return NextResponse.json(profile, { status: 201 });

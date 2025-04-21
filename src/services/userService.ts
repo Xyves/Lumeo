@@ -45,7 +45,7 @@ export const getUsers = async (input, authorId) => {
   });
 };
 export const getProfile = async id => {
-  return prisma.user.findMany({
+  return prisma.user.findFirst({
     where: {
       id,
     },

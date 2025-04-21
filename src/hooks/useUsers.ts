@@ -18,19 +18,19 @@ export default async function fetchUsers({ userId, input }) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
-export async function fetchUserProfile(id) {
+export async function fetchUserProfile({ id }) {
   try {
-    console.log(id);
-    const res = await fetch(`/profile/${id}`, {
+    const res = await fetch(`/api/profile/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    if (!res.ok)
+    if (!res.ok) {
       return NextResponse.json('Something went wrong', { status: 400 });
+    }
     const data = await res.json();
-    console.log(res);
+    console.log(data);
     return data;
   } catch (error) {
     return NextResponse.json('Something went wrong', { status: 400 });

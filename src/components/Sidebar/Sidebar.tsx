@@ -81,8 +81,8 @@ export default function Sidebar() {
             </p>
           </Link>
           <Link
-            href="/profile"
-            className={`${pathname === '/profile' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
+            href={`/profile/${session.user.id}`}
+            className={`${pathname === `/profile/${session.user.id}` ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
           >
             <UserRound className="size-8" />
             <p className="overflow-visible text-xs sm:text-base truncate">

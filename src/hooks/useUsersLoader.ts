@@ -24,7 +24,6 @@ export function useUsersLoader() {
     setLoading(true);
     try {
       const data = await fetchUserProfile(id);
-      console.log(data)
       setUser(data);
     } catch (err) {
       console.error('Initial user load error', err);
