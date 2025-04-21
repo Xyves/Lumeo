@@ -18,3 +18,43 @@ export const signUser = async (name, hashedPassword, email) => {
 };
 const followUser = async () => {};
 const unFollowUser = async () => {};
+export const getUsers = async (input, authorId) => {
+  console.log('in prisma');
+  return prisma.user.findMany({
+    where: input
+      ? {
+          id: { not: authorId },
+          name: { contains: input, mode: 'insensitive' },
+        }
+      : {
+          id: { not: authorId },
+        },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    // ...(input && {
+    //   name: {
+    //     contains: input,
+    //     mode: 'insensitive',
+    //   },
+    // }),
+  });
+};
+export const getProfile = async id => {
+  return prisma.user.findMany({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+      updatedAt: true,
+      image: true,
+    },
+  });
+};

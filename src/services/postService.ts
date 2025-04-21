@@ -30,6 +30,7 @@ export const getPostsWithUsers = async (start: number, userId: string) => {
           id: true,
           name: true,
           image: true,
+          
         },
       },
     },
