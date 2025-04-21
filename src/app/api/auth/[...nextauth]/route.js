@@ -23,7 +23,7 @@ export const authOptions = {
         if (!credentials.name || !credentials.password) {
           return null;
         }
-        const user = await prisma.user.findUnique({
+        const user = await prismaDB.user.findUnique({
           where: {
             name: credentials.name,
           },
@@ -57,9 +57,11 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.name = token.name;
-      session.user.email = token.email;
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+      }
       return session;
     },
   },

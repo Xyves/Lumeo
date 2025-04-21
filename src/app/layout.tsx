@@ -3,7 +3,6 @@ import '@/styles/globals.css';
 import { Inter } from 'next/font/google';
 import { getServerSession } from 'next-auth';
 
-import MainFooter from '@/components/Footer';
 import { QueryProvider } from '@/providers/query';
 import type { ChildrenProps } from '@/types';
 import Heading from '@/components/Header/Heading';
@@ -36,7 +35,7 @@ export default async function RootLayout({ children }: ChildrenProps) {
       >
         <ClientSessionProvider session={session}>
           <div className="h-full flex flex-col justify-between mx-auto">
-            {/* <Heading title="NeonSphere " /> */}
+            <Heading title="NeonSphere " />
             <section className="flex-1 h-full">
               <QueryProvider>{children}</QueryProvider>
             </section>

@@ -2,13 +2,18 @@
 import { NextResponse } from 'next/server';
 import { IncomingForm } from 'formidable';
 
-import { createPost, getPosts } from '@/services/postService';
+import {
+  createPost,
+  getPosts,
+  getPostsWithUsers,
+} from '@/services/postService';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const start = searchParams.get('start');
+  const start = parseInt(searchParams.get('start') || '0', 10);
+  const userId = searchParams.get('userId');
   try {
-    const newPosts = await getPosts(start);
+    const newPosts = await getPostsWithUsers(start, userId);
     return NextResponse.json(newPosts, { status: 201 });
   } catch (error) {
     return NextResponse.json(
