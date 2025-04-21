@@ -1,16 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState } from 'react';
-import { Image as Img } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Image as Img, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 import { useTargetRef } from '@/context/RefContext';
+import { usePostLoader } from '@/hooks/usePostLoader';
 
-export default function CreatePost() {
+export default function CreatePost({ setPosts }) {
   const { data: session, status } = useSession();
-
+  const { handleNewPost } = usePostLoader();
   const [postData, setPostData] = useState<{
     content: string;
     file: File | null;
@@ -19,6 +19,7 @@ export default function CreatePost() {
     file: null,
   });
   const { targetRef } = useTargetRef();
+  const formRef = useRef<HTMLFormElement>(null);
   const [fileName, setFileName] = useState('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,18 +40,32 @@ export default function CreatePost() {
       method: 'POST',
       body: formData,
     });
-  };
 
+    if (response.ok) {
+      const newPost = await response.json();
+      newPost.author = {
+        name: session.user.name,
+        image: session.user.image,
+      };
+      handleNewPost(setPosts, newPost);
+    } else {
+      console.error('Failed to create post');
+    }
+
+    if (formRef) {
+      formRef.current.reset();
+    }
+  };
   return (
-    <div className="w-full  bg-yellow-300 p-3 mb-10" ref={targetRef}>
-      <form method="POST" onSubmit={submitPost}>
+    <div className="w-full  outline-double p-3 mb-10" ref={targetRef}>
+      <form method="POST" onSubmit={submitPost} ref={formRef}>
         <div className="w-full h-1/2 flex p-3 items-center">
           <div className="image w-12 h-12 relative ">
-            <Image
-              src="https://randomuser.me/api/portraits/men/35.jpg"
-              className="rounded-3xl"
-              fill
-            />
+            {session?.user?.image ? (
+              <Image className="rounded-3xl " fill src={session?.user?.image} />
+            ) : (
+              <User />
+            )}
           </div>
           <textarea
             maxLength={144}

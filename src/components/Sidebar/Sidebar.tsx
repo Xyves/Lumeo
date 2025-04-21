@@ -7,8 +7,10 @@ import {
   House,
   UserRoundSearch,
   EllipsisVertical,
+  User,
+  Telescope,
 } from 'lucide-react';
-import { usePathname, redirect, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
@@ -46,17 +48,27 @@ export default function Sidebar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   return (
-    <div className="px-2 bg-[#171006] flex flex-col h-[100vh]   relative ">
+    <div className="px-2  bg-[#171006] flex flex-col h-[100vh]   relative ">
       <section className=" w-56 flex  ">
         <div className="flex flex-col p-2 gap-6  mx-auto">
           <Link
             href="/feed"
-            title="X"
+            title="Feed Page"
             className={`${pathname === '/feed' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
           >
             <House className="size-8" />
             <p className="overflow-visible text-xs sm:text-base truncate">
               Home
+            </p>
+          </Link>
+          <Link
+            href="/explore"
+            title="Feed Page"
+            className={`${pathname === '/explore' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
+          >
+            <Telescope className="size-8" />
+            <p className="overflow-visible text-xs sm:text-base truncate">
+              Explore
             </p>
           </Link>
           <Link
@@ -90,46 +102,50 @@ export default function Sidebar() {
         </div>
       </section>
       <div className="user-info flex w-full  mt-auto" ref={menuRef}>
-        <Link href="/profile/23" className="w-full">
-          {open && <AccountDropdown />}
-          <button
-            type="button"
-            aria-haspopup="true"
-            aria-expanded="false"
-            className="w-full py-3 flex items-center   mb-16  pb-6"
-          >
-            {/* Name text */}
+        {/* <Link href="/profile/23" className="w-full"> */}
+        {open && <AccountDropdown />}
+        <button
+          type="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+          className="w-full py-3 flex items-center   mb-16  pb-6"
+        >
+          {/* Name text */}
+          {session?.user?.image ? (
             <Image
-              src="https://randomuser.me/api/portraits/men/35.jpg"
+              src={session?.user?.image ? session?.user?.image : <User />}
               alt="profile icon"
               width={36}
               height={36}
               className="rounded-full ml-2"
             />
-            {status === 'authenticated' ? (
-              <p className="ml-2">{session.user.name}</p>
-            ) : (
-              <p className="ml-2">Guest</p>
-            )}
+          ) : (
+            <User />
+          )}
+          {status === 'authenticated' ? (
+            <p className="ml-2">{session.user.name}</p>
+          ) : (
+            <p className="ml-2">Guest</p>
+          )}
 
-            {/* Spacer pushes right-side content to the end */}
-            <div className="flex-grow" />
+          {/* Spacer pushes right-side content to the end */}
+          <div className="flex-grow" />
 
-            {/* Ellipsis icon */}
-            <div
-              className="p-2"
-              onClick={e => {
-                e.stopPropagation();
-                e.preventDefault();
-                setOpen(!open);
-              }}
-            >
-              <EllipsisVertical />
-            </div>
+          {/* Ellipsis icon */}
+          <div
+            className="p-2"
+            onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+              setOpen(!open);
+            }}
+          >
+            <EllipsisVertical />
+          </div>
 
-            {/* Profile Image on the FAR RIGHT */}
-          </button>
-        </Link>
+          {/* Profile Image on the FAR RIGHT */}
+        </button>
+        {/* </Link> */}
       </div>
     </div>
   );
