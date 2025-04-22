@@ -17,9 +17,10 @@ model User {
   image  String?
   emailVerified  DateTime?
   Comments     Comment[]
-  followers    Follower[] @relation("Followers")
-  following    Follower[] @relation("Following")
-  Follower     Follower[]
+  followers        Follower[] @relation("Followers")
+  following        Follower[] @relation("Following") 
+  followedCounter  Int        @default(0)             
+  followingCounter Int        @default(0) 
   Like         Like[]
   Post         Post[] 
   accounts      Account[]
@@ -57,15 +58,15 @@ model Session {
 }
 model Follower {
   id          String   @id @default(uuid())
-  followerId  String
-  followingId String
-  followedAt  DateTime @default(now())
-  userId      String?
-  follower    User     @relation("Followers", fields: [followerId], references: [id])
-  following   User     @relation("Following", fields: [followingId], references: [id])
-  User        User?    @relation(fields: [userId], references: [id])
+  followerUserId    String  
+  followedUserId    String   
+  followedAt        DateTime @default(now())
 
-  @@unique([followerId, followingId])
+  // Define the relations
+  followerUser      User     @relation("Followers", fields: [followerUserId], references: [id])
+  followedUser      User     @relation("Following", fields: [followedUserId], references: [id])
+
+  @@unique([followerUserId, followedUserId])
 }
 
 model Comment {
