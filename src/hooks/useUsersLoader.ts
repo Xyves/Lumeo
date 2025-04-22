@@ -23,7 +23,7 @@ export function useUsersLoader() {
   const loadProfile = useCallback(async ({ setLoading, setUser, id }) => {
     setLoading(true);
     try {
-      const data = await fetchUserProfile(id);
+      const data = await fetchUserProfile({ id });
       setUser(data);
     } catch (err) {
       console.error('Initial user load error', err);

@@ -21,8 +21,8 @@ export default function Feed() {
   const pathname = usePathname();
   const { loadPosts, updateStart } = usePostLoader();
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const feedType = 'feed';
 
- 
   useEffect(() => {
     if (start !== 0) {
       if (session && session.user) {
@@ -32,6 +32,7 @@ export default function Feed() {
           userId: session.user.id,
           setPosts,
           setLoading,
+          feedType,
         });
       }
     }
@@ -43,6 +44,7 @@ export default function Feed() {
       userId: session.user.id,
       setPosts,
       setLoading,
+      feedType,
     });
   }, []);
 

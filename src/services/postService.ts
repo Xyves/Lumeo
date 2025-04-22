@@ -4,12 +4,28 @@ import uploadFile from './cloudinaryService';
 
 const prisma = new PrismaClient();
 
-export const getPostsWithUsers = async (start: number, userId: string) => {
+export const getPostsWithUsers = async (
+  start: number,
+  userId: string,
+  feedType: 'feed' | 'explore'
+) => {
+  const isFeed = feedType === 'feed';
   console.log('working');
   const posts = await prisma.post.findMany({
     take: 5,
     skip: start,
     orderBy: { date: 'desc' },
+    where: isFeed
+      ? {
+          author: {
+            followers: {
+              some: {
+                followerUserId: userId,
+              },
+            },
+          },
+        }
+      : undefined, 
     select: {
       id: true,
       image_url: true,
@@ -22,7 +38,7 @@ export const getPostsWithUsers = async (start: number, userId: string) => {
           user_id: userId,
         },
         select: {
-          id: true, // only need 1 to know it exists
+          id: true, 
         },
       },
       author: {
@@ -30,7 +46,6 @@ export const getPostsWithUsers = async (start: number, userId: string) => {
           id: true,
           name: true,
           image: true,
-          
         },
       },
     },
@@ -122,3 +137,34 @@ export const deletePost = ({
   });
 };
 // export const unlikePost = async(post_id: string, user_id: string)
+const postFromFollowing = async (start: number, userId: string) => {
+  return prisma.post.findMany({
+    take: 5,
+    skip: start,
+    orderBy: { date: 'desc' },
+    where: {
+      author: {
+        followers: {
+          some: {
+            userId,
+          },
+        },
+      },
+    },
+    select: {
+      id: true,
+      image_url: true,
+      content: true,
+      date: true,
+      likeCount: true,
+      commentCount: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+};

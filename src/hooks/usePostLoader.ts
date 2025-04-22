@@ -7,13 +7,20 @@ type LoadPostsArgs = {
   userId: string;
   setPosts: React.Dispatch<React.SetStateAction<any[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  feedType: string;
 };
 export function usePostLoader() {
   const loadPosts = useCallback(
-    async ({ setPosts, start, userId, setLoading }: LoadPostsArgs) => {
+    async ({
+      setPosts,
+      start,
+      userId,
+      setLoading,
+      feedType,
+    }: LoadPostsArgs) => {
       setLoading(true);
       try {
-        const data = await fetchPosts({ start, userId });
+        const data = await fetchPosts({ start, userId, feedType });
         if (start === 0) {
           setPosts(data);
         } else {
