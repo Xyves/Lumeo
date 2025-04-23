@@ -10,13 +10,12 @@ import Heading from '@/components/Header/Heading';
 import ClientSessionProvider from './ClientSessionProvider';
 import { authOptions } from './api/auth/[...nextauth]/route';
 
-// export const metadata = {
-//   description:
-//     'A highly opinionated and complete starter for Next.js projects ready to production. Includes Typescript, Styled Components, Prettier, ESLint, Husky, SEO, and more.',
-//   keywords:
-//     'next, starter, typescript, tailwind css, prettier, eslint, husky, seo',
-//   title: 'Lumeo',
-// };
+export const metadata = {
+  description:
+    'A highly opinionated and complete starter for Next.js projects ready to production. Includes Typescript, Styled Components, Prettier, ESLint, Husky, SEO, and more.',
+  keywords: 'Facebook, Instagram, TheOdinProject, TOP, TOP project, nextjs',
+  title: 'Lumeo',
+};
 
 const inter = Inter({
   subsets: ['latin'],
