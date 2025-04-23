@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { fetchProfile } from '@/services/userService';
 
-import fetchUsers, { fetchUserProfile } from './useUsers';
+import fetchUsers, { fetchUserProfile, updateFollowUser } from './useUsers';
 // import fetchUsers
 
 export function useUsersLoader() {
@@ -31,5 +31,25 @@ export function useUsersLoader() {
       setLoading(false);
     }
   }, []);
-  return { loadUsers, loadProfile };
+  const changeFollowState = useCallback(
+    async (
+      followerId: string,
+      followedId: string,
+      isFollowed: boolean,
+      setIsFollowed: (value: boolean) => void,
+      setLoading
+    ) => {
+      setLoading(true);
+      try {
+        await updateFollowUser({ followerId, followedId, isFollowed });
+        setIsFollowed(!isFollowed);
+      } catch (err) {
+        console.error('Initial user load error', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+  return { loadUsers, loadProfile, changeFollowState };
 }

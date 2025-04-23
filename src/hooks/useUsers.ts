@@ -36,3 +36,22 @@ export async function fetchUserProfile({ id }) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
+export async function updateFollowUser({ followerId, followedId, isFollowed }) {
+  try {
+    const res = await fetch(`/api/users/follow/${followedId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ followerId, isFollowed }),
+    });
+    if (!res.ok) {
+      return NextResponse.json('Something went wrong', { status: 400 });
+    }
+    const data = await res.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    return NextResponse.json('Something went wrong', { status: 400 });
+  }
+}

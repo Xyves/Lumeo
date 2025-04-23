@@ -9,7 +9,7 @@ export async function GET(req: Request) {
   const cleanedInput = input === 'null' || input === '' ? null : input;
   try {
     const newUsers = await getUsers(cleanedInput, userId);
-    console.log(newUsers);
+    // console.log(newUsers);
     return NextResponse.json(newUsers, { status: 201 });
   } catch (error) {
     return NextResponse.json(

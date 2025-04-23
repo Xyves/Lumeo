@@ -15,20 +15,20 @@ export default function Follower({ name, profile_url, id }) {
         type="button"
         id={id}
         className="flex my-4"
-        onClick={() => router.push(`/feed/${id}`)}
+        onClick={() => router.push(`/profile/${id}`)}
       >
-        <Link href="/" className="flex rounded-3xl items-center max-w-64">
-          <Image
-            src={profile_url || ''}
-            alt=""
-            width={35}
-            height={35}
-            className="rounded-2xl"
-          />
-          <span className="ml-3 inline-block">{name}</span>
-        </Link>
+        {/* <Link href="/" className="flex rounded-3xl items-center max-w-64"> */}
+        <Image
+          src={profile_url || '/images/character-portrait.png'}
+          alt=""
+          width={35}
+          height={35}
+          className="rounded-2xl"
+        />
+        <span className="ml-3 inline-block">{name}</span>
+        {/* </Link> */}
         <div className=" ml-auto justify-end my-auto relative">
-          <FollowButton id={id} />
+          <FollowButton followedId={id} />
         </div>
       </div>
     </div>

@@ -16,7 +16,6 @@ export const signUser = async (name, hashedPassword, email) => {
     },
   });
 };
-const followUser = async () => {};
 const unFollowUser = async () => {};
 export const getUsers = async (input, authorId) => {
   console.log('in prisma');
@@ -55,6 +54,70 @@ export const getProfile = async id => {
       createdAt: true,
       updatedAt: true,
       image: true,
+      followingCounter: true,
+      followedCounter: true,
     },
   });
+};
+export const followUser = async ({ followerId, followedId, isFollowed }) => {
+  console.log(followerId, followedId, isFollowed);
+  return prisma.$transaction(
+    !isFollowed
+      ? [
+          prisma.follower.createMany({
+            data: {
+              followerUserId: followerId,
+              followedUserId: followedId,
+            },
+          }),
+          prisma.user.update({
+            where: {
+              id: followerId,
+            },
+            data: {
+              followingCounter: {
+                increment: 1,
+              },
+            },
+          }),
+          prisma.user.update({
+            where: {
+              id: followedId,
+            },
+            data: {
+              followedCounter: {
+                increment: 1,
+              },
+            },
+          }),
+        ]
+      : [
+          prisma.follower.deleteMany({
+            where: {
+              followerUserId: followerId,
+              followedUserId: followedId,
+            },
+          }),
+          prisma.user.update({
+            where: {
+              id: followerId,
+            },
+            data: {
+              followingCounter: {
+                decrement: 1,
+              },
+            },
+          }),
+          prisma.user.update({
+            where: {
+              id: followedId,
+            },
+            data: {
+              followedCounter: {
+                decrement: 1,
+              },
+            },
+          }),
+        ]
+  );
 };
