@@ -20,10 +20,14 @@ export default function NewFollows() {
       setLoading,
       setUsers: users => setUsers(users.slice(0, 10)),
       input: null,
+      onlyFollowed: true,
     });
   }, []);
   const memoizedUsers = useMemo(() => users, [users]);
   console.log(memoizedUsers);
+  if (memoizedUsers.length === 0) {
+    return null;
+  }
   return (
     <aside className="w-72   mr-auto p-3 sm:hidden lg:inline-block">
       <div className="border-2  p-4 rounded-3xl">

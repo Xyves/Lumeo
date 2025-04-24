@@ -7,10 +7,10 @@ import fetchUsers, { fetchUserProfile, updateFollowUser } from './useUsers';
 
 export function useUsersLoader() {
   const loadUsers = useCallback(
-    async ({ userId, setLoading, input, setUsers }) => {
+    async ({ userId, setLoading, input, setUsers, onlyFollowed }) => {
       setLoading(true);
       try {
-        const data = await fetchUsers({ userId, input });
+        const data = await fetchUsers({ userId, input, onlyFollowed });
         setUsers(data);
       } catch (err) {
         console.error('Initial user load error', err);

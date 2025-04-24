@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
 
-export default async function fetchUsers({ userId, input }) {
+export default async function fetchUsers({ userId, input, onlyFollowed }) {
   try {
-    const res = await fetch(`/api/users/?input=${input}&userId=${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const res = await fetch(
+      `/api/users/?input=${input}&userId=${userId}&followed=${onlyFollowed}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     console.log(input, userId);
     if (!res.ok)
       return NextResponse.json('Something went wrong', { status: 400 });
