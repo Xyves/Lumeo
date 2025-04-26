@@ -4,16 +4,19 @@ import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Calendar } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
+import NewFollows from '@/components/Aside/NewFollowsers';
 
 export default function page() {
+  const { loadProfile } = useUsersLoader();
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState();
+  const { status } = useSession();
 
   const params = useParams();
-  const { loadProfile } = useUsersLoader();
   const { id } = params;
   useEffect(() => {
     loadProfile({
@@ -23,27 +26,44 @@ export default function page() {
     });
   }, []);
   console.log(user);
-
+  if (status === 'loading') {
+    return null;
+  }
   return (
     <MainLayout>
-      <div className=" mb-24 w-4/6  h-auto bg-gray-600 ">
+      <div className=" mb-24 w-2/5  mx-auto h-auto bg-[#131415] ">
         <div id="user-info relative">
-          <div className="bg-emerald-200 w-full h-32     inset-0 z-0" />
-          <Image
-            className="rounded-full aspect-square object-cover absolute top-16 ml-6"
-            width={100}
-            height={100}
-            src={user.image}
-          />
+          <div className="bg-[#17679d] w-full h-32     inset-0 z-0" />
+          <div className=" flex ">
+            <Image
+              className="rounded-full aspect-square object-cover absolute top-16 ml-6 border-4 border-gray-400"
+              width={125}
+              height={120}
+              // src="/images/character-portrait.png"
+              src={user?.image || '/images/character-portrait.png'}
+            />
+            <button className="w-32 h-12 p-2  ml-auto relative right-0 -top-10 mr-10  rounded-3xl bg-gray-100 text-black hover:bg-gray-300">
+              Edit Profile
+            </button>
+          </div>
           <div className=" pl-6 relative z-10 pt-12">
             <div>
-              <h2 className="pb-3 ml-3 text-2xl">{user.name}</h2>
-              <h3 className="flex pb-2">
-                <Calendar type="span" /> Joined March 15
+              <h2 className="pb-3  text-2xl">
+                {loading ? 'User' : user ? user.name : ''}
+              </h2>
+              <h3 className="flex   text-gray-400 py-3">
+                <Calendar type="span" className="mr-2" /> Joined{' '}
+                {user ? user.createdAt.substring(0, 10) : ''}
               </h3>
             </div>
-            <span>15 Following</span>
-            <span>1 Followers</span>
+            <div className="text-gray-400 pb-12">
+              <span className=" text-white">
+                {loading ? 0 : user?.followingCounter}
+              </span>
+              <span className="mr-6">&nbsp; Following</span>
+              <span className="text-white">{user?.followedCounter}</span>
+              &nbsp;Followers
+            </div>
           </div>
         </div>
         <div className="w-full bg-green-600 flex ">
@@ -58,6 +78,7 @@ export default function page() {
           </button>
         </div>
       </div>
+      <NewFollows />
     </MainLayout>
   );
 }
