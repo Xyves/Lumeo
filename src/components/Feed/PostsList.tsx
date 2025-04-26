@@ -35,7 +35,6 @@ export default function PostsList({
   );
   console.log(memoizedPosts);
   return memoizedPosts.map((post, i) => {
-    const likesCounter = post.likes.length;
     if (!post) return null;
     return (
       <Post
@@ -47,8 +46,9 @@ export default function PostsList({
         profile_image={post.author.image}
         date={post.date}
         key={post.id}
-        likeCount={likesCounter}
+        likeCount={post.likeCount}
         commentCount={post.commentCount}
+        isLiked={post.isLiked}
         innerRef={i === memoizedPosts.length - 1 ? lastPostElementRef : null}
       />
     );

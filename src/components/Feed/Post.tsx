@@ -7,6 +7,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import CommentsButton from './commentButton';
 import LikeButton from './LikeButton';
@@ -23,48 +24,72 @@ export default function Post({
   innerRef,
   likeCount,
   commentCount,
+  isLiked,
 }) {
+  const router = useRouter();
   return (
     <div
       className="flex-col flex [&>section]:px-4 mb-6 last:mb-24 border-[rgb(217, 216, 213)] border-2"
       data-user-id={id}
       ref={innerRef}
     >
-      <section className="size-16 bg-green-500 w-full flex-row flex items-center ">
-        <div className="w-12 h-12  relative flex-col flex">
-          <Image
-            src={profile_image}
-            fill
-            className="rounded-full aspect-square object-cover absolute"
-          />
-        </div>
-        <Link href={`/profile/${authorId}`}>
-          <p className="ml-2 lg:text-lg">{authorName}</p>
-        </Link>
-        <p className="lg:text-sm text-gray-300">
-          - {date && <ReactTimeAgo date={new Date(date)} locale="en-US" />}{' '}
-        </p>
-        <div className="menu-bar ml-auto">
-          {/* If user === the id of the user comment then add this line options edit delete */}
-          X
-        </div>
-      </section>
-      <section className="  bg-blue-600 w-full flex-col flex  ">
-        <p className="pt-2 mb-3 ml-6">{content}</p>
-        {post_image ? (
-          <Zoom>
-            <div className="h-80 w-full flex items-center overflow-hidden mb-3  justify-center">
-              <img src={post_image} alt="" className="  object-contain" />
-            </div>
-          </Zoom>
-        ) : (
-          ''
-        )}
-      </section>
-      <section className="h-1/4 bg-red-500 py-3 w-full flex-row flex items-center">
-        <LikeButton likeCount={likeCount} />
-        <CommentsButton commentsCount={commentCount} />
-      </section>
+      <div
+        onClick={() => router.push(`/post/${id}`)}
+        className="cursor-pointer"
+      >
+        <section className=" bg-blue-500 w-full flex-row flex items-center p-3">
+          <div className="w-12 h-12  relative flex-col flex">
+            <Link
+              href={`/profile/${authorId}`}
+              onClick={e => e.stopPropagation()}
+            >
+              <Image
+                onClick={e => e.stopPropagation()}
+                src={profile_image}
+                fill
+                className="rounded-full aspect-square object-cover absolute"
+              />
+            </Link>
+          </div>
+          <Link
+            href={`/profile/${authorId}`}
+            onClick={e => e.stopPropagation()}
+          >
+            <p className="ml-2 lg:text-lg hover:underline">{authorName}</p>
+          </Link>
+          <p className="lg:text-sm text-gray-300">
+            - {date && <ReactTimeAgo date={new Date(date)} locale="en-US" />}{' '}
+          </p>
+          <div className="menu-bar ml-auto">
+            {/* If user === the id of the user comment then add this line options edit delete */}
+            X
+          </div>
+        </section>
+        <section
+          className="w-full flex-col flex"
+          onClick={e => e.stopPropagation()}
+        >
+          <p className="py-4 ml-10 px-2">{content}</p>
+          {post_image ? (
+            <Zoom>
+              <div className="h-80 w-full flex items-center overflow-hidden mb-3   justify-center">
+                <img src={post_image} alt="" className="  object-contain" />
+              </div>
+            </Zoom>
+          ) : (
+            ''
+          )}
+        </section>
+        <section
+          className="h-1/4 bg-red-500 py-3 w-full flex-row flex items-center pl-6"
+          onClick={e => {
+            e.stopPropagation();
+          }}
+        >
+          <LikeButton likeCount={likeCount} postId={id} isLiked={isLiked} />
+          <CommentsButton commentsCount={commentCount} id={id} />
+        </section>
+      </div>
     </div>
   );
 }
