@@ -19,13 +19,13 @@ export const getPostsWithUsers = async (
       ? {
           author: {
             followers: {
-              some: {
-                followerUserId: userId,
+              none: {
+                followerUserId: userId, // Check if the current user follows this author
               },
             },
           },
         }
-      : undefined, 
+      : {}, // If feedType is not 'feed', return all posts
     select: {
       id: true,
       image_url: true,
@@ -38,7 +38,7 @@ export const getPostsWithUsers = async (
           user_id: userId,
         },
         select: {
-          id: true, 
+          id: true,
         },
       },
       author: {
@@ -50,8 +50,12 @@ export const getPostsWithUsers = async (
       },
     },
   });
-  console.log('Fetched posts:', posts.length);
-  return posts;
+  const postsWithIsLiked = posts.map(({ likes, ...post }) => ({
+    ...post,
+    isLiked: likes.length > 0,
+  }));
+  console.log('Fetched posts:', postsWithIsLiked);
+  return postsWithIsLiked;
 };
 export const createPost = async ({
   content,
@@ -76,30 +80,76 @@ export const createPost = async ({
   });
 };
 
-export const likePost = async (post_id: string, user_id: string) => {
+export const handleLikePrisma = async ({ id, userId }) => {
   try {
-    const [likes, updatePost] = await prisma.$transaction([
-      prisma.like.create({
-        data: {
-          post_id,
-          user_id,
-        },
+    const existingLike = await prisma.like.findFirst({
+      where: {
+        user_id: userId,
+        post_id: id,
+      },
+    });
+    console.log(existingLike);
+    if (!existingLike) {
+      return prisma.$transaction([
+        prisma.like.create({
+          data: {
+            post_id: id,
+            user_id: userId,
+          },
+        }),
+        prisma.post.update({
+          where: { id },
+          data: { likeCount: { increment: 1 } },
+        }),
+      ]);
+    }
+    return prisma.$transaction([
+      prisma.like.deleteMany({
+        where: { post_id: id, user_id: userId },
       }),
       prisma.post.update({
-        where: { id: post_id },
-        data: { likeCount: { increment: 1 } },
+        where: { id },
+        data: { likeCount: { decrement: 1 } },
       }),
     ]);
-    return { likes, updatePost };
   } catch (error) {
     throw new Error('Failed to like the post.');
   }
 };
 // Single post operations:
-export const getPost = async (id: string) => {
-  return prisma.post.findFirst({
+export const getPost = async ({ id, userId }) => {
+  const post = await prisma.post.findFirst({
     where: { id },
+    select: {
+      id: true,
+      image_url: true,
+      content: true,
+      date: true,
+      likeCount: true,
+      commentCount: true,
+      likes: {
+        where: {
+          user_id: userId,
+        },
+        select: {
+          id: true,
+        },
+      },
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
   });
+  const postWithIsLiked = {
+    ...post,
+    isLiked: post.likes.length > 0,
+  };
+  console.log('fetches signle post:', postWithIsLiked);
+  return postWithIsLiked;
 };
 export const editPost = ({
   id,

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import fetchPosts from './usePostFeed';
+import fetchPosts, { fetchPost, useToggleLike } from './usePostFeed';
 
 type LoadPostsArgs = {
   start: number;
@@ -34,12 +34,40 @@ export function usePostLoader() {
     },
     [fetchPosts]
   );
+  const loadPost = useCallback(
+    async ({ setPost, postId, setLoading, userId }) => {
+      setLoading(true);
+      try {
+        const data = await fetchPost({ postId, userId });
+        console.log('Fetched data:', data);
+        setPost(data);
+      } catch (err) {
+        console.error('Initial load error', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchPost]
+  );
   const updateStart = useCallback(setStart => {
     setStart(prev => prev + 5);
   }, []);
   const handleNewPost = useCallback((setPosts, newPost) => {
     setPosts(prev => [newPost, ...prev]);
   }, []);
-
-  return { loadPosts, updateStart, handleNewPost };
+  const updateLikeStatus = useCallback(
+    async ({ userId, postId, setLoading }) => {
+      setLoading(true);
+      try {
+        const data = await useToggleLike({ userId, postId });
+        return data;
+      } catch (err) {
+        console.error('Initial load error', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchPosts]
+  );
+  return { loadPosts, loadPost, updateStart, handleNewPost, updateLikeStatus };
 }
