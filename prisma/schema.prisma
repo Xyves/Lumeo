@@ -24,7 +24,8 @@ model User {
   Like         Like[]
   Post         Post[] 
   accounts      Account[]
-  sessions      Session[]
+  sessions      Session[] 
+  commentLikes CommentLike[]
 }
 
 model Account {
@@ -77,8 +78,16 @@ model Comment {
   post_id   String
   post      Post     @relation(fields: [post_id], references: [id])
   user      User     @relation(fields: [user_id], references: [id])
+  commentLikes CommentLike[]
+  commentLikesCount    Int       @default(0)
 }
-
+model CommentLike{
+  id String @id @default(cuid())
+  user User @relation(fields:[userId],references: [id])
+  userId String
+  comment Comment @relation(fields:[commentId],references: [id])
+  commentId String
+}
 model Post {
   id           String    @id @default(uuid())
   date         DateTime  @default(now())
