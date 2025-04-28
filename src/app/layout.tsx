@@ -3,7 +3,6 @@ import '@/styles/globals.css';
 import { Inter } from 'next/font/google';
 import { getServerSession } from 'next-auth';
 
-import { QueryProvider } from '@/providers/query';
 import type { ChildrenProps } from '@/types';
 import Heading from '@/components/Header/Heading';
 
@@ -30,14 +29,12 @@ export default async function RootLayout({ children }: ChildrenProps) {
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-[#171006] overflow-hidden min-h-full`}
+        className={`${inter.className} bg-[#171006] overflow-hidden min-h-full min-w-full`}
       >
         <ClientSessionProvider session={session}>
-          <div className="h-full flex flex-col justify-between mx-auto">
+          <div className="h-full flex flex-col  ">
             <Heading title="NeonSphere " />
-            <section className="flex-1 h-full">
-              <QueryProvider>{children}</QueryProvider>
-            </section>
+            <section className="flex-1 h-full">{children}</section>
             {/* <MainFooter /> */}
           </div>
         </ClientSessionProvider>
