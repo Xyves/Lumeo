@@ -7,7 +7,6 @@ import { OrbitProgress } from 'react-loading-indicators';
 
 import MainLayout from '@/layouts/MainLayout/MainLayout';
 import { usePostLoader } from '@/hooks/usePostLoader';
-import NewFollows from '@/components/Aside/NewFollowsers';
 import PostsList from '@/components/Feed/PostsList';
 import CreatePost from '@/components/Feed/CreatePost';
 
@@ -47,7 +46,7 @@ export default function Explore() {
   const memoizedPosts = useMemo(() => posts, [posts]);
   return (
     <MainLayout>
-      <div className=" w-2/5 bg-[#1f1e1c] p-7 overflow-y-auto mb-24 mx-auto">
+      <div className=" w-full  p-7 overflow-y-auto my-4 mx-auto  bg-[rgba(0,0,0,0.6)]">
         <CreatePost setPosts={setPosts} />
         <PostsList
           memoizedPosts={memoizedPosts}
@@ -60,7 +59,6 @@ export default function Explore() {
           </div>
         )}
       </div>
-      <NewFollows />
       {/* <Search /> */}
     </MainLayout>
   );

@@ -8,11 +8,11 @@ export default function AccountDropdown() {
   };
   return (
     <div
-      className="absolute right-0 bottom-14 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 p-2"
+      className="absolute right-0 bottom-12 w-full  border border-gray-200 rounded-xl shadow-lg z-50 p-2 bg-purple-600 hover:bg-purple-800 text-white"
       role="menu"
     >
       <button
-        className="w-full text-left flex text-xs items-center  py-2 mx-2 hover:bg-gray-100 rounded text-black"
+        className="w-full text-left flex text-xs items-center  py-2 mx-2 rounded "
         role="menuitem"
         type="button"
         onClick={logout}

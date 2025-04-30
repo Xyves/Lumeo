@@ -1,13 +1,19 @@
 import { MessageCircle } from 'lucide-react';
 import React from 'react';
 
-export default function CommentsButton({ commentsCount }) {
+export default function CommentsButton({
+  commentsCount,
+  id,
+}: {
+  commentsCount: number;
+  id: number;
+}) {
   return (
     <div className="flex ml-3">
-      <button>
+      <button type="button">
         <MessageCircle />
       </button>
-      <p>4</p>
+      <p className="pl-1">{commentsCount}</p>
     </div>
   );
 }

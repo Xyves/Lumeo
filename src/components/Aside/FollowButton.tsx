@@ -25,7 +25,7 @@ export default function FollowButton({ followedId }) {
   };
   return (
     <button
-      className="px-2 bg-red-600 rounded-2xl flex justify-end ml-auto"
+      className="px-2 bg-[rgb(253,25,153)] rounded-2xl flex justify-end ml-auto"
       onClick={e => submitFollow(e)}
     >
       <div>{!isFollowed ? 'Follow' : 'Unfollow'}</div>

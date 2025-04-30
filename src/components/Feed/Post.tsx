@@ -29,15 +29,16 @@ export default function Post({
   const router = useRouter();
   return (
     <div
-      className="flex-col flex [&>section]:px-4 mb-6 last:mb-24 border-[rgb(217, 216, 213)] border-2"
+      className="flex-col flex [&>section]:px-4 mb-6 last:mb-24 border-[#5b34ac] border-2 rounded-lg   bg-[rgba(0,0,0,0.6)]
+      "
       data-user-id={id}
       ref={innerRef}
     >
       <div
         onClick={() => router.push(`/post/${id}`)}
-        className="cursor-pointer"
+        className="cursor-pointer rounded-lg"
       >
-        <section className=" bg-blue-500 w-full flex-row flex items-center p-3">
+        <section className="  w-full flex-row flex items-center p-3 rounded-t-md">
           <div className="w-12 h-12  relative flex-col flex">
             <Link
               href={`/profile/${authorId}`}
@@ -45,7 +46,7 @@ export default function Post({
             >
               <Image
                 onClick={e => e.stopPropagation()}
-                src={profile_image}
+                src={profile_image || '/images/default_user.webp'}
                 fill
                 className="rounded-full aspect-square object-cover absolute"
               />
@@ -55,7 +56,9 @@ export default function Post({
             href={`/profile/${authorId}`}
             onClick={e => e.stopPropagation()}
           >
-            <p className="ml-2 lg:text-lg hover:underline">{authorName}</p>
+            <p className="ml-2 lg:text-lg hover:underline font-bold font-courier text-[#8b28cd]">
+              {authorName}
+            </p>
           </Link>
           <p className="lg:text-sm text-gray-300">
             - {date && <ReactTimeAgo date={new Date(date)} locale="en-US" />}{' '}
@@ -66,10 +69,13 @@ export default function Post({
           </div>
         </section>
         <section
-          className="w-full flex-col flex"
+          className="w-full flex-col flex tracking-[.26rem]"
           onClick={e => e.stopPropagation()}
         >
-          <p className="py-4 ml-10 px-2">{content}</p>
+          <p className="py-6 ml-6 px-2  text-[#edd852] border-[#14a014] font-glitch ">
+            {content}
+          </p>
+          {/* bg-[#1F2937] */}
           {post_image ? (
             <Zoom>
               <div className="h-80 w-full flex items-center overflow-hidden mb-3   justify-center">
@@ -81,12 +87,17 @@ export default function Post({
           )}
         </section>
         <section
-          className="h-1/4 bg-red-500 py-3 w-full flex-row flex items-center pl-6"
+          className="h-1/4  py-3 w-full flex-row flex items-center pl-6 rounded-b-md bg-[rgb(68,12,124)]"
           onClick={e => {
             e.stopPropagation();
           }}
         >
-          <LikeButton likeCount={likeCount} postId={id} isLiked={isLiked} />
+          <LikeButton
+            likeCount={likeCount}
+            postId={id}
+            isLiked={isLiked}
+            type="post"
+          />
           <CommentsButton commentsCount={commentCount} id={id} />
         </section>
       </div>

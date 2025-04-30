@@ -8,7 +8,6 @@ import { useSession } from 'next-auth/react';
 
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
-import NewFollows from '@/components/Aside/NewFollowsers';
 
 export default function page() {
   const { loadProfile } = useUsersLoader();
@@ -31,16 +30,16 @@ export default function page() {
   }
   return (
     <MainLayout>
-      <div className=" mb-24 w-2/5  mx-auto h-auto bg-[#131415] ">
+      <div className=" mb-24 w-full  mx-auto h-auto bg-[#131415] ">
         <div id="user-info relative">
           <div className="bg-[#17679d] w-full h-32     inset-0 z-0" />
           <div className=" flex ">
             <Image
-              className="rounded-full aspect-square object-cover absolute top-16 ml-6 border-4 border-gray-400"
-              width={125}
-              height={120}
+              className="rounded-full aspect-square object-cover absolute top-20 ml-6 border-4 border-gray-400 size-20 md:size-24 lg:size-28"
+              width={115}
+              height={110}
               // src="/images/character-portrait.png"
-              src={user?.image || '/images/character-portrait.png'}
+              src={user?.image || '/images/default_user.webp'}
             />
             <button className="w-32 h-12 p-2  ml-auto relative right-0 -top-10 mr-10  rounded-3xl bg-gray-100 text-black hover:bg-gray-300">
               Edit Profile
@@ -78,7 +77,6 @@ export default function page() {
           </button>
         </div>
       </div>
-      <NewFollows />
     </MainLayout>
   );
 }

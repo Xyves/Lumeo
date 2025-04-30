@@ -18,7 +18,9 @@ html,
 body {
   height: 100%;
   scroll-behavior: smooth;
-  background-color: theme('colors.background.primary');
+  /* background-color: theme('colors.background.primary'); */
+  background:url("https://bigtimeweb.neocities.org/images/BG_Grid.gif")
+  /* background:url("/images/glitchbg.jpg") */
 }
 
 body {
@@ -79,5 +81,5 @@ h6 {
 }
 @font-face {
   font-family: "cyberwayriders";
-  src: url("/fonts/CyberwayRiders-lg97d");
+  src: url("/public/fonts/CyberwayRiders-lg97d.ttf");
 }

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 import MainLayout from '@/layouts/MainLayout/MainLayout';
-import NewFollows from '@/components/Aside/NewFollowsers';
 import SearchContainer from '@/components/Aside/SearchContainer';
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 import SearchUserList from '@/components/Search/SearchUserList';
@@ -22,14 +21,13 @@ export default function route() {
 
   return (
     <MainLayout>
-      <div className="w-2/5 border-4 p-3 overflow-y-auto mb-24 mx-auto bg-slate-800">
+      <div className="w-full border-4 p-3 overflow-y-auto mb-24 mx-auto bg-slate-800">
         <div className="bg-gray-800 px-2 py-3">
           <p className="lg:text-2xl md:text-lg sm:text-sm">Search users:</p>
           <SearchContainer input={input} setInput={setInput} />
         </div>
         <SearchUserList users={users} />
       </div>
-      <NewFollows />
     </MainLayout>
   );
 }

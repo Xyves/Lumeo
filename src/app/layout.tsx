@@ -28,12 +28,28 @@ export default async function RootLayout({ children }: ChildrenProps) {
 
   return (
     <html lang="en">
+      <head>
+        <style>{`
+          @font-face {
+            font-family: 'Glitch';
+            src: url('/fonts/glitch.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+          }
+            @font-face {
+            font-family: 'Lunar';
+            src: url('/fonts/LunarEscape.otf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+          }
+        `}</style>
+      </head>
       <body
         className={`${inter.className} bg-[#171006] overflow-hidden min-h-full min-w-full`}
       >
         <ClientSessionProvider session={session}>
           <div className="h-full flex flex-col  ">
-            <Heading title="NeonSphere " />
+            {/* <Heading title="NeonSphere " /> */}
             <section className="flex-1 h-full">{children}</section>
             {/* <MainFooter /> */}
           </div>

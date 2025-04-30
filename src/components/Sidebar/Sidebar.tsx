@@ -47,105 +47,102 @@ export default function Sidebar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+  // Green border-[#14a014]
   return (
-    <div className="px-2  bg-[#171006] flex flex-col h-[100vh]   relative ">
-      <section className=" w-56 flex  ">
-        <div className="flex flex-col p-2 gap-6  mx-auto">
-          <Link
-            href="/feed"
-            title="Feed Page"
-            className={`${pathname === '/feed' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
-          >
-            <House className="size-8" />
-            <p className="overflow-visible text-xs sm:text-base truncate">
-              Home
-            </p>
-          </Link>
-          <Link
-            href="/explore"
-            title="Feed Page"
-            className={`${pathname === '/explore' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
-          >
-            <Telescope className="size-8" />
-            <p className="overflow-visible text-xs sm:text-base truncate">
-              Explore
-            </p>
-          </Link>
-          <Link
-            href="/search"
-            className={`${pathname === '/search' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
-          >
-            <UserRoundSearch className="size-8" />
-            <p className="overflow-visible text-xs sm:text-base truncate">
-              Search
-            </p>
-          </Link>
-          <Link
-            href={`/profile/${session.user.id}`}
-            className={`${pathname === `/profile/${session.user.id}` ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
-          >
-            <UserRound className="size-8" />
-            <p className="overflow-visible text-xs sm:text-base truncate">
-              Profile
-            </p>
-          </Link>
-          <button
-            onClick={() => scrollCallback()}
-            type="button"
-            className={`${pathname === '/create' ? 'text-purple-900' : ''} flex justify-start items-center ml-6 text-3xl rounded-md transition-colors`}
-          >
-            <SendHorizontal className="size-8" />
-            <p className="overflow-visible text-xs sm:text-base truncate">
-              Create Post
-            </p>
-          </button>
-        </div>
-      </section>
-      <div className="user-info flex w-full  mt-auto" ref={menuRef}>
+    <div className=" flex-col relative hidden sm:flex sm:ml-0 lg:ml-20 sm:mr-2 lg:mr-10 h-screen   opacity-90 bg-[rgb(230,230,0,0.98)]   text-purple-900">
+      <div className="flex flex-col p-3 gap-3 md:px-0 2xl:px-6 flex-1 px-2 font-lunar  tracking-tight [&>p]:hover:underline">
+        <Link
+          href="/feed"
+          title="Feed Page"
+          className={`${pathname === '/feed' ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2 `}
+        >
+          <House className="lg:size-10 size-6 mr-2 flex items-center" />
+          <p className="overflow-visible  md:text-sm truncate lg:text-2xl hover:underline">
+            Home
+          </p>
+        </Link>
+        <Link
+          href="/explore"
+          title="Feed Page"
+          className={`${pathname === '/explore' ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2`}
+        >
+          <Telescope className="lg:size-10 size-6 mr-2 flex items-center" />
+          <p className="overflow-visible  sm:text-base truncate lg:text-2xl md:text-sm hover:underline ">
+            Explore
+          </p>
+        </Link>
+        <Link
+          href="/search"
+          className={`${pathname === '/search' ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2`}
+        >
+          <UserRoundSearch className="lg:size-10 size-6 mr-2 flex items-center" />
+          <p className="overflow-visible  sm:text-base truncate lg:text-2xl hover:underline  md:text-xl">
+            Search
+          </p>
+        </Link>
+        <Link
+          href={`/profile/${session.user.id}`}
+          className={`${pathname === `/profile/${session.user.id}` ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2`}
+        >
+          <UserRound className="lg:size-10 size-6  mr-2 flex items-center" />
+          <p className="overflow-visible   sm:text-base truncate lg:text-2xl md:text-sm hover:underline ">
+            Profile
+          </p>
+        </Link>
+        <button
+          onClick={() => scrollCallback()}
+          type="button"
+          className={`${pathname === '/create' ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2`}
+        >
+          <SendHorizontal className="lg:size-10 size-6 mr-2 flex items-center" />
+          <p className="overflow-visible  sm:text-base truncate lg:text-2xl md:text-sm hover:underline ">
+            New Post
+          </p>
+        </button>
+      </div>
+
+      <div
+        className=" w-full border-2 border-[#5b9ac7e7] font-courier "
+        ref={menuRef}
+      >
         {/* <Link href="/profile/23" className="w-full"> */}
         {open && <AccountDropdown />}
-        <button
-          type="button"
-          aria-haspopup="true"
-          aria-expanded="false"
-          className="w-full py-3 flex items-center   mb-16  pb-6"
-        >
-          {/* Name text */}
-          {session?.user?.image ? (
-            <Image
-              src={session?.user?.image ? session?.user?.image : <User />}
-              alt="profile icon"
-              width={36}
-              height={36}
-              className="rounded-full ml-2"
-            />
-          ) : (
-            <User />
-          )}
-          {status === 'authenticated' ? (
-            <p className="ml-2">{session.user.name}</p>
-          ) : (
-            <p className="ml-2">Guest</p>
-          )}
-
-          {/* Spacer pushes right-side content to the end */}
-          <div className="flex-grow" />
-
-          {/* Ellipsis icon */}
-          <div
-            className="p-2"
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              setOpen(!open);
-            }}
+        <div className=" relative  ">
+          <button
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            className=" py-3  flex w-full items-center bg-[rgb(174,60,255)] hover:bg-[rgb(144,70,197)]"
           >
-            <EllipsisVertical />
-          </div>
+            {session?.user?.image ? (
+              <Image
+                src={session?.user?.image ? session?.user?.image : <User />}
+                alt="profile icon"
+                width={36}
+                height={36}
+                className="rounded-full ml-2"
+              />
+            ) : (
+              <User />
+            )}
+            <Link href={`/profile/${session.user.id}`}>
+              <p className="ml-2 hover:underline lg:text-xl md:text-lg sm:text-base">
+                {session.user.name}
+              </p>
+            </Link>
 
-          {/* Profile Image on the FAR RIGHT */}
-        </button>
-        {/* </Link> */}
+            <div
+              className="p-2 ml-auto"
+              onClick={e => {
+                e.stopPropagation();
+                e.preventDefault();
+                setOpen(!open);
+              }}
+            >
+              <EllipsisVertical className="hover:text-slate-500 " />
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   );

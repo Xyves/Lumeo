@@ -29,9 +29,10 @@ export default function NewFollows() {
     return null;
   }
   return (
-    <aside className="w-72   mr-auto p-3 sm:hidden lg:inline-block">
-      <div className="border-2  p-4 rounded-3xl">
-        <h2 className="sm:text-sm md:text-lg 2xl:text-xl ">
+    <aside className=" md:1/6 w-1/6 mr-auto p-3  lg:inline-block hidden font-lunar ">
+      <div className="  p-4 rounded-3xl  border-2 border-purple-800 bg-[rgba(25,25,153,0.6)] text-[#00ffff]">
+        {/* bg-[url(/images/BG_Grid2.gif)] */}
+        <h2 className="sm:text-sm md:text-lg 2xl:text-xl text-[#99fc20] text-center text-nowrap">
           People you might know
         </h2>
         <div className="my-6">

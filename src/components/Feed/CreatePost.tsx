@@ -57,15 +57,18 @@ export default function CreatePost({ setPosts }) {
     }
   };
   return (
-    <div className="w-full  outline-double p-3 mb-10" ref={targetRef}>
+    <div
+      className="w-full  border-2 rounded-md p-3 mb-10 border-purple-800 bg-[rgba(0,0,0,0.9)] "
+      ref={targetRef}
+    >
       <form method="POST" onSubmit={submitPost} ref={formRef}>
         <div className="w-full h-1/2 flex p-3 items-center">
           <div className="image w-12 h-12 relative ">
-            {session?.user?.image ? (
-              <Image className="rounded-3xl " fill src={session?.user?.image} />
-            ) : (
-              <User />
-            )}
+            <Image
+              className="rounded-3xl"
+              fill
+              src={session?.user?.image || '/images/default_user.webp'}
+            />
           </div>
           <textarea
             maxLength={144}
@@ -75,11 +78,21 @@ export default function CreatePost({ setPosts }) {
             }}
             rows={3}
             placeholder="What is happening?"
-            className="w-5/6  p-2 mx-auto resize-none placeholder:text-black text-black"
+            className="w-5/6  p-2 mx-auto resize-none placeholder:text-[#edd852]    text-[#edd852]  rounded md
+   border-[.09rem] border-[#edd852] bg-[rgba(0,0,0,0.8)]"
           />
         </div>
-        <div className=" flex items-end justify-center  pt-1">
-          <div className="flex items-center space-x-2">
+        <div className=" flex items-end justify-center  pt-1 py-2">
+          <div className="flex items-center ml-auto space-x-2 mr-3 h-full ">
+            {fileName && (
+              <p className="text-sm text-[#00e6fe]">Selected: {fileName}</p>
+            )}
+            <label
+              htmlFor="file-upload"
+              className="flex items-center gap-2 px-4 py-2   bg-[#5521cf] text-white rounded-xl cursor-pointer hover:bg-[#3d1f84] transition"
+            >
+              <Img className="w-5 h-5 " />
+            </label>
             <input
               type="file"
               id="file-upload"
@@ -88,18 +101,9 @@ export default function CreatePost({ setPosts }) {
                 handleFileChange(e);
               }}
             />
-            <label
-              htmlFor="file-upload"
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl cursor-pointer hover:bg-blue-700 transition"
-            >
-              <Img className="w-5 h-5" />
-            </label>
-            {fileName && (
-              <p className="text-sm text-gray-700">Selected: {fileName}</p>
-            )}
           </div>
           {/* img(add photo) */}
-          <button className="bg-blue-500 px-8 py-2 rounded-3xl ml-auto mr-10">
+          <button className="bg-[#5521cf] px-8 py-2 rounded-3xl  mr-10 hover:bg-[#3d1f84] text-slate-50">
             Post
           </button>
         </div>
