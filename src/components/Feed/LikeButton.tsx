@@ -8,13 +8,18 @@ import { useSession } from 'next-auth/react';
 
 import { usePostLoader } from '@/hooks/usePostLoader';
 
+type LikeType = 'post' | 'comment';
 export default function LikeButton({
+  type,
   likeCount,
   postId,
+  commentId,
   isLiked,
 }: {
+  type?: LikeType;
   likeCount: number;
-  postId: string;
+  postId?: string;
+  commentId?: string;
   isLiked: boolean;
 }) {
   const { data: session } = useSession();
@@ -24,7 +29,19 @@ export default function LikeButton({
   const [liked, setLiked] = useState(isLiked);
   const changeLike = async () => {
     try {
-      updateLikeStatus({ postId, userId: session.user.id, setLoading });
+      if (type === 'post') {
+        updateLikeStatus({
+          postId,
+          userId: session.user.id,
+          setLoading,
+        });
+      } else if (type === 'comment') {
+        updateLikeStatus({
+          userId: session.user.id,
+          setLoading,
+          commentId,
+        });
+      }
       setLikesCount(count => count + (liked ? -1 : 1));
       setLiked(!liked);
     } catch (err) {
@@ -33,7 +50,7 @@ export default function LikeButton({
   };
   return (
     <button
-      className="flex items-center"
+      className="flex items-center "
       onClick={e => {
         e.stopPropagation();
         changeLike();
@@ -45,7 +62,7 @@ export default function LikeButton({
       ) : (
         <span className="pi pi-heart-fill text-xl" />
       )}
-      <span className="pl-1">{likesCount}</span>
+      <span className="pl-1 ">{likesCount}</span>
     </button>
   );
 }

@@ -10,10 +10,11 @@ import {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const start = parseInt(searchParams.get('start') || '0', 10);
   const userId = searchParams.get('userId');
+  const start = parseInt(searchParams.get('start') || '0', 10);
+  const feedType = searchParams.get('feedType');
   try {
-    const newPosts = await getPostsWithUsers(start, userId);
+    const newPosts = await getPostsWithUsers(start, userId, feedType);
     return NextResponse.json(newPosts, { status: 201 });
   } catch (error) {
     return NextResponse.json(

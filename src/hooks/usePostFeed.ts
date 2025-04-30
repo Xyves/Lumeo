@@ -35,15 +35,19 @@ export async function fetchPost({ postId, userId }) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
-export async function useToggleLike({ postId, userId }) {
+export async function useToggleLike({ postId, userId, commentId }) {
+  const endpoint = commentId
+    ? `/api/comments/${commentId}/like`
+    : `/api/posts/${postId}/like`;
   try {
-    const res = await fetch(`/api/posts/${postId}/like`, {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ userId }),
     });
+
     if (!res.ok)
       return NextResponse.json('Something went wrong', { status: 400 });
     const data = await res.json();

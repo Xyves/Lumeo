@@ -218,3 +218,39 @@ const postFromFollowing = async (start: number, userId: string) => {
     },
   });
 };
+export const handleCommentLikePrisma = async ({ id, userId }) => {
+  try {
+    const existingLike = await prisma.commentLike.findFirst({
+      where: {
+        userId,
+        commentId: id,
+      },
+    });
+    console.log(existingLike);
+    if (!existingLike) {
+      return prisma.$transaction([
+        prisma.commentLike.create({
+          data: {
+            userId,
+            commentId: id,
+          },
+        }),
+        prisma.comment.update({
+          where: { id },
+          data: { commentLikesCount: { increment: 1 } },
+        }),
+      ]);
+    }
+    return prisma.$transaction([
+      prisma.commentLike.deleteMany({
+        where: { commentId: id, userId },
+      }),
+      prisma.comment.update({
+        where: { id },
+        data: { commentLikesCount: { decrement: 1 } },
+      }),
+    ]);
+  } catch (error) {
+    throw new Error('Failed to like the post.');
+  }
+};

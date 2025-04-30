@@ -56,10 +56,20 @@ export function usePostLoader() {
     setPosts(prev => [newPost, ...prev]);
   }, []);
   const updateLikeStatus = useCallback(
-    async ({ userId, postId, setLoading }) => {
+    async ({
+      userId,
+      postId,
+      commentId,
+      setLoading,
+    }: {
+      userId: string;
+      postId?: string;
+      commentId?: string;
+      setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    }) => {
       setLoading(true);
       try {
-        const data = await useToggleLike({ userId, postId });
+        const data = await useToggleLike({ userId, postId, commentId });
         return data;
       } catch (err) {
         console.error('Initial load error', err);
