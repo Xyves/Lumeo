@@ -50,7 +50,7 @@ export default function Sidebar() {
   // Green border-[#14a014]
   return (
     <div className=" flex-col relative hidden sm:flex sm:ml-0 lg:ml-20 sm:mr-2 lg:mr-10 h-screen   opacity-90 bg-[rgb(230,230,0,0.98)]   text-purple-900">
-      <div className="flex flex-col p-3 gap-3 md:px-0 2xl:px-6 flex-1 px-2 font-lunar  tracking-tight [&>p]:hover:underline">
+      <div className="flex flex-col p-3 gap-3 md:px-0 2xl:px-6 flex-1 px-2 font-lunar  tracking-tight [&>p]:hover:underline mt-10">
         <Link
           href="/feed"
           title="Feed Page"
@@ -102,12 +102,12 @@ export default function Sidebar() {
       </div>
 
       <div
-        className=" w-full border-2 border-[#5b9ac7e7] font-courier "
+        className=" w-full border-2 border-[#633a91e7] font-courier "
         ref={menuRef}
       >
         {/* <Link href="/profile/23" className="w-full"> */}
         {open && <AccountDropdown />}
-        <div className=" relative  ">
+        <div className=" relative  text-white">
           <button
             type="button"
             aria-haspopup="true"

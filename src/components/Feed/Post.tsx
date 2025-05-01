@@ -60,7 +60,7 @@ export default function Post({
               {authorName}
             </p>
           </Link>
-          <p className="lg:text-sm text-gray-300">
+          <p className="lg:text-sm text-purple-300">
             - {date && <ReactTimeAgo date={new Date(date)} locale="en-US" />}{' '}
           </p>
           <div className="menu-bar ml-auto">

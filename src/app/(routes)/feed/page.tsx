@@ -49,7 +49,7 @@ export default function Feed() {
 
   return (
     <MainLayout>
-      <div className=" w-full  p-7 overflow-y-auto mb-24 mr-auto ">
+      <div className=" w-full  p-7 overflow-y-auto  mr-auto ">
         {/* bg-[#1f1e1c] */}
         <CreatePost setPosts={setPosts} />
         <PostsList
