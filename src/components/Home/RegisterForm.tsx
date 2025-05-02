@@ -27,7 +27,7 @@ export default function RegisterForm() {
     });
     const userInfo = await response.json();
     console.log(userInfo);
-    // router.push('/login');
+    router.push('/login');
   };
   return (
     <div className="  lg:w-2/5  sm:w-full md:w-full bg-white rounded-lg shadow dark:border md:mt-0    dark:bg-gray-800 justify-center items-center flex dark:border-gray-700 ">
@@ -53,7 +53,7 @@ export default function RegisterForm() {
               id="name"
               value={data.name}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="name@company.com"
+              placeholder="Enter your username"
               required
               onChange={e => {
                 setData({ ...data, name: e.target.value });
@@ -73,7 +73,7 @@ export default function RegisterForm() {
               value={data.email}
               id="email"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="name@company.com"
+              placeholder="Enter your email"
               required
               onChange={e => {
                 setData({ ...data, email: e.target.value });

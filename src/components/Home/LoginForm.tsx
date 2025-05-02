@@ -14,12 +14,15 @@ export default function LoginWindow() {
     name: '',
     password: '',
   });
-
-  const loginUser = async (e: React.FormEvent) => {
+  const guestData = {
+    name: 'Guest',
+    password: 'DJSNGeo3',
+  };
+  const loginUser = async (e: React.FormEvent, isGuest) => {
     e.preventDefault();
 
     const res = await signIn('credentials', {
-      ...data,
+      ...(isGuest ? guestData : data),
       redirect: false,
     });
 
