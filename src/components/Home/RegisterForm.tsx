@@ -27,7 +27,7 @@ export default function RegisterForm() {
     });
     const userInfo = await response.json();
     console.log(userInfo);
-    router.push('/login');
+    router.push('/');
   };
   return (
     <div className="  lg:w-2/5  sm:w-full md:w-full bg-white rounded-lg shadow dark:border md:mt-0    dark:bg-gray-800 justify-center items-center flex dark:border-gray-700 ">

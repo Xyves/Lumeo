@@ -18,18 +18,18 @@ export default function LoginWindow() {
     name: 'Guest',
     password: 'DJSNGeo3',
   };
-  const loginUser = async (e: React.FormEvent, isGuest) => {
+  const loginUser = async (e: React.FormEvent, { isGuest }) => {
     e.preventDefault();
 
     const res = await signIn('credentials', {
       ...(isGuest ? guestData : data),
       redirect: false,
     });
-
+    console.log(res);
     if (res?.error) {
       console.error('Login failed:', res.error);
     } else {
-      router.push('/feed'); // or wherever
+      router.push('/feed');
     }
   };
   return (
@@ -41,8 +41,8 @@ export default function LoginWindow() {
       </h2>
 
       <form
+        onSubmit={e => loginUser(e, { isGuest: false })}
         className="flex flex-col [&>button]:p-3 py-24  gap-3 w-1/2    "
-        onSubmit={loginUser}
         method="get"
       >
         <label
@@ -92,6 +92,7 @@ export default function LoginWindow() {
         <button
           className="bg-[#05036d] text-[#f1f1f1] hover:bg-[#0f2f70]"
           type="button"
+          onClick={e => loginUser(e, { isGuest: true })}
         >
           Guest user
         </button>
