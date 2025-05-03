@@ -29,7 +29,7 @@ export default function LoginWindow() {
     if (res?.error) {
       console.error('Login failed:', res.error);
     } else {
-      router.push('/feed');
+      // router.push('/feed');
     }
   };
   return (

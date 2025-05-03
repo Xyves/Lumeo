@@ -22,7 +22,7 @@ export const getUsers = async (input, authorId, followed) => {
   console.log({ input, authorId, followed });
   return prisma.user.findMany({
     where: {
-      id: { not: authorId }, 
+      id: { not: authorId && input !== null },
       ...(input && {
         name: { contains: input, mode: 'insensitive' },
       }),

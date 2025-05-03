@@ -6,7 +6,7 @@ export default function CommentsButton({
   id,
 }: {
   commentsCount: number;
-  id: number;
+  id: string;
 }) {
   return (
     <div className="flex ml-3">

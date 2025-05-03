@@ -11,10 +11,12 @@ export default async function fetchPosts({ start, userId, feedType }) {
         },
       }
     );
-    if (!res.ok)
-      return NextResponse.json('Something went wrong', { status: 400 });
+    if (!res.ok) {
+      console.error('Fetch failed with status:', res.status);
+      return null;
+    }
     const data = await res.json();
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }

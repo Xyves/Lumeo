@@ -22,6 +22,10 @@ export function usePostLoader() {
       try {
         const data = await fetchPosts({ start, userId, feedType });
         if (start === 0) {
+          if (!data || Object.keys(data).length === 0) {
+            console.warn('No post found. Skipping setPost.');
+            return; // Stop further processing
+          }
           setPosts(data);
         } else {
           setPosts(prev => [...prev, ...data]);

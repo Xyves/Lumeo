@@ -11,6 +11,8 @@ export default function PostsList({
   setStart,
 }: {
   memoizedPosts: any;
+  setStart: any;
+  handleUpdateStart: any;
 }) {
   const observer = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
@@ -34,23 +36,34 @@ export default function PostsList({
     [loading]
   );
   console.log(memoizedPosts);
-  return memoizedPosts.map((post, i) => {
-    if (!post) return null;
-    return (
-      <Post
-        id={post.id}
-        post_image={post.image_url}
-        content={post.content}
-        authorId={post.author.id}
-        authorName={post.author.name}
-        profile_image={post.author.image}
-        date={post.date}
-        key={post.id}
-        likeCount={post.likeCount}
-        commentCount={post.commentCount}
-        isLiked={post.isLiked}
-        innerRef={i === memoizedPosts.length - 1 ? lastPostElementRef : null}
-      />
-    );
-  });
+
+  if (!Array.isArray(memoizedPosts)) {
+    return null;
+  }
+  return (
+    <>
+      {memoizedPosts.map((post, i) => {
+        if (!post) return null;
+
+        return (
+          <Post
+            id={post.id}
+            post_image={post.image_url}
+            content={post.content}
+            authorId={post.author.id}
+            authorName={post.author.name}
+            profile_image={post.author.image}
+            date={post.date}
+            key={post.id}
+            likeCount={post.likeCount}
+            commentCount={post.commentCount}
+            isLiked={post.isLiked}
+            innerRef={
+              i === memoizedPosts.length - 1 ? lastPostElementRef : null
+            }
+          />
+        );
+      })}
+    </>
+  );
 }

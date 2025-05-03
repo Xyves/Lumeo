@@ -13,6 +13,7 @@ import type { PostInterface } from '@/types';
 
 export default function Feed() {
   const [loading, setLoading] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [start, setStart] = useState<number>(0);
   const { data: session } = useSession();
@@ -44,6 +45,7 @@ export default function Feed() {
       setLoading,
       feedType,
     });
+    setHasFetched(true);
   }, []);
   const memoizedPosts = useMemo(() => posts, [posts]);
 
@@ -52,15 +54,21 @@ export default function Feed() {
       <div className=" w-full  p-7 overflow-y-auto  mr-auto ">
         {/* bg-[#1f1e1c] */}
         <CreatePost setPosts={setPosts} />
-        <PostsList
-          memoizedPosts={memoizedPosts}
-          setStart={setStart}
-          handleUpdateStart={updateStart}
-        />
+
         {loading && (
           <div className="loading-spinner flex justify-center">
             <OrbitProgress variant="track-disc" speedPlus={2} easing="linear" />
           </div>
+        )}
+        {Array.isArray(posts) && hasFetched && posts.length === 0 && (
+          <div className="text-center text-gray-500 mt-4">No posts found.</div>
+        )}
+        {hasFetched && posts.length > 0 && (
+          <PostsList
+            memoizedPosts={memoizedPosts}
+            setStart={setStart}
+            handleUpdateStart={updateStart}
+          />
         )}
       </div>
       {/* <Search /> */}
