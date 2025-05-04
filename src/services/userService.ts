@@ -16,23 +16,28 @@ export const signUser = async (name, hashedPassword, email) => {
     },
   });
 };
-export const getUsers = async (input, authorId, followed) => {
+export const getUsers = async (input, userId, followed) => {
   const followedBoolean = followed === 'true';
-  console.log('in prisma');
-  console.log({ input, authorId, followed });
+  console.log({ input, userId, followed });
   return prisma.user.findMany({
     where: {
-      id: { not: authorId && input !== null },
+      NOT: {
+        id: userId,
+      },
+      // id: { not: userId },
       ...(input && {
-        name: { contains: input, mode: 'insensitive' },
-      }),
-      ...(followedBoolean && {
-        following: {
-          none: {
-            followerUserId: authorId,
-          },
+        name: {
+          contains: input,
+          mode: 'insensitive',
         },
       }),
+      // ...(followedBoolean && {
+      //   followers: {
+      //     none: {
+      //       followerUserId: userId,
+      //     },
+      //   },
+      // }),
     },
     select: {
       id: true,

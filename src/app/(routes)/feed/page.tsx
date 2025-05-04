@@ -60,9 +60,14 @@ export default function Feed() {
             <OrbitProgress variant="track-disc" speedPlus={2} easing="linear" />
           </div>
         )}
-        {Array.isArray(posts) && hasFetched && posts.length === 0 && (
-          <div className="text-center text-gray-500 mt-4">No posts found.</div>
-        )}
+        {Array.isArray(posts) &&
+          hasFetched &&
+          posts.length === 0 &&
+          !loading && (
+            <div className="text-center text-gray-500 mt-4">
+              No posts found.
+            </div>
+          )}
         {hasFetched && posts.length > 0 && (
           <PostsList
             memoizedPosts={memoizedPosts}
