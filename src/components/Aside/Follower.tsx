@@ -32,7 +32,7 @@ export default function Follower({ name, profile_url, id }) {
         </Link>
         {/* </Link> */}
         <div className=" ml-auto justify-end my-auto relative text-white">
-          <FollowButton followedId={id} />
+          <FollowButton followedId={id}/>
         </div>
       </div>
     </div>

@@ -20,17 +20,20 @@ export function useUsersLoader() {
     },
     []
   );
-  const loadProfile = useCallback(async ({ setLoading, setUser, id }) => {
-    setLoading(true);
-    try {
-      const data = await fetchUserProfile({ id });
-      setUser(data);
-    } catch (err) {
-      console.error('Initial user load error', err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const loadProfile = useCallback(
+    async ({ setLoading, setUser, id, authorId }) => {
+      setLoading(true);
+      try {
+        const data = await fetchUserProfile({ id, authorId });
+        setUser(data);
+      } catch (err) {
+        console.error('Initial user load error', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
   const changeFollowState = useCallback(
     async (
       followerId: string,

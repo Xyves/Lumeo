@@ -5,8 +5,9 @@ import React, { useState } from 'react';
 
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 
-export default function FollowButton({ followedId }) {
-  const [isFollowed, setIsFollowed] = useState(false);
+export default function FollowButton({ followedId, isFollowing }) {
+  const [isFollowed, setIsFollowed] = useState(isFollowing || false);
+  console.log('is followed status is:', isFollowed);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const { changeFollowState } = useUsersLoader();

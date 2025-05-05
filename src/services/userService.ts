@@ -31,13 +31,13 @@ export const getUsers = async (input, userId, followed) => {
           mode: 'insensitive',
         },
       }),
-      // ...(followedBoolean && {
-      //   followers: {
-      //     none: {
-      //       followerUserId: userId,
-      //     },
-      //   },
-      // }),
+      ...(followedBoolean && {
+        following: {
+          none: {
+            followerUserId: userId,
+          },
+        },
+      }),
     },
     select: {
       id: true,
@@ -48,8 +48,8 @@ export const getUsers = async (input, userId, followed) => {
     },
   });
 };
-export const getProfile = async id => {
-  return prisma.user.findFirst({
+export const getProfile = async (id, authorId) => {
+  const user = await prisma.user.findFirst({
     where: {
       id,
     },
@@ -63,6 +63,28 @@ export const getProfile = async id => {
       followedCounter: true,
     },
   });
+  if (!user || id === authorId)
+    return {
+      ...user,
+      isFollowing: false,
+    };
+  console.log('Checking follow between:', { authorId, id });
+
+  const followExists = await prisma.follower.findFirst({
+    where: {
+      followerUserId: authorId,
+      followedUserId: id,
+    },
+    select: { id: true },
+  });
+  console.log({
+    ...user,
+    isFollowing: !!followExists,
+  });
+  return {
+    ...user,
+    isFollowing: !!followExists,
+  };
 };
 export const followUser = async ({ followerId, followedId, isFollowed }) => {
   console.log(followerId, followedId, isFollowed);

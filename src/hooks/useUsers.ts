@@ -21,9 +21,9 @@ export default async function fetchUsers({ userId, input, onlyFollowed }) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
-export async function fetchUserProfile({ id }) {
+export async function fetchUserProfile({ id, authorId }) {
   try {
-    const res = await fetch(`/api/profile/${id}`, {
+    const res = await fetch(`/api/profile/${id}?authorId=${authorId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
