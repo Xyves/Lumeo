@@ -1,6 +1,6 @@
 'use client';
 
-// import 'primeicons/primeicons.css';
+import 'primeicons/primeicons.css';
 import { Heart } from 'lucide-react';
 import React, { useState } from 'react';
 import { boolean } from 'zod';

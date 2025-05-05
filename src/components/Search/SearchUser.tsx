@@ -9,7 +9,7 @@ export default function SearchUser({ name, image, id }) {
       <div className="w-full  flex  px-5 items-center h-16 ">
         <button
           aria-label={id}
-          className="flex  hover:bg-gray-500 w-full h-full items-center"
+          className="flex  hover:bg-[#440c7c] w-full h-full items-center"
         >
           {image ? (
             <Image
