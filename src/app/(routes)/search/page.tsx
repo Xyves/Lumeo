@@ -21,8 +21,8 @@ export default function route() {
 
   return (
     <MainLayout>
-      <div className="w-full border-4 p-3 overflow-y-auto mb-24 mx-auto bg-slate-800">
-        <div className="bg-gray-800 px-2 py-3">
+      <div className="w-full border-4 p-3 overflow-y-auto mb-24 mx-auto bg-[url(/images/BG_Grid2.gif)]">
+        <div className=" px-2 py-3">
           <p className="lg:text-2xl md:text-lg sm:text-sm">Search users:</p>
           <SearchContainer input={input} setInput={setInput} />
         </div>

@@ -55,7 +55,9 @@ h5,
 h6 {
   overflow-wrap: break-word;
 }
-
+html, body {
+  min-width: 100vw;
+}
 #root,
 #__next {
   isolation: isolate;
