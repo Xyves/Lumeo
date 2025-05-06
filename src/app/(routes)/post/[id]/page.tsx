@@ -42,9 +42,9 @@ export default function page() {
   console.log(post);
   return (
     <MainLayout>
-      <div className=" mb-24 w-full  mx-auto h-auto bg-[#131415] ">
+      <div className=" mb-24 w-full  mx-auto h-auto  bg-[#131415] ">
         <div className="ml-10">
-          <div className="user flex items-center">
+          <div className="user flex items-start">
             <Image
               width={100}
               height={100}

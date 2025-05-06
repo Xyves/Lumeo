@@ -53,10 +53,12 @@ export default function page() {
               </button>
             ) : (
               user?.id && (
-                <FollowButton
-                  followedId={user.id}
-                  isFollowing={user.isFollowing}
-                />
+                <div className="relative right-0 ml-auto mt-5  -top-10 mr-10  rounded-3xl">
+                  <FollowButton
+                    followedId={user.id}
+                    isFollowing={user.isFollowing}
+                  />
+                </div>
               )
             )}
           </div>

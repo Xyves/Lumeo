@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import FollowButton from './FollowButton';
 
 export default function Follower({ name, profile_url, id }) {
+  console.log(profile_url);
   const router = useRouter();
   return (
     <div>
@@ -22,7 +23,7 @@ export default function Follower({ name, profile_url, id }) {
           className="flex rounded-3xl items-center max-w-64"
         >
           <Image
-            src={profile_url || '/images/character-portrait.png'}
+            src={profile_url || '/images/default_user.webp'}
             alt=""
             width={35}
             height={35}
@@ -32,7 +33,7 @@ export default function Follower({ name, profile_url, id }) {
         </Link>
         {/* </Link> */}
         <div className=" ml-auto justify-end my-auto relative text-white">
-          <FollowButton followedId={id}/>
+          <FollowButton followedId={id} isFollowing="false" />
         </div>
       </div>
     </div>

@@ -34,10 +34,7 @@ export default function Post({
       data-user-id={id}
       ref={innerRef}
     >
-      <div
-        onClick={() => router.push(`/post/${id}`)}
-        className="cursor-pointer rounded-lg"
-      >
+      <div className="cursor-pointer rounded-lg">
         <section className="  w-full flex-row flex items-center p-3 rounded-t-md">
           <div className="w-12 h-12  relative flex-col flex">
             <Link
@@ -70,7 +67,7 @@ export default function Post({
         </section>
         <section
           className="w-full flex-col flex tracking-[.26rem]"
-          onClick={e => e.stopPropagation()}
+          onClick={e => router.push(`/post/${id}`)}
         >
           <p className="py-6 ml-6 px-2  text-[#edd852] border-[#14a014] font-glitch ">
             {content}
@@ -87,10 +84,8 @@ export default function Post({
           )}
         </section>
         <section
+          onClick={e => e.stopPropagation()}
           className="h-1/4  py-3 w-full flex-row flex items-center pl-6 rounded-b-md bg-[rgb(68,12,124)]"
-          onClick={e => {
-            e.stopPropagation();
-          }}
         >
           <LikeButton
             likeCount={likeCount}

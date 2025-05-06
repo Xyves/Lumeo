@@ -10,7 +10,7 @@ import PostComment from './PostComment';
 export default function CommentsList({ memoizedComments }) {
   console.log(memoizedComments);
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col ">
       {Array.isArray(memoizedComments) &&
         memoizedComments.map(comment => {
           return (
