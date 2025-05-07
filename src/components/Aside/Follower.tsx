@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable camelcase */
+
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -7,16 +9,20 @@ import { useRouter } from 'next/navigation';
 
 import FollowButton from './FollowButton';
 
-export default function Follower({ name, profile_url, id }) {
+interface FollowerInterface {
+  name: string;
+  profile_url: string;
+  id: string;
+}
+export default function Follower({ name, profile_url, id }: FollowerInterface) {
   console.log(profile_url);
   const router = useRouter();
   return (
     <div>
       <div
-        type="button"
         id={id}
         className="flex my-4 items-center"
-        onClick={() => router.push(`/profile/${id}`)}
+        onClick={e => router.push(`/profile/${id}`)}
       >
         <Link
           href="/profile/id"

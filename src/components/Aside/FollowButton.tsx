@@ -5,7 +5,14 @@ import React, { useState } from 'react';
 
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 
-export default function FollowButton({ followedId, isFollowing }) {
+interface FollowBtnProps {
+  followedId: string;
+  isFollowing: boolean;
+}
+export default function FollowButton({
+  followedId,
+  isFollowing,
+}: FollowBtnProps) {
   const [isFollowed, setIsFollowed] = useState(isFollowing || false);
   console.log('is followed status is:', isFollowed);
   const [loading, setLoading] = useState(false);
