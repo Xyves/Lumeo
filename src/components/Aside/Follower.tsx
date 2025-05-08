@@ -24,10 +24,7 @@ export default function Follower({ name, profile_url, id }: FollowerInterface) {
         className="flex my-4 items-center"
         onClick={e => router.push(`/profile/${id}`)}
       >
-        <Link
-          href="/profile/id"
-          className="flex rounded-3xl items-center max-w-64"
-        >
+        <Link href="/profile/id" className="flex rounded-3xl items-center ">
           <Image
             src={profile_url || '/images/default_user.webp'}
             alt=""
@@ -35,7 +32,9 @@ export default function Follower({ name, profile_url, id }: FollowerInterface) {
             height={35}
             className="rounded-2xl"
           />
-          <span className="ml-3 inline-block hover:underline">{name}</span>
+          <span className="ml-2 mr-4 inline-block hover:underline text-sm">
+            {name}
+          </span>
         </Link>
         {/* </Link> */}
         <div className=" ml-auto justify-end my-auto relative text-white">

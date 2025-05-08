@@ -11,7 +11,7 @@ export default function SearchContainer({ input, setInput }) {
     inputRef.current?.focus();
   };
   return (
-    <form className="flex h-12  bg-[#e1e100] items-center relative mb-6 mt-2">
+    <form className="flex h-12  bg-[#000000d9] items-center relative mb-6 mt-2">
       <Search className="absolute left-2 -translate-y-1/2 top-1/2 p-1" />
       <input
         type="search"
