@@ -62,6 +62,53 @@ export const getPostsWithUsers = async (
 
   return postsWithIsLiked;
 };
+export const getUserPosts = async (
+  start: number,
+  userId: string,
+  authorId: string
+) => {
+  console.log('working', userId, authorId, start);
+  const posts = await prisma.post.findMany({
+    orderBy: { date: 'desc' },
+    where: {
+      authorId,
+    },
+    select: {
+      id: true,
+      image_url: true,
+      content: true,
+      date: true,
+      likeCount: true,
+      commentCount: true,
+      likes: {
+        where: {
+          user_id: userId,
+        },
+        select: {
+          id: true,
+        },
+      },
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+  if (!posts || posts.length === 0) {
+    console.log('No posts found');
+    return [];
+  }
+  const postsWithIsLiked = posts.map(({ likes, ...post }) => ({
+    ...post,
+    isLiked: likes.length > 0,
+  }));
+  console.log('Fetched posts:', postsWithIsLiked);
+
+  return postsWithIsLiked;
+};
 export const createPost = async ({
   content,
   file,

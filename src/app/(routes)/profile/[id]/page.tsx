@@ -1,23 +1,47 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Calendar } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { OrbitProgress } from 'react-loading-indicators';
 
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
 import FollowButton from '@/components/Aside/FollowButton';
+import { usePostLoader } from '@/hooks/usePostLoader';
+import PostsList from '@/components/Feed/PostsList';
+import type { PostInterface } from '@/types';
 
 export default function page() {
   const { loadProfile } = useUsersLoader();
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState();
+  const [view, setView] = useState<'posts' | 'likes'>('posts');
   const { data: session, status } = useSession();
-
   const params = useParams();
   const { id } = params;
+  const [hasFetched, setHasFetched] = useState(false);
+  const [posts, setPosts] = useState<PostInterface[]>([]);
+  const [start, setStart] = useState<number>(0);
+  console.log(session);
+  const { loadUserPosts, updateStart } = usePostLoader();
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  useEffect(() => {
+    if (start === 0) {
+      loadUserPosts({
+        start: 0,
+        userId: session.user.id,
+        authorId: id,
+        setPosts,
+        setLoading,
+      });
+      setHasFetched(true);
+    }
+  }, [view]);
+  const memoizedPosts = useMemo(() => posts, [posts]);
   useEffect(() => {
     if (status !== 'authenticated') return;
     loadProfile({
@@ -36,7 +60,7 @@ export default function page() {
   }
   return (
     <MainLayout>
-      <div className=" mb-24 w-full  mx-auto h-auto bg-[#131415] ">
+      <div className=" mb-24 w-full  mx-auto h-full bg-[#131415]  overflow-y-auto ">
         <div id="user-info relative">
           <div className="bg-[#6e179d] w-full h-32     inset-0 z-0" />
           <div className=" flex ">
@@ -82,17 +106,56 @@ export default function page() {
             </div>
           </div>
         </div>
-        <div className="w-full bg-green-600 flex ">
+        <div className={`w-full bg-green-600 flex `}>
           <button
-            className=" bg-yellow-400 w-1/2 text-center py-3"
+            className={` bg-yellow-400 w-1/2 text-center py-3 ${view === 'posts' ? 'border-4 border-red' : ''}`}
             type="button"
+            onClick={e => setView('posts')}
           >
             Posts
           </button>
-          <button className="bg-blue-700 w-1/2 text-center py-3" type="button">
+          <button
+            className={`bg-blue-700 w-1/2 text-center py-3 ${view === 'likes' ? 'border-4 border-red' : ''}`}
+            type="button"
+            onClick={e => setView('likes')}
+          >
             Likes
           </button>
         </div>
+        {view === 'posts' ? (
+          <div className="flex flex-col overflow-y-auto  px-4 ">
+            {loading && (
+              <div className="loading-spinner flex justify-center">
+                <OrbitProgress
+                  variant="track-disc"
+                  speedPlus={2}
+                  easing="linear"
+                />
+              </div>
+            )}
+
+            {Array.isArray(posts) &&
+              hasFetched &&
+              posts.length === 0 &&
+              !loading && (
+                <div className="text-center text-gray-500 mt-4">
+                  No posts found.
+                </div>
+              )}
+
+            {hasFetched && posts.length > 0 && (
+              <PostsList
+                memoizedPosts={memoizedPosts}
+                setStart={setStart}
+                handleUpdateStart={updateStart}
+              />
+            )}
+          </div>
+        ) : (
+          <div className="text-center text-gray-500 mt-4">
+            Likes view goes here
+          </div>
+        )}
       </div>
     </MainLayout>
   );

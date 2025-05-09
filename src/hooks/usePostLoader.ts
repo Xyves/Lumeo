@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 
-import fetchPosts, { fetchPost, useToggleLike } from './usePostFeed';
+import fetchPosts, {
+  fetchPost,
+  fetchUserPosts,
+  useToggleLike,
+} from './usePostFeed';
 
 type LoadPostsArgs = {
   start: number;
@@ -53,6 +57,43 @@ export function usePostLoader() {
     },
     [fetchPost]
   );
+  const loadUserPosts = useCallback(
+    async ({ setPosts, start, userId, setLoading, authorId }) => {
+      setLoading(true);
+      try {
+        const data = await fetchUserPosts({ start, userId, authorId });
+        if (start === 0) {
+          if (!data || Object.keys(data).length === 0) {
+            console.warn('No post found. Skipping setPost.');
+            return;
+          }
+          setPosts(data);
+        } else {
+          setPosts(prev => [...prev, ...data]);
+        }
+      } catch (err) {
+        console.error('Initial load error', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchUserPosts]
+  );
+  const loadLikedPosts = useCallback(
+    async ({ userId, setLoading, setPosts }) => {
+      setLoading(true);
+      try {
+        const data = await fetchLikedPosts({ userId });
+        console.log('Fetched data:', data);
+        setPosts(data);
+      } catch (err) {
+        console.error('Initial load error', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchPost]
+  );
   const updateStart = useCallback(setStart => {
     setStart(prev => prev + 5);
   }, []);
@@ -83,5 +124,12 @@ export function usePostLoader() {
     },
     [fetchPosts]
   );
-  return { loadPosts, loadPost, updateStart, handleNewPost, updateLikeStatus };
+  return {
+    loadPosts,
+    loadPost,
+    updateStart,
+    handleNewPost,
+    updateLikeStatus,
+    loadUserPosts,
+  };
 }

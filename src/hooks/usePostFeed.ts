@@ -58,3 +58,42 @@ export async function useToggleLike({ postId, userId, commentId }) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
+export async function fetchUserPosts({ start, userId, authorId }) {
+  try {
+    const res = await fetch(
+      `/api/posts/user/${authorId}?start=${start}&userId=${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (!res.ok) {
+      console.error('Fetch failed with status:', res.status);
+      return null;
+    }
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    return NextResponse.json('Something went wrong', { status: 400 });
+  }
+}
+export async function fetchLikedPosts({ userId }) {
+  try {
+    const res = await fetch(`/api/posts/user/likes/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!res.ok) {
+      console.error('Fetch failed with status:', res.status);
+      return null;
+    }
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    return NextResponse.json('Something went wrong', { status: 400 });
+  }
+}
