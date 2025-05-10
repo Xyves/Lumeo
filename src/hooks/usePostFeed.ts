@@ -79,14 +79,17 @@ export async function fetchUserPosts({ start, userId, authorId }) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
-export async function fetchLikedPosts({ userId }) {
+export async function fetchLikedPosts({ profileId, userId }) {
   try {
-    const res = await fetch(`/api/posts/user/likes/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const res = await fetch(
+      `/api/posts/user/likes/${profileId}?userId=${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     if (!res.ok) {
       console.error('Fetch failed with status:', res.status);
       return null;

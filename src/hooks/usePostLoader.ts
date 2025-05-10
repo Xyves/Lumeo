@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import fetchPosts, {
+  fetchLikedPosts,
   fetchPost,
   fetchUserPosts,
   useToggleLike,
@@ -20,6 +21,7 @@ export function usePostLoader() {
       start,
       userId,
       setLoading,
+      setHasMore,
       feedType,
     }: LoadPostsArgs) => {
       setLoading(true);
@@ -28,10 +30,15 @@ export function usePostLoader() {
         if (start === 0) {
           if (!data || Object.keys(data).length === 0) {
             console.warn('No post found. Skipping setPost.');
+            setHasMore(false);
             return; // Stop further processing
           }
           setPosts(data);
         } else {
+          if (!data || data.length === 0) {
+            setHasMore(false);
+            return;
+          }
           setPosts(prev => [...prev, ...data]);
         }
       } catch (err) {
@@ -80,10 +87,10 @@ export function usePostLoader() {
     [fetchUserPosts]
   );
   const loadLikedPosts = useCallback(
-    async ({ userId, setLoading, setPosts }) => {
+    async ({ userId, setLoading, setPosts, profileId }) => {
       setLoading(true);
       try {
-        const data = await fetchLikedPosts({ userId });
+        const data = await fetchLikedPosts({ profileId, userId });
         console.log('Fetched data:', data);
         setPosts(data);
       } catch (err) {
@@ -131,5 +138,6 @@ export function usePostLoader() {
     handleNewPost,
     updateLikeStatus,
     loadUserPosts,
+    loadLikedPosts,
   };
 }

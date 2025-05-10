@@ -16,6 +16,7 @@ import type { PostInterface } from '@/types';
 
 export default function page() {
   const { loadProfile } = useUsersLoader();
+  const { loadUserPosts, updateStart, loadLikedPosts } = usePostLoader();
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState();
   const [view, setView] = useState<'posts' | 'likes'>('posts');
@@ -26,20 +27,31 @@ export default function page() {
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [start, setStart] = useState<number>(0);
   console.log(session);
-  const { loadUserPosts, updateStart } = usePostLoader();
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(() => {
-    if (start === 0) {
-      loadUserPosts({
-        start: 0,
-        userId: session.user.id,
-        authorId: id,
-        setPosts,
-        setLoading,
-      });
-      setHasFetched(true);
-    }
+    if (view !== 'posts') return;
+
+    loadUserPosts({
+      start: 0,
+      userId: session.user.id,
+      authorId: id,
+      setPosts,
+      setLoading,
+    });
+    setHasFetched(true);
+  }, [view]);
+
+  useEffect(() => {
+    if (view !== 'likes') return;
+
+    loadLikedPosts({
+      userId: session.user.id,
+      setLoading,
+      setPosts,
+      profileId: id,
+    });
+    setHasFetched(true);
   }, [view]);
   const memoizedPosts = useMemo(() => posts, [posts]);
   useEffect(() => {
@@ -55,17 +67,16 @@ export default function page() {
   if (status === 'loading') {
     return null;
   }
-  if (loading === true) {
-    return null;
-  }
+  console.log('view:', view);
   return (
     <MainLayout>
       <div className=" mb-24 w-full  mx-auto h-full bg-[#131415]  overflow-y-auto ">
         <div id="user-info relative">
-          <div className="bg-[#6e179d] w-full h-32     inset-0 z-0" />
-          <div className=" flex ">
+          <div className="bg-[#6e179d] w-full h-28     inset-0 z-0" />
+          <div className=" flex h-6">
             <Image
-              className="rounded-full aspect-square object-cover absolute top-20 ml-6 border-4 border-gray-400 size-20 md:size-24 lg:size-28"
+              className="rounded-full aspect-square object-cover mx-6 border-4 border-gray-400 size-20 md:size-24 lg:size-28 
+                 -translate-y-1/2"
               width={115}
               height={110}
               // src="/images/character-portrait.png"
@@ -122,40 +133,36 @@ export default function page() {
             Likes
           </button>
         </div>
-        {view === 'posts' ? (
-          <div className="flex flex-col overflow-y-auto  px-4 ">
-            {loading && (
-              <div className="loading-spinner flex justify-center">
-                <OrbitProgress
-                  variant="track-disc"
-                  speedPlus={2}
-                  easing="linear"
-                />
+        <div className="flex flex-col overflow-y-auto  px-4 mt-3">
+          {loading && (
+            <div className="loading-spinner flex justify-center">
+              <OrbitProgress
+                variant="track-disc"
+                speedPlus={2}
+                easing="linear"
+              />
+            </div>
+          )}
+
+          {Array.isArray(posts) &&
+            hasFetched &&
+            posts.length === 0 &&
+            !loading && (
+              <div className="text-center text-gray-500 mt-4">
+                No posts found.
               </div>
             )}
 
-            {Array.isArray(posts) &&
-              hasFetched &&
-              posts.length === 0 &&
-              !loading && (
-                <div className="text-center text-gray-500 mt-4">
-                  No posts found.
-                </div>
-              )}
-
-            {hasFetched && posts.length > 0 && (
+          {hasFetched && posts.length > 0 && (
+            <div className="mt-10">
               <PostsList
                 memoizedPosts={memoizedPosts}
                 setStart={setStart}
                 handleUpdateStart={updateStart}
               />
-            )}
-          </div>
-        ) : (
-          <div className="text-center text-gray-500 mt-4">
-            Likes view goes here
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </MainLayout>
   );

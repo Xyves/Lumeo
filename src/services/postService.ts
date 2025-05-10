@@ -12,8 +12,7 @@ export const getPostsWithUsers = async (
   const isFeed = feedType === 'feed';
   console.log('working');
   const posts = await prisma.post.findMany({
-    take: 5,
-    skip: start,
+    take: 50,
     orderBy: { date: 'desc' },
     where: isFeed
       ? {
@@ -58,9 +57,56 @@ export const getPostsWithUsers = async (
     ...post,
     isLiked: likes.length > 0,
   }));
-  console.log('Fetched posts:', postsWithIsLiked);
+  const paginated = postsWithIsLiked.slice(start, start + 5);
 
-  return postsWithIsLiked;
+  console.log('Fetched posts:', paginated);
+
+  return paginated;
+};
+export const getUserLikedPosts = async (profileId: string, userId: string) => {
+  const likedPosts = await prisma.post.findMany({
+    orderBy: { date: 'desc' },
+    where: {
+      authorId: profileId,
+      likes: {
+        some: {
+          user_id: userId,
+        },
+      },
+    },
+    select: {
+      id: true,
+      image_url: true,
+      content: true,
+      date: true,
+      likeCount: true,
+      commentCount: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+      likes: {
+        where: {
+          user_id: userId,
+        },
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+  if (!likedPosts || likedPosts.length === 0) {
+    console.log('No posts found');
+    return [];
+  }
+  const updatedPosts = likedPosts.map(({ likes, ...post }) => ({
+    ...post,
+    isLiked: likes.length > 0,
+  }));
+  return updatedPosts;
 };
 export const getUserPosts = async (
   start: number,
