@@ -65,3 +65,12 @@ export type LoginSchema = {
   name: string;
   password: string;
 };
+
+export type PopupState = {
+  isVisible: boolean;
+  text?: string;
+  type?: 'success' | 'error' | 'loading';
+};
+export type PopupProps = {
+  data: PopupState;
+};

@@ -6,12 +6,17 @@ import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 
 import { RegisterSchema, RegisterType } from '@/schema';
+import type { PopupState } from '@/types';
+
+import Popup from '../popup/Popup';
 
 type FormData = z.infer<typeof RegisterSchema>;
 type FormErrors = Partial<Record<keyof FormData, string[]>>;
 export default function RegisterForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
-
+  const [popupState, setPopupState] = useState<PopupState>({
+    isVisible: false,
+  });
   const [errors, setErrors] = useState<FormErrors>({});
   const router = useRouter();
   const [data, setData] = useState<FormData>({
@@ -35,6 +40,11 @@ export default function RegisterForm() {
   };
   const registerUser = async (e: any) => {
     e.preventDefault();
+    setPopupState({
+      isVisible: true,
+      text: 'Loading',
+      type: 'loading',
+    });
     const newErrors = validateForm(data);
     setErrors(newErrors);
     console.log({ data });
@@ -47,11 +57,25 @@ export default function RegisterForm() {
         body: JSON.stringify(data),
       });
       if (response.ok) {
-        const userInfo = await response.json();
+        setPopupState({
+          isVisible: true,
+          text: 'User Registered',
+          type: 'success',
+        });
 
-        router.push('/');
+        setTimeout(() => {
+          router.push('/');
+        }, 3000);
       } else {
+        setPopupState({
+          isVisible: true,
+          text: 'Signup failed',
+          type: 'error',
+        });
         console.error('Network error or server issue');
+        setTimeout(() => {
+          setPopupState({ isVisible: false });
+        }, 3000);
       }
     }
   };
@@ -180,6 +204,9 @@ export default function RegisterForm() {
             </Link>
           </p>
         </form>
+      </div>
+      <div className="relative">
+        <Popup data={popupState} />
       </div>
     </div>
   );
