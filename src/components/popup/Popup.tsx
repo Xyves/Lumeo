@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { OrbitProgress } from 'react-loading-indicators';
 
-import type { PopupProps } from '@/types';
+import { PopupContext } from '@/context/PopupContext';
 
-export default function Popup({ data: { isVisible } }: PopupProps) {
-  // if (!isVisible) return null;
+export default function Popup() {
+  const {
+    popupData: {
+      // text, type,
+      isVisible,
+    } = {},
+  } = useContext(PopupContext) ?? {};
+
+  if (!isVisible) return null;
   let content;
   const type = 'error';
   // const text = 'Signing user...';
   const text = 'Please login';
-  let colorClass;
   switch (type) {
     case 'success':
       content = (
