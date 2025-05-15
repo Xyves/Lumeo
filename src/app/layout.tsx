@@ -4,7 +4,8 @@ import { Inter } from 'next/font/google';
 import { getServerSession } from 'next-auth';
 
 import type { ChildrenProps } from '@/types';
-import Heading from '@/components/Header/Heading';
+import Popup from '@/components/popup/Popup';
+import PopupProvider from '@/context/PopupContext';
 
 import ClientSessionProvider from './ClientSessionProvider';
 import { authOptions } from './api/auth/[...nextauth]/route';
@@ -21,7 +22,6 @@ const inter = Inter({
   display: 'swap',
   adjustFontFallback: false,
 });
-
 export default async function RootLayout({ children }: ChildrenProps) {
   // Await the session data
   const session = await getServerSession(authOptions);
@@ -49,11 +49,14 @@ export default async function RootLayout({ children }: ChildrenProps) {
         className={`${inter.className} bg-[#171006] overflow-hidden min-h-full min-w-full`}
       >
         <ClientSessionProvider session={session}>
-          <div className="h-full flex flex-col  ">
-            {/* <Heading title="NeonSphere " /> */}
-            <section className="flex-1 h-full">{children}</section>
-            {/* <MainFooter /> */}
-          </div>
+          <PopupProvider>
+            <div className="h-full flex flex-col  ">
+              {/* <Heading title="NeonSphere " /> */}
+              <section className="flex-1 h-full">{children}</section>
+              {/* <MainFooter /> */}
+            </div>
+            <Popup />
+          </PopupProvider>
         </ClientSessionProvider>
       </body>
     </html>

@@ -36,7 +36,7 @@ export default function FollowButton({
       className="px-1 bg-[rgb(253,25,153)] py-2 hover:bg-[rgb(183,52,126)] rounded-2xl flex justify-end ml-auto"
       onClick={e => submitFollow(e)}
     >
-      <div className="text-md">{!isFollowed ? 'Follow' : 'Unfollow'}</div>
+      <div className="text-md">{isFollowed ? 'Follow' : 'Unfollow'}</div>
     </button>
   );
 }

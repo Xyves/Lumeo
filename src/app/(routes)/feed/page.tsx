@@ -13,6 +13,8 @@ import type { PostInterface } from '@/types';
 
 export default function Feed() {
   const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
   const [hasFetched, setHasFetched] = useState(false);
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [start, setStart] = useState<number>(0);
@@ -31,6 +33,7 @@ export default function Feed() {
           userId: session.user.id,
           setPosts,
           setLoading,
+          setHasMore,
           feedType,
         });
       }
@@ -38,20 +41,22 @@ export default function Feed() {
   }, [start]);
 
   useEffect(() => {
-    loadPosts({
-      start: 0,
-      userId: session.user.id,
-      setPosts,
-      setLoading,
-      feedType,
-    });
+    if (start === 0) {
+      loadPosts({
+        start: 0,
+        userId: session.user.id,
+        setPosts,
+        setLoading,
+        feedType,
+      });
+    }
     setHasFetched(true);
   }, []);
   const memoizedPosts = useMemo(() => posts, [posts]);
 
   return (
     <MainLayout>
-      <div className=" w-full  p-7 overflow-y-auto  mr-auto ">
+      <div className=" w-full  p-7 overflow-y-auto  mr-auto max-h-[80%]">
         {/* bg-[#1f1e1c] */}
         <CreatePost setPosts={setPosts} />
 

@@ -10,7 +10,7 @@ export default function MainLayout({ children }: ChildrenProps) {
         <div className="h-auto flex">
           <Sidebar />
         </div>
-        <div className=" sm:w-full md:w-3/5 lg:w-2/5 h-auto flex px-10 mx-auto">
+        <div className=" sm:w-full md:w-3/5 lg:w-2/5 h-full flex px-10 mx-auto">
           {children}
         </div>
         <NewFollows />
