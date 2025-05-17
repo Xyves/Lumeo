@@ -76,16 +76,16 @@ model Comment {
   timestamp DateTime @default(now())
   user_id   String
   post_id   String
-  post      Post     @relation(fields: [post_id], references: [id])
+  post  Post    @relation(fields: [post_id], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [user_id], references: [id])
-  commentLikes CommentLike[]
+   commentLikes       CommentLike[]
   commentLikesCount    Int       @default(0)
 }
 model CommentLike{
   id String @id @default(cuid())
   user User @relation(fields:[userId],references: [id])
   userId String
-  comment Comment @relation(fields:[commentId],references: [id])
+  comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade) 
   commentId String
 }
 model Post {
@@ -99,6 +99,7 @@ model Post {
   authorId     String
   comments     Comment[]
   likes        Like[]
+
   author       User      @relation(fields: [authorId], references: [id])
 }
 
@@ -107,6 +108,6 @@ model Like {
   user_id String
   post_id String
   date    DateTime @default(now())
-  post    Post     @relation(fields: [post_id], references: [id])
+  post     Post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
   user    User     @relation(fields: [user_id], references: [id])
 }
