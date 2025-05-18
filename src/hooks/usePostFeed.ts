@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { LoadPostsArgs } from './usePostLoader';
+import { PostInterface } from '@/types';
 
-export default async function fetchPosts({ start, userId, feedType }) {
+export default async function fetchPosts({ start, userId, feedType }: LoadPostsArgs) {
   try {
     const res = await fetch(
       `/api/posts/?start=${start}&userId=${userId}&feedType=${feedType}`,
@@ -29,6 +31,23 @@ export async function fetchPost({ postId, userId }) {
         'Content-Type': 'application/json',
       },
     });
+    if (!res.ok)            
+      return NextResponse.json('Something went wrong', { status: 400 });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return NextResponse.json('Something went wrong', { status: 400 });
+  }
+}
+export async function deletePostById({id,authorId,userId}: PostInterface){
+  try{
+    const res = await fetch(`/api/posts/${id}`,{
+      method:"DELETE",
+      headers:{
+        "Content-Type": "application/json" 
+      } ,
+      body: JSON.stringify({ userId,authorId }),
+    })
     if (!res.ok)
       return NextResponse.json('Something went wrong', { status: 400 });
     const data = await res.json();

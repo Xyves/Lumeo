@@ -29,16 +29,17 @@ export async function PATCH(req: Request, { params }) {
     return NextResponse.json({ error: 'Failed to edit post' }, { status: 500 });
   }
 }
-export async function DELETE(req: Request, { params }) {
+export async function DELETE(req:Request,{params}){
   const { id } = await params;
-  const { authorId } = req.json();
-  try {
-    const deletedPost = await deletePost({ id, authorId });
+  const { authorId, userId } = await req.json();
+  try{
+      const deletedPost = await deletePost(id,authorId,userId)
     return NextResponse.json(deletedPost, { status: 201 });
-  } catch (error) {
+  }catch (error) {
     return NextResponse.json(
       { error: 'Failed to delete post' },
       { status: 500 }
     );
   }
+
 }

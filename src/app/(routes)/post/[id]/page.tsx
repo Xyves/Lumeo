@@ -1,22 +1,21 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import ReactTimeAgo from 'react-time-ago';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
-import { format } from 'date-fns';
 
 import MainLayout from '@/layouts/MainLayout/MainLayout';
-import FollowButton from '@/components/Aside/FollowButton';
 import CommentsButton from '@/components/Feed/commentButton';
 import LikeButton from '@/components/Feed/LikeButton';
 import { usePostLoader } from '@/hooks/usePostLoader';
 import CommentsList from '@/components/Comments/CommentsList';
 import CreateComments from '@/components/Comments/CreateComments';
 import { useCommentsLoader } from '@/hooks/useCommentsLoader';
+import { usePopup } from '@/context/PopupContext';
 
 TimeAgo.addDefaultLocale(en);
 export default function page() {
@@ -26,8 +25,11 @@ export default function page() {
   const { data: session } = useSession();
   const params = useParams();
   const { id } = params;
-  const { loadPost } = usePostLoader();
+  const { loadPost,deletePostFromDb } = usePostLoader();
   const { loadComments } = useCommentsLoader();
+  const { showPopup } = usePopup();
+  const router = useRouter();
+      
   useEffect(() => {
     loadPost({ setPost, postId: id, setLoading, userId: session.user.id });
     loadComments({
@@ -38,29 +40,62 @@ export default function page() {
     });
   }, []);
   const memoizedComments = useMemo(() => comments, [comments]);
+   const handleDeletePost = async()=>{
+      showPopup({ isVisible: true, text: 'Loading', type: 'loading' });
+        if (!id || !post?.author?.id || !session?.user?.id) {
+        return;
+      }
+      const deleted = await deletePostFromDb({
+        id,
+        authorId: post.author.id,
+        userId: session.user.id,
+      });
+        if(deleted){
+        showPopup({ isVisible: true, text: 'success', type: 'Post deleted' });
+        }else{
+        showPopup({ isVisible: true, text: 'error', type: 'Error deleting' });
+
+        }
+ setTimeout(() => {
+          showPopup({
+            isVisible: false,
+            text: '',
+            type: undefined,
+          });
+          router.push('/feed');
+        }, 2000);
+  
+  }
   if (loading || !post) return <div>Loading...</div>;
-  console.log(post);
+
   return (
     <MainLayout>
-      <div className=" mb-24 w-full  mx-auto h-auto  bg-[#131415] ">
+      <div className=" mb-24 w-full  mx-auto h-auto  bg-[#131415] mt-10">
         <div className="ml-10">
-          <div className="user flex items-start">
+          <div className="user flex items-center my-auto py-4">
             <Image
-              width={100}
-              height={100}
+              width={70}
+              height={70}
               className="rounded-full aspect-square object-cover   border-4 border-gray-400"
-              src={post.author?.image || '/images/character-portrait.png'}
+              src={post.author?.image || '/images/default_user.webp'}
             />
-            <h2 className="lg:text-2xl md:text-xl sm:text-lg">
+            <h2 className="lg:text-2xl md:text-xl sm:text-lg flex items-center ml-2">
               {post.author.name}
             </h2>
+             { post.author.id === session.user.id ? <button onClick={handleDeletePost} className='pi ml-auto pi-trash text-red-700 size-16 active:text-red-900 hover:text-red-500'></button> : null }
+
           </div>
           <div className="content py-3  mb-3 lg:text-xl md:text-lg sm:text-md">
             {post.content}
           </div>
-          <div className="time mb-6">
-            {post.date && format(new Date(post.date), 'dd.MM.yyyy HH:mm')}
-          </div>
+      <div className="relative group inline-block w-fit">
+  <p className="lg:text-sm text-purple-300">
+     {post.date && <ReactTimeAgo date={new Date(post.date)} locale="en-US" />}
+  </p>
+  <div className="absolute bottom-full mb-1 hidden w-max rounded bg-gray-800 px-2 py-1 text-xs text-white group-hover:block z-10">
+    {new Date(post.date).toLocaleString()}
+  </div>
+</div>
           <div className="buttons flex justify-around   mr-10 border-gray-500 border-y-4 py-6">
             <LikeButton
               likeCount={post.likeCount}

@@ -1,5 +1,7 @@
 import React from 'react';
 import { MessageCircle, Heart } from 'lucide-react';
+import 'primeicons/primeicons.css';
+
 import Zoom from 'react-medium-image-zoom';
 import '@/styles/zoom.css';
 import ReactTimeAgo from 'react-time-ago';
@@ -11,6 +13,8 @@ import { useRouter } from 'next/navigation';
 
 import CommentsButton from './commentButton';
 import LikeButton from './LikeButton';
+import { useSession } from 'next-auth/react';
+import { usePostLoader } from '@/hooks/usePostLoader';
 
 TimeAgo.addDefaultLocale(en);
 export default function Post({
@@ -25,7 +29,16 @@ export default function Post({
   likeCount,
   commentCount,
   isLiked,
+  deletePost
 }) {
+  const { deletePostFromDb } = usePostLoader();
+
+    const { data: session } = useSession();
+  const handleDeletePost = async()=>{
+  console.log("Trying to delete post",id,authorId,session?.user.id)
+  await  deletePostFromDb({id,authorId,userId:session?.user.id})
+  await deletePost(id)
+  }
   const router = useRouter();
   return (
     <div
@@ -57,19 +70,25 @@ export default function Post({
               {authorName}
             </p>
           </Link>
-          <p className="lg:text-sm text-purple-300">
-            - {date && <ReactTimeAgo date={new Date(date)} locale="en-US" />}{' '}
-          </p>
-          <div className="menu-bar ml-auto">
-            {/* If user === the id of the user comment then add this line options edit delete */}
-            X
-          </div>
+     <div className="relative group inline-block w-fit">
+  <p className="lg:text-sm text-purple-300">
+    - {date && <ReactTimeAgo date={new Date(date)} locale="en-US" />}
+  </p>
+  <div className="absolute bottom-full mb-1 hidden w-max rounded bg-gray-800 px-2 py-1 text-xs text-white group-hover:block z-10">
+    {new Date(date).toLocaleString()}
+  </div>
+</div>
+          
+             { authorId === session.user.id ? <button onClick={handleDeletePost} className='pi ml-auto pi-trash text-red-700 size-16 active:text-red-900 hover:text-red-500'></button> : null }
         </section>
         <section
           className="w-full flex-col flex tracking-[.26rem]"
           onClick={e => router.push(`/post/${id}`)}
         >
-          <p className="py-6 ml-6 px-2  text-[#edd852] border-[#14a014] font-glitch ">
+          {/* // text-[#edd852] */}
+          <p className="py-6 ml-6 px-2  
+          text-[#F1E3E4x]
+           border-[#14a014] font-serif ">
             {content}
           </p>
           {/* bg-[#1F2937] */}

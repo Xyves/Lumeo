@@ -4,6 +4,7 @@ import { IncomingForm } from 'formidable';
 
 import {
   createPost,
+  deletePost,
   getPosts,
   getPostsWithUsers,
 } from '@/services/postService';
@@ -23,6 +24,7 @@ export async function GET(req: Request) {
     );
   }
 }
+
 export const config = {
   api: {
     bodyParser: false,

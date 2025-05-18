@@ -1,18 +1,20 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import fetchPosts, {
+  deletePostById,
   fetchLikedPosts,
   fetchPost,
   fetchUserPosts,
   useToggleLike,
 } from './usePostFeed';
 
-type LoadPostsArgs = {
+export type LoadPostsArgs = {
   start: number;
   userId: string;
   setPosts: React.Dispatch<React.SetStateAction<any[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   feedType: string;
+  setHasMore:React.Dispatch<React.SetStateAction<boolean>>
 };
 export function usePostLoader() {
   const loadPosts = useCallback(
@@ -64,6 +66,17 @@ export function usePostLoader() {
     },
     [fetchPost]
   );
+  const deletePostFromDb = useCallback(async({id,authorId,userId})=>{
+    console.log("Waiting to delete post id of",id)
+try{
+      const data = await deletePostById({id,authorId,userId})
+return data
+    }catch(err){
+      console.error("Can't delete post",err)
+
+    }
+  },[])
+  
   const loadUserPosts = useCallback(
     async ({ setPosts, start, userId, setLoading, authorId }) => {
       setLoading(true);
@@ -139,5 +152,6 @@ export function usePostLoader() {
     updateLikeStatus,
     loadUserPosts,
     loadLikedPosts,
+    deletePostFromDb
   };
 }

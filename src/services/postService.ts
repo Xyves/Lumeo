@@ -63,6 +63,17 @@ export const getPostsWithUsers = async (
 
   return paginated;
 };
+export const deletePost = async (id, authorId, userId) => {
+  if (authorId !== userId) {
+    throw new Error("Unauthorized to delete this post");
+  }
+
+  const deleted = await prisma.post.delete({
+    where: { id }
+  });
+console.log("post has been deleted",id)
+  return deleted;
+};
 export const getUserLikedPosts = async (profileId: string, userId: string) => {
   const likedPosts = await prisma.post.findMany({
     orderBy: { date: 'desc' },
@@ -271,19 +282,7 @@ export const editPost = ({
     },
   });
 };
-export const deletePost = ({
-  id,
-  authorId,
-}: {
-  id: string;
-  authorId: string;
-}) => {
-  return prisma.post.deleteMany({
-    where: {
-      AND: [{ id }, { authorId }],
-    },
-  });
-};
+
 // export const unlikePost = async(post_id: string, user_id: string)
 const postFromFollowing = async (start: number, userId: string) => {
   return prisma.post.findMany({
