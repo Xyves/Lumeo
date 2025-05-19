@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { deletePost, editPost, getPost } from '@/services/postService';
 
-export async function GET(req: Request, { params }) {
+export async function GET(req: Request, { params } : { params: { id: string } }) {
   const { searchParams } = new URL(req.url);
 
   const userId = searchParams.get('userId');
@@ -18,7 +18,7 @@ export async function GET(req: Request, { params }) {
     );
   }
 }
-export async function PATCH(req: Request, { params }) {
+export async function PATCH(req: Request, { params } : { params: { id: string } }) {
   const { id } = await params;
 
   const { content, image_url, authorId } = await req.json();
@@ -29,17 +29,16 @@ export async function PATCH(req: Request, { params }) {
     return NextResponse.json({ error: 'Failed to edit post' }, { status: 500 });
   }
 }
-export async function DELETE(req:Request,{params}){
+export async function DELETE(req: Request, { params } : { params: { id: string } }) {
   const { id } = await params;
   const { authorId, userId } = await req.json();
-  try{
-      const deletedPost = await deletePost(id,authorId,userId)
+  try {
+    const deletedPost = await deletePost(id, authorId, userId);
     return NextResponse.json(deletedPost, { status: 201 });
-  }catch (error) {
+  } catch (error) {
     return NextResponse.json(
       { error: 'Failed to delete post' },
       { status: 500 }
     );
   }
-
 }

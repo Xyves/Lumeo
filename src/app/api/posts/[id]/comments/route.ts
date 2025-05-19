@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { createPostComment, getComments } from '@/services/commentsService';
 
-export async function GET(req: Request, { params }) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   const { id } = await params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get('userId');
@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }) {
     );
   }
 }
-export async function POST(request: Request, { params }) {
+export async function POST(request: Request, { params }: { params: { id: string } }) {
   const { id } = await params;
 
   const { input, userId } = await request.json();

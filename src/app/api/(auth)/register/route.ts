@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 import { signUser } from '@/services/userService';
-import type { RegisterType } from '@/schema';
 import { RegisterSchema } from '@/schema';
 
 const prisma = new PrismaClient();
@@ -16,7 +15,7 @@ export async function POST(req: Request) {
       status: 400,
     });
   }
-  const { name, email, password }: RegisterType = result.data;
+  const { name, email, password }: typeof RegisterSchema = result.data;
   console.log({ name, email, password });
   if (!name || !email || !password) {
     return new NextResponse(

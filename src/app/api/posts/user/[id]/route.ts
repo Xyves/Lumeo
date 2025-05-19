@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { getUserPosts } from '@/services/postService';
 
-export async function GET(req: Request, { params }) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   const { searchParams } = new URL(req.url);
   const { id } = await params;
   const authorId = id;

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { followUser } from '@/services/userService';
 
-export async function POST(req: Request, { params }) {
+export async function POST(req: Request, { params }: { params: { id: string } }) {
   const { followerId, isFollowed } = await req.json();
   const { id } = await params;
 
