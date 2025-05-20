@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
+      { protocol: 'https', hostname: 'api.dicebear.com' },
     ],
   },
 };

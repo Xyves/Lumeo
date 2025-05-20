@@ -14,7 +14,8 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:@next/next/recommended',
     'prettier',
-    'plugin:prettier/recommended',
+    'plugin:prettier/recommended',  'next',
+    'next/core-web-vitals',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {

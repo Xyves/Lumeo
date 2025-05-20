@@ -14,9 +14,10 @@
     "analyze": "ANALYZE=true next build",
     "eslint": "next lint --fix --dir src",
     "prettier": "prettier --write .",
-    "lint": "yarn eslint && yarn prettier",
+    "lint": "npm eslint && npm prettier",
     "format": "next lint --fix && prettier '**/*.{json,yaml}' --write --ignore-path .gitignore",
     "postbuild": "next-sitemap && yarn prisma generate",
+    "check:types": "tsc --noEmit",
     "postinstall": "yarn prisma generate"
   },
   "lint-staged": {
@@ -72,6 +73,7 @@
     "@commitlint/config-conventional": "^19.5.0",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.8.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
