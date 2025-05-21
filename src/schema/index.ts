@@ -1,5 +1,21 @@
 import { z } from 'zod';
 
+export const editProfileSchema = z.object({
+  name: z
+    .string()
+    .min(3, 'Username must be at least 3 characters')
+    .max(15, { message: 'Username must be at most 15 characters long' })
+    .optional(),
+  email: z
+    .string()
+    .trim()
+    .transform(val => (val === '' ? undefined : val))
+    .refine(
+      val => val === undefined || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+      { message: 'Please enter a valid email address' }
+    )
+    .optional(),
+});
 export const RegisterSchema = z.object({
   name: z
     .string()

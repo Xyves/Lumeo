@@ -1,34 +1,121 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { Calendar } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { Calendar, CircleX, PenLine } from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react';
 import { OrbitProgress } from 'react-loading-indicators';
+import type { z } from 'zod';
 
+import { usePopup } from '@/context/PopupContext';
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
 import FollowButton from '@/components/Aside/FollowButton';
-import { usePostLoader } from '@/hooks/usePostLoader';
 import PostsList from '@/components/Feed/PostsList';
+import { usePostLoader } from '@/hooks/usePostLoader';
 import type { PostInterface } from '@/types';
+import { createDeletePostHandler, validateForm } from '@/lib/utils';
+import type { editProfileSchema } from '@/schema';
 
-export default function page() {
-  const { loadProfile } = useUsersLoader();
+export default function Page() {
+  const { loadProfile, updateUser } = useUsersLoader();
   const { loadUserPosts, updateStart, loadLikedPosts } = usePostLoader();
   const [loading, setLoading] = useState<boolean>(false);
+  const { showPopup } = usePopup();
+
   const [user, setUser] = useState();
   const [view, setView] = useState<'posts' | 'likes'>('posts');
+  const [modalVisible, setModalVisible] = useState(false);
   const { data: session, status } = useSession();
   const params = useParams();
   const { id } = params;
   const [hasFetched, setHasFetched] = useState(false);
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [start, setStart] = useState<number>(0);
-  console.log(session);
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const router = useRouter();
+  type FormData = z.infer<typeof editProfileSchema>;
+  type FormErrors = Partial<Record<keyof FormData, string[]>>;
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [formData, setFormData] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    file: File | null;
+  }>({
+    id,
+    name: '',
+    email: '',
+    file: null,
+  });
+  const initialData = {
+    name: user?.name || '',
+    email: user?.email || '',
+    file: user?.image || '',
+  };
+  const handleDeletePost = createDeletePostHandler(setPosts);
 
+  // const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const userProfileImage =
+    previewUrl ||
+    (user?.image?.trim() ? user?.image : null) ||
+    '/images/default_user.webp';
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      setFormData(prev => ({
+        ...prev,
+        file,
+      }));
+    }
+  };
+  const editUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    showPopup({ isVisible: true, text: 'Loading', type: 'loading' });
+    const newErrors = validateForm(formData, 'editUser');
+    setErrors(newErrors);
+    const form = new FormData();
+    if (Object.keys(newErrors).length === 0) {
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== '' && value !== initialData[key]) {
+          form.append(key, value);
+        }
+      });
+
+      form.append('id', formData.id);
+      const { statusCode, data } = await updateUser({ form, setUser });
+      console.log('status:', status);
+      if (statusCode === 200 || statusCode === 201) {
+        showPopup({
+          isVisible: true,
+          text: 'Profile updated',
+          type: 'success',
+        });
+        setTimeout(async () => {
+          showPopup({ isVisible: false, text: '', type: 'undefined' });
+          await signOut({});
+
+          router.replace('/');
+        }, 2000);
+      } else {
+        showPopup({
+          isVisible: true,
+          text: "Can't update user",
+          type: 'error',
+        });
+      }
+    } else {
+      showPopup({
+        isVisible: true,
+        text: "Can't update user !!",
+        type: 'error',
+      });
+    }
+  };
   useEffect(() => {
     if (view !== 'posts') return;
 
@@ -63,14 +150,118 @@ export default function page() {
       authorId: session.user.id,
     });
   }, []);
-  console.log(user);
+  console.log('displayed user:', user);
   if (status === 'loading') {
     return null;
   }
-  console.log('view:', view);
   return (
     <MainLayout>
-      <div className=" mb-24 w-full  mx-auto h-full bg-[#131415]  overflow-y-auto ">
+      <div className=" mb-24 w-full  mx-auto h-full bg-[#131415]  overflow-y-auto max-h-[95%] rounded-md border-purple-400 border-[1px] border-solid  relative">
+        {modalVisible && (
+          <div
+            className={`fixed inset-0 z-40 w-1/4  my-6 h-fit flex items-center justify-center backdrop-blur-sm bg-blue-600  mx-auto `}
+          >
+            <div className="flex flex-col">
+              <div className="flex px-1 py-3 justify-around">
+                <h1 className="text-3xl">Edit Profile</h1>
+                <button
+                  className="ml-auto text-2xl"
+                  type="button"
+                  onClick={() => setModalVisible(false)}
+                >
+                  <CircleX className="hover:text-gray-100" />
+                </button>
+              </div>
+              <div className="px-5 py-10 flex flex-col">
+                <form action="PATCH" onSubmit={editUser}>
+                  <div className=" flex justify-center  pt-1 py-2">
+                    <div className="flex items-center space-x-2  h-full ">
+                      <label
+                        htmlFor="file-upload"
+                        className="relative flex items-center gap-2 px-4 text-white rounded-full cursor-pointer transition"
+                      >
+                        <div className="relative w-[120px] aspect-square rounded-full overflow-hidden mb-4">
+                          <Image
+                            src={userProfileImage}
+                            width={120}
+                            height={120}
+                            alt=""
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="absolute bottom-4 right-10 w-[30px] h-[30px] bg-white rounded-full text-lg shadow-md flex items-center justify-center">
+                          <PenLine color="black" />
+                        </div>
+                      </label>
+                      <input
+                        type="file"
+                        name="file"
+                        id="file"
+                        className="hidden"
+                        onChange={e => {
+                          handleFileChange(e);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="p-1 bg-blue-300 flex flex-col">
+                    <label htmlFor="name" className="ml-2 my-1">
+                      Name
+                    </label>
+                    <input
+                      name="name"
+                      id="name"
+                      value={formData.name}
+                      onChange={e =>
+                        setFormData(prev => ({
+                          ...prev,
+                          [e.target.name]: e.target.value,
+                        }))
+                      }
+                      type="text"
+                      placeholder={session?.user.name}
+                      className="rounded-lg mx-4 p-2 text-black placeholder:text-gray-700 mb-6"
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                    )}
+                    <label htmlFor="email" className="ml-2 my-1">
+                      Email
+                    </label>
+                    <input
+                      name="email"
+                      id="email"
+                      value={formData.email}
+                      onChange={e =>
+                        setFormData(prev => ({
+                          ...prev,
+                          [e.target.name]: e.target.value,
+                        }))
+                      }
+                      type="text"
+                      placeholder={
+                        user?.email ? user.email : 'email@example.com'
+                      }
+                      className="rounded-lg mx-4 p-2 text-black placeholder:text-gray-700 mb-6"
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.email}
+                      </p>
+                    )}
+                    <button
+                      type="submit"
+                      className="bg-[#5521cf] px-8 py-2 rounded-3xl  w-full hover:bg-[#3d1f84] text-slate-50"
+                    >
+                      Save & Sign Me Out
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div id="user-info relative">
           <div className="bg-[#6e179d] w-full h-28     inset-0 z-0" />
           <div className=" flex h-6">
@@ -78,12 +269,16 @@ export default function page() {
               className="rounded-full aspect-square object-cover mx-6 border-4 border-gray-400 size-20 md:size-24 lg:size-28 
                  -translate-y-1/2"
               width={115}
+              alt="user profile image"
               height={110}
-              // src="/images/character-portrait.png"
               src={user?.image || '/images/default_user.webp'}
             />
-            {id === session.user.id ? (
-              <button className="w-32 h-12 p-2  ml-auto relative right-0 -top-10 mr-10  rounded-3xl bg-gray-100 text-black hover:bg-gray-300">
+            {id === session?.user.id ? (
+              <button
+                className="w-32 h-12 p-2  ml-auto relative right-0 -top-10 mr-10  rounded-3xl bg-gray-100 text-black hover:bg-gray-300"
+                type="button"
+                onClick={() => setModalVisible(!modalVisible)}
+              >
                 Edit Profile
               </button>
             ) : (
@@ -100,11 +295,11 @@ export default function page() {
           <div className=" pl-6 relative z-10 pt-12">
             <div>
               <h2 className="pb-3  text-2xl">
-                {loading ? 'User' : user ? user.name : ''}
+                {loading ? '' : user ? user.name : ''}
               </h2>
               <h3 className="flex   text-gray-400 py-3">
                 <Calendar type="span" className="mr-2" /> Joined{' '}
-                {user ? user.createdAt.substring(0, 10) : ''}
+                {user?.createdAt ? user.createdAt.substring(0, 10) : ''}
               </h3>
             </div>
             <div className="text-gray-400 pb-12">
@@ -119,14 +314,14 @@ export default function page() {
         </div>
         <div className={`w-full bg-green-600 flex `}>
           <button
-            className={` bg-yellow-400 w-1/2 text-center py-3 ${view === 'posts' ? 'border-4 border-red' : ''}`}
+            className={` bg-yellow-400 w-1/2 text-center py-3 ${view === 'posts' ? 'border-2 active:bg-yellow-600 hover:bg-yellow-300' : ''}`}
             type="button"
             onClick={e => setView('posts')}
           >
             Posts
           </button>
           <button
-            className={`bg-blue-700 w-1/2 text-center py-3 ${view === 'likes' ? 'border-4 border-red' : ''}`}
+            className={`bg-blue-700 w-1/2 text-center py-3 ${view === 'likes' ? 'border-2  active:bg-blue-800 hover:bg-blue-700' : ''}`}
             type="button"
             onClick={e => setView('likes')}
           >
@@ -140,10 +335,10 @@ export default function page() {
                 variant="track-disc"
                 speedPlus={2}
                 easing="linear"
+                color="blue"
               />
             </div>
           )}
-
           {Array.isArray(posts) &&
             hasFetched &&
             posts.length === 0 &&
@@ -152,13 +347,13 @@ export default function page() {
                 No posts found.
               </div>
             )}
-
           {hasFetched && posts.length > 0 && (
             <div className="mt-10">
               <PostsList
                 memoizedPosts={memoizedPosts}
                 setStart={setStart}
                 handleUpdateStart={updateStart}
+                onDelete={handleDeletePost}
               />
             </div>
           )}
