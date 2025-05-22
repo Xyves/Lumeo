@@ -1,22 +1,38 @@
 import { PrismaClient } from '@prisma/client';
 
+import type { editProfileType, getUsersProps } from '@/types';
+
+import uploadFile from './cloudinaryService';
+
 const prisma = new PrismaClient();
-const login = async ({ name, email }) => {
-  const isEmailLogin = /\S+@\S+\.\S+/.test(name);
-  const user = await prisma.user.findUnique({
-    where: isEmailLogin ? { email: name } : { name },
-  });
-};
-export const signUser = async (name, hashedPassword, email) => {
+// const login = async ({ name, email }) => {
+//   const isEmailLogin = /\S+@\S+\.\S+/.test(name);
+//   const user = await prisma.user.findUnique({
+//     where: isEmailLogin ? { email: name } : { name },
+//   });
+// };
+export const signUser = async (
+  name: string,
+  hashedPassword: string,
+  email: string
+) => {
+  const randomSeed = Math.random().toString(36).substring(7);
+  const avatarUrl = `https://api.dicebear.com/7.x/bottts/png?seed=${randomSeed}`;
+
   return prisma.user.create({
     data: {
       name,
       email,
       passwordHash: hashedPassword,
+      image: avatarUrl,
     },
   });
 };
-export const getUsers = async (input, userId, followed) => {
+export const getUsers = async (
+  input,
+  userId,
+  followed
+) => {
   const followedBoolean = followed === 'true';
   console.log({ input, userId, followed });
   return prisma.user.findMany({
@@ -58,6 +74,7 @@ export const getProfile = async (id, authorId) => {
       name: true,
       createdAt: true,
       updatedAt: true,
+      email: true,
       image: true,
       followingCounter: true,
       followedCounter: true,
@@ -147,4 +164,30 @@ export const followUser = async ({ followerId, followedId, isFollowed }) => {
           }),
         ]
   );
+};
+export const patchUser = async ({
+  id,
+  updateData,
+}: {
+  id: string;
+  updateData: editProfileType;
+}) => {
+  const { name, email, file } = updateData;
+
+  let cloudinaryResponse = null;
+  console.log(file);
+  if (file && file.size > 0) {
+    cloudinaryResponse = await uploadFile(file);
+  }
+  const data: any = {};
+
+  if (name) data.name = name;
+  if (email) data.email = email;
+  if (cloudinaryResponse?.secure_url)
+    data.image = cloudinaryResponse.secure_url;
+  console.log('5', data);
+  return prisma.user.update({
+    where: { id },
+    data,
+  });
 };
