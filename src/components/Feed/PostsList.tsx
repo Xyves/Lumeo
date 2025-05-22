@@ -9,12 +9,12 @@ export default function PostsList({
   memoizedPosts,
   handleUpdateStart,
   setStart,
-  onDelete
+  onDelete,
 }: {
   memoizedPosts: any;
   setStart: any;
   handleUpdateStart: any;
-  onDelete:any
+  onDelete: any;
 }) {
   const observer = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);

@@ -2,7 +2,10 @@ import { NextResponse } from 'next/server';
 
 import { getProfile, patchUser } from '@/services/userService';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = await params;
   const { searchParams } = new URL(req.url);
 
@@ -18,7 +21,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     );
   }
 }
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = await params;
   const formData = await req.formData();
   const name = formData.get('name');

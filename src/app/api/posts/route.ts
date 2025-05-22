@@ -1,13 +1,7 @@
 /* eslint-disable camelcase */
 import { NextResponse } from 'next/server';
-import { IncomingForm } from 'formidable';
 
-import {
-  createPost,
-  deletePost,
-  getPosts,
-  getPostsWithUsers,
-} from '@/services/postService';
+import { createPost, getPostsWithUsers } from '@/services/postService';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

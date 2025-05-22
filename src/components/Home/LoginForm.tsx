@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Github } from 'lucide-react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-
+import { usePopup } from '@/context/PopupContext';
 import GithubAuthButton from './GithubAuthButton';
 
 export default function LoginWindow() {
+  const { showPopup } = usePopup();
   const router = useRouter();
+
   const [data, setData] = useState({
     name: '',
     password: '',
@@ -18,18 +19,42 @@ export default function LoginWindow() {
     name: 'Guest',
     password: 'DJSNGeo3',
   };
-  const loginUser = async (e: React.FormEvent, { isGuest }) => {
+  const loginUser = async (
+    e: React.FormEvent,
+    { isGuest }: { isGuest: boolean }
+  ) => {
     e.preventDefault();
-
+    showPopup({
+      isVisible: true,
+      text: 'Loading',
+      type: 'loading',
+    });
     const res = await signIn('credentials', {
       ...(isGuest ? guestData : data),
       redirect: false,
     });
     console.log(res);
     if (res?.error) {
+      showPopup({
+        isVisible: true,
+        text: 'Login Failed',
+        type: 'error',
+      });
       console.error('Login failed:', res.error);
     } else {
-      // router.push('/feed');
+      showPopup({
+        isVisible: true,
+        text: 'Welcome back',
+        type: 'success',
+      });
+      setTimeout(() => {
+        showPopup({
+          isVisible: false,
+          text: '',
+          type: undefined,
+        });
+        router.push('/feed');
+      }, 2000);
     }
   };
   return (
