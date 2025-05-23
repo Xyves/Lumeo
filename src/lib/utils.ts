@@ -1,3 +1,7 @@
+import { z } from 'zod';
+
+import { editProfileSchema, RegisterSchema } from '@/schema';
+
 export const cx = (...classNames: unknown[]) =>
   classNames.filter(Boolean).join(' ');
 
@@ -17,3 +21,18 @@ export function createDeletePostHandler<T extends { id: string }>(
     setPosts(prev => prev.filter(post => post.id !== postId));
   };
 }
+export const validateForm = (data, type) => {
+  try {
+    if (type === 'register') {
+      RegisterSchema.parse(data);
+    } else {
+      editProfileSchema.parse(data);
+    }
+    return {};
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return error.flatten().fieldErrors;
+    }
+    return {};
+  }
+};
