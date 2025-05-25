@@ -27,16 +27,6 @@ export default function Sidebar() {
   const { targetRef } = useTargetRef();
   const { data: session, status } = useSession();
 
-  if (status === 'loading') return null;
-
-  const scrollCallback = () => {
-    const { current } = targetRef;
-    if (pathname !== '/feed') {
-      router.push('/feed');
-    } else {
-      current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -47,9 +37,21 @@ export default function Sidebar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const scrollCallback = () => {
+    const { current } = targetRef;
+    if (pathname !== '/feed') {
+      router.push('/feed');
+    } else {
+      current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
   // Green border-[#14a014]
+  // yellow bg bg-[rgb(230,230,0,0.98)]
+  if (status === 'loading') return null;
+
   return (
-    <div className=" flex-col relative hidden sm:flex sm:ml-0 lg:ml-20 sm:mr-2 lg:mr-10 h-screen   opacity-90 bg-[rgb(230,230,0,0.98)]   text-purple-900">
+    <div className=" flex-col relative hidden sm:flex sm:ml-0 lg:ml-20 sm:mr-2 lg:mr-10 h-screen  opacity-95  bg-[rgb(28_29_33)]  text-purple-900">
       <div className="flex flex-col p-3 gap-3 md:px-0 2xl:px-6 flex-1 px-2 font-lunar  tracking-tight [&>p]:hover:underline mt-10">
         <Link
           href="/feed"

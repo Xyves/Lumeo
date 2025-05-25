@@ -1,9 +1,11 @@
 /* eslint-disable camelcase */
 import { PrismaClient } from '@prisma/client';
 
+import type { fetchPostType, toggleLikeType } from '@/types';
+
 const prisma = new PrismaClient();
 
-export const getComments = async ({ postId, userId }) => {
+export const getComments = async ({ postId, userId }: fetchPostType) => {
   const comments = await prisma.comment.findMany({
     where: {
       post_id: postId,
@@ -78,7 +80,7 @@ const createPostComment = async ({
     throw new Error('Failed to create comment or update post.');
   }
 };
-const deletePost = ({ postId, commentId, userId }) => {
+const deletePost = ({ postId, commentId, userId }: toggleLikeType) => {
   return prisma.$transaction([
     prisma.comment.deleteMany({
       where: {

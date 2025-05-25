@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+import type { followType } from '@/types';
+
 export default async function fetchUsers({ userId, input, onlyFollowed }) {
   try {
     const res = await fetch(
@@ -21,7 +23,13 @@ export default async function fetchUsers({ userId, input, onlyFollowed }) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
-export async function fetchUserProfile({ id, authorId }) {
+export async function fetchUserProfile({
+  id,
+  authorId,
+}: {
+  id: string;
+  authorId: string;
+}) {
   try {
     const res = await fetch(`/api/profile/${id}?authorId=${authorId}`, {
       method: 'GET',
@@ -39,7 +47,11 @@ export async function fetchUserProfile({ id, authorId }) {
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
-export async function updateFollowUser({ followerId, followedId, isFollowed }) {
+export async function updateFollowUser({
+  followerId,
+  followedId,
+  isFollowed,
+}: followType) {
   try {
     const res = await fetch(`/api/users/follow/${followedId}`, {
       method: 'POST',
@@ -56,5 +68,26 @@ export async function updateFollowUser({ followerId, followedId, isFollowed }) {
     return data;
   } catch (error) {
     return NextResponse.json('Something went wrong', { status: 400 });
+  }
+}
+export async function updateUserHook({ form }: any) {
+  try {
+    const id = form.get('id');
+    const res = await fetch(`/api/profile/${id}`, {
+      method: 'PATCH',
+      body: form,
+    });
+    if (!res.ok) {
+      return NextResponse.json('Something went wrong', {
+        statusCode: 400,
+      } as any);
+    }
+    const data = await res.json();
+    console.log(data);
+    return { statusCode: res.status, data };
+  } catch (error) {
+    return NextResponse.json('Something went wrong', {
+      statusCode: 400,
+    } as any);
   }
 }

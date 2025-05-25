@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
-export default async function fetchComments({ postId, userId }) {
+import type { fetchPostType } from '@/types';
+
+export default async function fetchComments({ postId, userId }: fetchPostType) {
   try {
     const res = await fetch(`/api/posts/${postId}/comments?userId=${userId}`, {
       method: 'GET',

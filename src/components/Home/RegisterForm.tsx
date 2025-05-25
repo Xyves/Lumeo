@@ -3,20 +3,18 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { z } from 'zod';
+import type { z } from 'zod';
 
-import { RegisterSchema, RegisterType } from '@/schema';
-import type { PopupState } from '@/types';
-
-import Popup from '../popup/Popup';
+import { RegisterSchema } from '@/schema';
+import { usePopup } from '@/context/PopupContext';
+import { validateForm } from '@/lib/utils';
 
 type FormData = z.infer<typeof RegisterSchema>;
 type FormErrors = Partial<Record<keyof FormData, string[]>>;
 export default function RegisterForm() {
+  const { showPopup } = usePopup();
+
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [popupState, setPopupState] = useState<PopupState>({
-    isVisible: false,
-  });
   const [errors, setErrors] = useState<FormErrors>({});
   const router = useRouter();
   const [data, setData] = useState<FormData>({
@@ -27,25 +25,11 @@ export default function RegisterForm() {
   const togglePasswordVisibility = () => {
     setPasswordVisible(prev => !prev);
   };
-  const validateForm = (data: FormData) => {
-    try {
-      RegisterSchema.parse(data);
-      return {};
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return error.flatten().fieldErrors;
-      }
-      return {};
-    }
-  };
+
   const registerUser = async (e: any) => {
     e.preventDefault();
-    setPopupState({
-      isVisible: true,
-      text: 'Loading',
-      type: 'loading',
-    });
-    const newErrors = validateForm(data);
+    showPopup({ isVisible: true, text: 'Loading', type: 'loading' });
+    const newErrors = validateForm(data, 'register');
     setErrors(newErrors);
     console.log({ data });
     if (Object.keys(newErrors).length === 0) {
@@ -57,24 +41,29 @@ export default function RegisterForm() {
         body: JSON.stringify(data),
       });
       if (response.ok) {
-        setPopupState({
+        showPopup({
           isVisible: true,
           text: 'User Registered',
           type: 'success',
         });
 
         setTimeout(() => {
+          showPopup({
+            isVisible: false,
+            text: '',
+            type: undefined,
+          });
           router.push('/');
-        }, 3000);
+        }, 2000);
       } else {
-        setPopupState({
+        showPopup({
           isVisible: true,
           text: 'Signup failed',
           type: 'error',
         });
         console.error('Network error or server issue');
         setTimeout(() => {
-          setPopupState({ isVisible: false });
+          showPopup({ isVisible: false });
         }, 3000);
       }
     }
@@ -176,11 +165,7 @@ export default function RegisterForm() {
                 onClick={togglePasswordVisibility}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-white"
               >
-                {passwordVisible ? (
-                  <span>Hide</span> // Alternatively, use an eye icon here
-                ) : (
-                  <span>Show</span> // Alternatively, use an eye-slash icon here
-                )}
+                {passwordVisible ? <span>Hide</span> : <span>Show</span>}
               </button>
             </div>
             {errors.password && (
@@ -204,9 +189,6 @@ export default function RegisterForm() {
             </Link>
           </p>
         </form>
-      </div>
-      <div className="relative">
-        <Popup data={popupState} />
       </div>
     </div>
   );

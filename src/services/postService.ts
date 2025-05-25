@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { PrismaClient } from '@prisma/client';
 
 import uploadFile from './cloudinaryService';
@@ -63,15 +64,19 @@ export const getPostsWithUsers = async (
 
   return paginated;
 };
-export const deletePost = async (id, authorId, userId) => {
+export const deletePost = async (
+  id: string,
+  authorId: string,
+  userId: string
+) => {
   if (authorId !== userId) {
-    throw new Error("Unauthorized to delete this post");
+    throw new Error('Unauthorized to delete this post');
   }
 
   const deleted = await prisma.post.delete({
-    where: { id }
+    where: { id },
   });
-console.log("post has been deleted",id)
+  console.log('post has been deleted', id);
   return deleted;
 };
 export const getUserLikedPosts = async (profileId: string, userId: string) => {
@@ -180,16 +185,24 @@ export const createPost = async ({
   if (file && file.size > 0) {
     cloudinaryResponse = await uploadFile(file);
   }
+  const imageUrl = cloudinaryResponse?.secure_url;
+
   return prisma.post.create({
     data: {
       content,
-      image_url: cloudinaryResponse ? cloudinaryResponse.secure_url : null,
+      image_url: cloudinaryResponse ? imageUrl : null,
       authorId,
     },
   });
 };
 
-export const handleLikePrisma = async ({ id, userId }) => {
+export const handleLikePrisma = async ({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) => {
   try {
     const existingLike = await prisma.like.findFirst({
       where: {
@@ -226,7 +239,13 @@ export const handleLikePrisma = async ({ id, userId }) => {
   }
 };
 // Single post operations:
-export const getPost = async ({ id, userId }) => {
+export const getPost = async ({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) => {
   const post = await prisma.post.findFirst({
     where: { id },
     select: {
@@ -254,8 +273,8 @@ export const getPost = async ({ id, userId }) => {
     },
   });
   const postWithIsLiked = {
-    ...post,
-    isLiked: post.likes.length > 0,
+    ...post!,
+    isLiked: post!.likes.length > 0,
   };
   console.log('fetches signle post:', postWithIsLiked);
   return postWithIsLiked;
@@ -267,7 +286,6 @@ export const editPost = ({
   authorId,
 }: {
   id: string;
-  date: Date;
   content: string;
   image_url: string;
   authorId: string;
@@ -283,39 +301,13 @@ export const editPost = ({
   });
 };
 
-// export const unlikePost = async(post_id: string, user_id: string)
-const postFromFollowing = async (start: number, userId: string) => {
-  return prisma.post.findMany({
-    take: 5,
-    skip: start,
-    orderBy: { date: 'desc' },
-    where: {
-      author: {
-        followers: {
-          some: {
-            userId,
-          },
-        },
-      },
-    },
-    select: {
-      id: true,
-      image_url: true,
-      content: true,
-      date: true,
-      likeCount: true,
-      commentCount: true,
-      author: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-    },
-  });
-};
-export const handleCommentLikePrisma = async ({ id, userId }) => {
+export const handleCommentLikePrisma = async ({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) => {
   try {
     const existingLike = await prisma.commentLike.findFirst({
       where: {

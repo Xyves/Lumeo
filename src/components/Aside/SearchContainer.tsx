@@ -3,12 +3,18 @@
 import { Search, X } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 
-export default function SearchContainer({ input, setInput }) {
+export default function SearchContainer({
+  input,
+  setInput,
+}: {
+  input: string;
+  setInput: any;
+}) {
   const [value, setValue] = useState('');
   const inputRef = useRef('');
   const clearInput = () => {
     setInput('');
-    inputRef.current?.focus();
+    // inputRef.current?.focus();
   };
   return (
     <form className="flex h-12  bg-[#000000d9] items-center relative mb-6 mt-2">

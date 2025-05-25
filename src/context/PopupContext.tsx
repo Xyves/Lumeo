@@ -6,7 +6,7 @@ import type { PopupState } from '@/types';
 
 type PopupContextType = {
   popupData: PopupState;
-  showPopup: (text: string, type: string) => void;
+  showPopup: (args: any) => void;
 };
 export const PopupContext = createContext<PopupContextType | undefined>(
   undefined
@@ -20,12 +20,15 @@ export default function PopupProvider({
   const [popupData, setPopupData] = useState<PopupState>({
     isVisible: false,
   });
-  const showPopup = (text, type) => {
-    setPopupData({ isVisible: true, text, type });
-    setTimeout(
-      () => setPopupData({ isVisible: false, text: '', type: undefined }),
-      2000
-    );
+  type PopupType = 'success' | 'error' | 'loading' | undefined;
+
+  type ShowPopupArgs = {
+    isVisible: boolean;
+    text: string;
+    type: PopupType;
+  };
+  const showPopup = ({ isVisible, text, type }: ShowPopupArgs) => {
+    setPopupData({ isVisible, text, type });
   };
 
   const value = useMemo(

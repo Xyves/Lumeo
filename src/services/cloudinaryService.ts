@@ -1,26 +1,25 @@
-import streamifier from 'streamifier';
 import { NextResponse } from 'next/server';
+import type { UploadApiResponse } from 'cloudinary';
 
 import cloudinary from '../lib/cloudinaryConfig';
 
-export default async function uploadFile(file) {
+export default async function uploadFile(file: File) {
   try {
     if (!file) {
       return NextResponse.json({ error: 'File not found' }, { status: 400 });
     }
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const result = await new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { folder: 'Lumeo' },
-        (error, result) => {
+        (error, uploadResult) => {
           if (error) reject(error);
-          else resolve(result);
+          else resolve(uploadResult as UploadApiResponse);
         }
       );
       uploadStream.end(buffer);
     });
-    return result;
   } catch (error) {
     console.error('Cloudinary upload failed:', error);
     throw new Error('Upload to Cloudinary failed');

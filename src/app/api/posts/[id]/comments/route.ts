@@ -2,11 +2,17 @@ import { NextResponse } from 'next/server';
 
 import { createPostComment, getComments } from '@/services/commentsService';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = await params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get('userId');
   try {
+    if (!userId) {
+      throw new Error('Missing userId');
+    }
     const newComments = await getComments({ postId: id, userId });
     return NextResponse.json(newComments, { status: 201 });
   } catch (error) {
@@ -16,7 +22,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     );
   }
 }
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = await params;
 
   const { input, userId } = await request.json();

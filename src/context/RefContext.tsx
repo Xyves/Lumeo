@@ -8,8 +8,8 @@ import {
   type RefObject,
 } from 'react';
 
-type RefContextType = {
-  targetRef: RefObject<HTMLDivElement>;
+export type RefContextType = {
+  targetRef: RefObject<HTMLDivElement | null>;
 };
 
 const RefContext = createContext<RefContextType | undefined>(undefined);
@@ -24,10 +24,7 @@ export const useTargetRef = () => {
 
 export const RefProvider = ({ children }: { children: React.ReactNode }) => {
   const targetRef = useRef<HTMLDivElement>(null);
-
-  // ✅ Memoize the value
   const contextValue = useMemo(() => ({ targetRef }), []);
-
   return (
     <RefContext.Provider value={contextValue}>{children}</RefContext.Provider>
   );
