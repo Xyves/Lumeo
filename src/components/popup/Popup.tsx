@@ -1,21 +1,20 @@
+'use client';
+
 import React, { useContext } from 'react';
 import { OrbitProgress } from 'react-loading-indicators';
-
 import { PopupContext } from '@/context/PopupContext';
 
 export default function Popup() {
-  const {
-    popupData: {
-      // text, type,
-      isVisible,
-    } = {},
-  } = useContext(PopupContext) ?? {};
-
+  const context = useContext(PopupContext);
+  if (!context) {
+    throw new Error('Popup must be used within a PopupProvider');
+  }
+  const { popupData } = context;
+  const { isVisible, text, type } = popupData;
+  console.log('Displaying popup:', popupData);
   if (!isVisible) return null;
   let content;
-  const type = 'error';
-  // const text = 'Signing user...';
-  const text = 'Please login';
+
   switch (type) {
     case 'success':
       content = (
@@ -63,7 +62,6 @@ export default function Popup() {
     default:
       content = null;
   }
-
   return (
     <div className="fixed top-0 left-1/2 transform -translate-x-1/2 py-2 px-6 shadow-md flex items-center justify-center ">
       {content}

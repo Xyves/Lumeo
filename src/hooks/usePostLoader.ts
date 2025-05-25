@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import type React from 'react';
+import { useCallback } from 'react';
 
 import fetchPosts, {
   deletePostById,
@@ -14,7 +15,7 @@ export type LoadPostsArgs = {
   setPosts: React.Dispatch<React.SetStateAction<any[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   feedType: string;
-  setHasMore:React.Dispatch<React.SetStateAction<boolean>>
+  setHasMore: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export function usePostLoader() {
   const loadPosts = useCallback(
@@ -66,17 +67,16 @@ export function usePostLoader() {
     },
     [fetchPost]
   );
-  const deletePostFromDb = useCallback(async({id,authorId,userId})=>{
-    console.log("Waiting to delete post id of",id)
-try{
-      const data = await deletePostById({id,authorId,userId})
-return data
-    }catch(err){
-      console.error("Can't delete post",err)
-
+  const deletePostFromDb = useCallback(async ({ id, authorId, userId }) => {
+    console.log('Waiting to delete post id of', id);
+    try {
+      const data = await deletePostById({ id, authorId, userId });
+      return data;
+    } catch (err) {
+      console.error("Can't delete post", err);
     }
-  },[])
-  
+  }, []);
+
   const loadUserPosts = useCallback(
     async ({ setPosts, start, userId, setLoading, authorId }) => {
       setLoading(true);
@@ -97,7 +97,7 @@ return data
         setLoading(false);
       }
     },
-    [fetchUserPosts]
+    []
   );
   const loadLikedPosts = useCallback(
     async ({ userId, setLoading, setPosts, profileId }) => {
@@ -112,13 +112,13 @@ return data
         setLoading(false);
       }
     },
-    [fetchPost]
+    []
   );
   const updateStart = useCallback(setStart => {
-    setStart(prev => prev + 5);
+    setStart((prev: any) => prev + 5);
   }, []);
   const handleNewPost = useCallback((setPosts, newPost) => {
-    setPosts(prev => [newPost, ...prev]);
+    setPosts((prev: any) => [newPost, ...prev]);
   }, []);
   const updateLikeStatus = useCallback(
     async ({
@@ -134,6 +134,7 @@ return data
     }) => {
       setLoading(true);
       try {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const data = await useToggleLike({ userId, postId, commentId });
         return data;
       } catch (err) {
@@ -142,7 +143,7 @@ return data
         setLoading(false);
       }
     },
-    [fetchPosts]
+    []
   );
   return {
     loadPosts,
@@ -152,6 +153,6 @@ return data
     updateLikeStatus,
     loadUserPosts,
     loadLikedPosts,
-    deletePostFromDb
+    deletePostFromDb,
   };
 }

@@ -1,13 +1,22 @@
 import { useCallback } from 'react';
 
-import { fetchProfile } from '@/services/userService';
+import type { loadProfileType, loadUsersType } from '@/types';
 
-import fetchUsers, { fetchUserProfile, updateFollowUser } from './useUsers';
-// import fetchUsers
+import fetchUsers, {
+  fetchUserProfile,
+  updateFollowUser,
+  updateUserHook,
+} from './useUsers';
 
 export function useUsersLoader() {
   const loadUsers = useCallback(
-    async ({ userId, setLoading, input, setUsers, onlyFollowed }) => {
+    async ({
+      userId,
+      setLoading,
+      input,
+      setUsers,
+      onlyFollowed,
+    }: loadUsersType) => {
       setLoading(true);
       try {
         const data = await fetchUsers({ userId, input, onlyFollowed });
@@ -21,7 +30,7 @@ export function useUsersLoader() {
     []
   );
   const loadProfile = useCallback(
-    async ({ setLoading, setUser, id, authorId }) => {
+    async ({ setLoading, setUser, id, authorId }: loadProfileType) => {
       setLoading(true);
       try {
         const data = await fetchUserProfile({ id, authorId });
@@ -40,7 +49,7 @@ export function useUsersLoader() {
       followedId: string,
       isFollowed: boolean,
       setIsFollowed: (value: boolean) => void,
-      setLoading
+      setLoading: (value: boolean) => void
     ) => {
       setLoading(true);
       try {
@@ -54,5 +63,17 @@ export function useUsersLoader() {
     },
     []
   );
-  return { loadUsers, loadProfile, changeFollowState };
+  const updateUser = useCallback(async ({ form, setUser }) => {
+    try {
+      const { statusCode, data } = await updateUserHook({ form });
+      if (statusCode === 200 || statusCode === 201) {
+        setUser(data);
+      }
+
+      return { statusCode, data };
+    } catch (err) {
+      console.error('Initial user load error', err);
+    }
+  }, []);
+  return { loadUsers, loadProfile, changeFollowState, updateUser };
 }

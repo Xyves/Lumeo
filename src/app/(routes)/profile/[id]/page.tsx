@@ -15,15 +15,13 @@ import FollowButton from '@/components/Aside/FollowButton';
 import PostsList from '@/components/Feed/PostsList';
 import { usePostLoader } from '@/hooks/usePostLoader';
 import type { PostInterface } from '@/types';
-import { createDeletePostHandler, validateForm } from '@/lib/utils';
-import type { editProfileSchema } from '@/schema';
+import { createDeletePostHandler } from '@/lib/utils';
+import ProfileModal from '@/components/popup/ProfileModal';
 
 export default function Page() {
-  const { loadProfile, updateUser } = useUsersLoader();
+  const { loadProfile } = useUsersLoader();
   const { loadUserPosts, updateStart, loadLikedPosts } = usePostLoader();
   const [loading, setLoading] = useState<boolean>(false);
-  const { showPopup } = usePopup();
-
   const [user, setUser] = useState();
   const [view, setView] = useState<'posts' | 'likes'>('posts');
   const [modalVisible, setModalVisible] = useState(false);
@@ -33,89 +31,11 @@ export default function Page() {
   const [hasFetched, setHasFetched] = useState(false);
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [start, setStart] = useState<number>(0);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const router = useRouter();
-  type FormData = z.infer<typeof editProfileSchema>;
-  type FormErrors = Partial<Record<keyof FormData, string[]>>;
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [formData, setFormData] = useState<{
-    id: string;
-    name: string;
-    email: string;
-    file: File | null;
-  }>({
-    id,
-    name: '',
-    email: '',
-    file: null,
-  });
-  const initialData = {
-    name: user?.name || '',
-    email: user?.email || '',
-    file: user?.image || '',
-  };
+
   const handleDeletePost = createDeletePostHandler(setPosts);
 
   // const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-  const userProfileImage =
-    previewUrl ||
-    (user?.image?.trim() ? user?.image : null) ||
-    '/images/default_user.webp';
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-      setFormData(prev => ({
-        ...prev,
-        file,
-      }));
-    }
-  };
-  const editUser = async (e: React.FormEvent) => {
-    e.preventDefault();
-    showPopup({ isVisible: true, text: 'Loading', type: 'loading' });
-    const newErrors = validateForm(formData, 'editUser');
-    setErrors(newErrors);
-    const form = new FormData();
-    if (Object.keys(newErrors).length === 0) {
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== '' && value !== initialData[key]) {
-          form.append(key, value);
-        }
-      });
-
-      form.append('id', formData.id);
-      const { statusCode, data } = await updateUser({ form, setUser });
-      console.log('status:', status);
-      if (statusCode === 200 || statusCode === 201) {
-        showPopup({
-          isVisible: true,
-          text: 'Profile updated',
-          type: 'success',
-        });
-        setTimeout(async () => {
-          showPopup({ isVisible: false, text: '', type: 'undefined' });
-          await signOut({});
-
-          router.replace('/');
-        }, 2000);
-      } else {
-        showPopup({
-          isVisible: true,
-          text: "Can't update user",
-          type: 'error',
-        });
-      }
-    } else {
-      showPopup({
-        isVisible: true,
-        text: "Can't update user !!",
-        type: 'error',
-      });
-    }
-  };
   useEffect(() => {
     if (view !== 'posts') return;
 
@@ -156,112 +76,19 @@ export default function Page() {
   }
   return (
     <MainLayout>
-      <div className=" mb-24 w-full  mx-auto h-full bg-[#131415]  overflow-y-auto max-h-[95%] rounded-md border-purple-400 border-[1px] border-solid  relative">
-        {modalVisible && (
-          <div
-            className={`fixed inset-0 z-40 w-1/4  my-6 h-fit flex items-center justify-center backdrop-blur-sm bg-blue-600  mx-auto `}
-          >
-            <div className="flex flex-col">
-              <div className="flex px-1 py-3 justify-around">
-                <h1 className="text-3xl">Edit Profile</h1>
-                <button
-                  className="ml-auto text-2xl"
-                  type="button"
-                  onClick={() => setModalVisible(false)}
-                >
-                  <CircleX className="hover:text-gray-100" />
-                </button>
-              </div>
-              <div className="px-5 py-10 flex flex-col">
-                <form action="PATCH" onSubmit={editUser}>
-                  <div className=" flex justify-center  pt-1 py-2">
-                    <div className="flex items-center space-x-2  h-full ">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative flex items-center gap-2 px-4 text-white rounded-full cursor-pointer transition"
-                      >
-                        <div className="relative w-[120px] aspect-square rounded-full overflow-hidden mb-4">
-                          <Image
-                            src={userProfileImage}
-                            width={120}
-                            height={120}
-                            alt=""
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="absolute bottom-4 right-10 w-[30px] h-[30px] bg-white rounded-full text-lg shadow-md flex items-center justify-center">
-                          <PenLine color="black" />
-                        </div>
-                      </label>
-                      <input
-                        type="file"
-                        name="file"
-                        id="file"
-                        className="hidden"
-                        onChange={e => {
-                          handleFileChange(e);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="p-1 bg-blue-300 flex flex-col">
-                    <label htmlFor="name" className="ml-2 my-1">
-                      Name
-                    </label>
-                    <input
-                      name="name"
-                      id="name"
-                      value={formData.name}
-                      onChange={e =>
-                        setFormData(prev => ({
-                          ...prev,
-                          [e.target.name]: e.target.value,
-                        }))
-                      }
-                      type="text"
-                      placeholder={session?.user.name}
-                      className="rounded-lg mx-4 p-2 text-black placeholder:text-gray-700 mb-6"
-                    />
-                    {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                    )}
-                    <label htmlFor="email" className="ml-2 my-1">
-                      Email
-                    </label>
-                    <input
-                      name="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={e =>
-                        setFormData(prev => ({
-                          ...prev,
-                          [e.target.name]: e.target.value,
-                        }))
-                      }
-                      type="text"
-                      placeholder={
-                        user?.email ? user.email : 'email@example.com'
-                      }
-                      className="rounded-lg mx-4 p-2 text-black placeholder:text-gray-700 mb-6"
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.email}
-                      </p>
-                    )}
-                    <button
-                      type="submit"
-                      className="bg-[#5521cf] px-8 py-2 rounded-3xl  w-full hover:bg-[#3d1f84] text-slate-50"
-                    >
-                      Save & Sign Me Out
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
+      {modalVisible && (
+        <ProfileModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          user={user}
+          id={id}
+          setUser={setUser}
+        />
+      )}
 
+      <div
+        className={` mb-24 w-full  mx-auto h-full bg-[#131415]  overflow-y-auto max-h-[95%] rounded-md border-purple-400 border-[1px] border-solid  relative ${modalVisible ? 'filter blur-sm' : ''}`}
+      >
         <div id="user-info relative">
           <div className="bg-[#6e179d] w-full h-28     inset-0 z-0" />
           <div className=" flex h-6">
@@ -275,7 +102,7 @@ export default function Page() {
             />
             {id === session?.user.id ? (
               <button
-                className="w-32 h-12 p-2  ml-auto relative right-0 -top-10 mr-10  rounded-3xl bg-gray-100 text-black hover:bg-gray-300"
+                className="w-32 h-12 p-2  ml-auto relative right-0 -top-10 mr-10  rounded-3xl bg-[white] text-black hover:bg-gray-300"
                 type="button"
                 onClick={() => setModalVisible(!modalVisible)}
               >
