@@ -18,13 +18,14 @@ export default function Follower({ name, profile_url, id }: FollowerInterface) {
   console.log(profile_url);
   const router = useRouter();
   return (
-    <div>
-      <div
+    <div className="">
+      <button
+        type="button"
         id={id}
-        className="flex my-4 items-center"
-        onClick={e => router.push(`/profile/${id}`)}
+        className="flex my-4 items-center w-full justify-between"
+        onClick={() => router.push(`/profile/${id}`)}
       >
-        <Link href="/profile/id" className="flex rounded-3xl items-center ">
+        <Link href={`/profile/${id}`} className="flex rounded-3xl items-center">
           <Image
             src={profile_url || '/images/default_user.webp'}
             alt=""
@@ -32,15 +33,13 @@ export default function Follower({ name, profile_url, id }: FollowerInterface) {
             height={35}
             className="rounded-2xl"
           />
-          <span className="ml-2 mr-4 inline-block hover:underline text-sm">
-            {name}
-          </span>
+          <span className="ml-2 text-sm hover:underline">{name}</span>
         </Link>
-        {/* </Link> */}
-        <div className=" ml-auto justify-end my-auto relative text-white">
-          <FollowButton followedId={id} isFollowing="false" />
+
+        <div className="ml-auto my-auto">
+          <FollowButton followedId={id} isFollowing={false} />
         </div>
-      </div>
+      </button>
     </div>
   );
 }

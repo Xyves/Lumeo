@@ -1,14 +1,15 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import React from 'react';
 
-import LikeButton from '../Feed/LikeButton';
+import type { commentType } from '@/types';
 
-import CreateComments from './CreateComments';
 import PostComment from './PostComment';
 
-export default function CommentsList({ memoizedComments }) {
-  console.log(memoizedComments);
+export default function CommentsList({
+  memoizedComments,
+}: {
+  memoizedComments: commentType;
+}) {
+  console.log('memoizedComments', memoizedComments);
   return (
     <div className="flex w-full flex-col ">
       {Array.isArray(memoizedComments) &&

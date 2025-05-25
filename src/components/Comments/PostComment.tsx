@@ -3,6 +3,8 @@ import Link from 'next/link';
 import React from 'react';
 import { useSession } from 'next-auth/react';
 
+import type { PostCommentType } from '@/types';
+
 import LikeButton from '../Feed/LikeButton';
 
 export default function PostComment({
@@ -12,10 +14,9 @@ export default function PostComment({
   id,
   userId,
   name,
-}) {
-  const { data: session } = useSession();
+}: PostCommentType) {
   return (
-    <div className="flex  w-full my-10 ml-10 justify-start ">
+    <div className="flex  w-full my-4 ml-10 justify-start ">
       <div className="  ">
         <Link href="/profile/X">
           <Image

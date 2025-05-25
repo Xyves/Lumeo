@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import React, { useRef, useState } from 'react';
-import { Image as Img, User } from 'lucide-react';
+import { Image as Img } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 import { useTargetRef } from '@/context/RefContext';
@@ -31,9 +31,13 @@ export default function CreatePost({ setPosts }) {
   };
   const submitPost = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (postData.content.length < 3) {
+      console.error('Failed to create post');
+      return;
+    }
     const formData = new FormData();
     formData.append('content', postData.content);
-    formData.append('id', session.user.id);
+    formData.append('id', session?.user.id);
     formData.append('file', postData.file);
 
     const response = await fetch('/api/posts', {
@@ -44,10 +48,11 @@ export default function CreatePost({ setPosts }) {
     if (response.ok) {
       const newPost = await response.json();
       newPost.author = {
-        name: session.user.name,
-        image: session.user.image,
+        name: session?.user.name,
+        image: session?.user.image,
       };
       handleNewPost(setPosts, newPost);
+      setPostData({ ...postData, content: '' });
     } else {
       console.error('Failed to create post');
     }
@@ -72,14 +77,18 @@ export default function CreatePost({ setPosts }) {
           </div>
           <textarea
             maxLength={144}
+            minLength={3}
             value={postData.content}
             onChange={e => {
               setPostData({ ...postData, content: e.target.value });
             }}
             rows={3}
             placeholder="What is happening?"
-            className="w-5/6  p-2 mx-auto resize-none placeholder:text-[#edd852]    text-[#edd852]  rounded md
-   border-[.09rem] border-[#edd852] bg-[rgba(0,0,0,0.8)]"
+            // placeholder:text-[#edd852]    text-[#edd852] border-[#edd852]
+            className="w-5/6  p-2 mx-auto resize-none 
+              rounded md
+              placeholder:text-[#EFEFEF] text-[#EFEFEF] border-[#EFEFEF]
+   border-[.09rem]  bg-[rgba(0,0,0,0.8)]"
           />
         </div>
         <div className=" flex items-end justify-center  pt-1 py-2">

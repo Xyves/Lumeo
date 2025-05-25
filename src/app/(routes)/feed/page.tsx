@@ -22,7 +22,7 @@ export default function Feed() {
   const { data: session } = useSession();
   console.log(session);
   const { loadPosts, updateStart } = usePostLoader();
-  const delay = (ms:any) => new Promise(resolve => setTimeout(resolve, ms));
+  const delay = (ms: any) => new Promise(resolve => setTimeout(resolve, ms));
   const feedType = 'feed';
   const handleDeletePost = createDeletePostHandler(setPosts);
 
@@ -73,13 +73,18 @@ export default function Feed() {
           <PostsList
             memoizedPosts={memoizedPosts}
             setStart={setStart}
-             onDelete={handleDeletePost}
+            onDelete={handleDeletePost}
             handleUpdateStart={updateStart}
           />
         )}
-           {loading && (
+        {loading && (
           <div className="loading-spinner flex justify-center">
-                       <OrbitProgress variant="track-disc" speedPlus={2} easing="linear" color={"blue"} />
+            <OrbitProgress
+              variant="track-disc"
+              speedPlus={2}
+              easing="linear"
+              color={'blue'}
+            />
           </div>
         )}
       </div>

@@ -38,7 +38,7 @@ export default function Explore() {
   useEffect(() => {
     loadPosts({
       start: 0,
-      userId: session.user.id,
+      userId: session?.user.id,
       setPosts,
       setLoading,
       feedType,
@@ -49,17 +49,22 @@ export default function Explore() {
   const memoizedPosts = useMemo(() => posts, [posts]);
   return (
     <MainLayout>
-      <div className=" w-full  p-7 overflow-y-auto my-4 mx-auto scrollbar scrollbar-thumb-sky-700 scrollbar-track-sky-300 bg-[rgba(0,0,0,0.6)] max-h-[95%]" >
+      <div className=" w-full  p-7 overflow-y-auto my-4 mx-auto scrollbar scrollbar-thumb-sky-700 scrollbar-track-sky-300 bg-[rgba(0,0,0,0.6)] max-h-[95%]">
         <CreatePost setPosts={setPosts} />
         <PostsList
           memoizedPosts={memoizedPosts}
           setStart={setStart}
-           onDelete={handleDeletePost}
+          onDelete={handleDeletePost}
           handleUpdateStart={updateStart}
         />
         {loading && (
           <div className="loading-spinner flex justify-center">
-            <OrbitProgress variant="track-disc" speedPlus={2} easing="linear" color={"blue"} />
+            <OrbitProgress
+              variant="track-disc"
+              speedPlus={2}
+              easing="linear"
+              color={'blue'}
+            />
           </div>
         )}
       </div>

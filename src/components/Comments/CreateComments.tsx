@@ -16,7 +16,7 @@ export default function CreateComments({ postId, setComments }) {
       method: 'POST',
       body: JSON.stringify({ userId: session.user.id, input }),
     });
-
+    if (input.length < 3) return;
     if (response.ok) {
       const newComment = await response.json();
       console.log('new comment is:', newComment);
@@ -25,6 +25,7 @@ export default function CreateComments({ postId, setComments }) {
         image: session.user.image,
       };
       handleNewComment(setComments, newComment);
+      setInput('');
     } else {
       console.error('Failed to create post');
     }
@@ -44,11 +45,11 @@ export default function CreateComments({ postId, setComments }) {
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder="Write a comment"
-          className=" py-5 flex-grow text-black px-5 w-full"
+          className=" py-5 flex-grow text-black px-5 w-full rounded-l-md"
         />
         <button
           type="button"
-          className="bg-purple-900 rounded-xl  py-5"
+          className="bg-purple-900 rounded-r-xl px-1 py-5"
           onClick={submitComment}
         >
           Comment

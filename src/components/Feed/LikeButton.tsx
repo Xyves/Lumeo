@@ -1,9 +1,7 @@
 'use client';
 
 import 'primeicons/primeicons.css';
-import { Heart } from 'lucide-react';
 import React, { useState } from 'react';
-import { boolean } from 'zod';
 import { useSession } from 'next-auth/react';
 
 import { usePostLoader } from '@/hooks/usePostLoader';
@@ -57,11 +55,12 @@ export default function LikeButton({
       }}
       type="button"
     >
-      {!liked ? (
-        <span className="pi pi-heart text-xl" />
-      ) : (
-        <span className="pi pi-heart-fill text-xl" />
-      )}
+      <span
+        className={`pi ${!liked ? 'pi-heart' : 'pi-heart-fill'} 
+              text-xl text-red-800
+        hover:text-red-500 cursor-pointer
+              `}
+      />
       <span className="pl-1 ">{likesCount}</span>
     </button>
   );

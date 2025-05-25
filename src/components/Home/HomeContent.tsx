@@ -1,12 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-import EmblaCarousel from './EmblaCarousel';
-
 export default function HomeContent() {
-  const OPTIONS: EmblaOptionsType = { loop: true };
-  const SLIDE_COUNT = 12;
-  const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
   return (
     <div
       className="flex items-center lg:flex-1 justify-center lg:w-1/2 sm:w-full  h-full flex-col bg-[#3772FF] bg-[url(/images/gradient-background.avif)]
@@ -33,7 +28,6 @@ export default function HomeContent() {
         width="900"
         className="p-3 "
       />
-      {/* <EmblaCarousel slides={SLIDES} options={OPTIONS} /> */}
     </div>
   );
 }
