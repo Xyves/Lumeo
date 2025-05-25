@@ -17,7 +17,7 @@
   transform: translate3d(0, 0, 0);
   flex: 0 0 15%;
   min-width: 0;
-  gap:5rem;
+  gap: 5rem;
   padding-left: var(--slide-spacing);
   perspective: 800px;
 }
@@ -31,8 +31,8 @@
   align-items: center;
   justify-content: center;
   height: var(--slide-height);
-  user-select: none; 
-   width: 100px; /* Make it a vertical rectangle */
+  user-select: none;
+  width: 100px; /* Make it a vertical rectangle */
   height: 150px;
   background: #1e1e1e; /* Dark background like in the image */
   color: white;
