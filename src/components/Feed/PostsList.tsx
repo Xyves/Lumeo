@@ -16,10 +16,10 @@ export default function PostsList({
   handleUpdateStart: any;
   onDelete: any;
 }) {
-  const observer = useRef<HTMLInputElement>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
   const [loading, setLoading] = useState(false);
   const lastPostElementRef = useCallback(
-    node => {
+    (node: Element | null) => {
       if (loading) return;
       if (observer.current) observer.current.disconnect();
 

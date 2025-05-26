@@ -7,14 +7,19 @@ import MainLayout from '@/layouts/MainLayout/MainLayout';
 import SearchContainer from '@/components/Aside/SearchContainer';
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 import SearchUserList from '@/components/Search/SearchUserList';
+import type { searchUserType } from '@/types';
+
 
 export default function Page() {
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState<searchUserType[]>([]);
   const { data: session } = useSession();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState<boolean>();
   const { loadUsers } = useUsersLoader();
   useEffect(() => {
+    if (!session?.user.id) {
+      throw new Error('User ID is null');
+    }
     loadUsers({
       userId: session?.user.id,
       setLoading,
@@ -22,7 +27,6 @@ export default function Page() {
       setUsers,
       onlyFollowed: false,
     });
-    console.log(users);
   }, [input]);
 
   return (

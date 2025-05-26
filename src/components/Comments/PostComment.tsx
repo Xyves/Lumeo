@@ -11,6 +11,7 @@ export default function PostComment({
   text,
   isLiked,
   commentLikesCount,
+  profile_url,
   id,
   userId,
   name,
@@ -21,7 +22,7 @@ export default function PostComment({
         <Link href="/profile/X">
           <Image
             className="!size-12 rounded-full shadow-md object-cover object-center mt-1 flex-shrink-0"
-            src="/images/default_user.webp"
+            src={profile_url || null}
             width={250}
             height={150}
             alt=""

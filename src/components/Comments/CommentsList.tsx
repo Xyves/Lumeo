@@ -20,6 +20,7 @@ export default function CommentsList({
               text={comment.text}
               isLiked={comment.isLiked}
               userId={comment.user.id}
+              profile_url={comment.user.image}
               id={comment.id}
               name={comment.user.name}
               commentLikesCount={comment.commentLikesCount}

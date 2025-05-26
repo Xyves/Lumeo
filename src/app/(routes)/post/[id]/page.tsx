@@ -92,16 +92,19 @@ export default function Page() {
           <div className="content py-3  mb-3 lg:text-xl md:text-lg sm:text-md">
             {post.content}
           </div>
-          <div className="h-full w-full ">
-            <Image
-              src={post?.image_url}
-              alt="content image"
-              objectFit="contain"
-              width={800}
-              height={500}
-              className=""
-            />
-          </div>
+          {post.image_url && (
+            <div className="h-full w-full ">
+              <Image
+                src={post?.image_url}
+                alt="content image"
+                objectFit="contain"
+                width={800}
+                height={500}
+                className=""
+              />
+            </div>
+          )}
+
           <div className="relative group inline-block w-fit">
             <p className="lg:text-sm text-purple-300">
               {post.date && (
