@@ -3,9 +3,16 @@ import { z } from 'zod';
 export const editProfileSchema = z.object({
   name: z
     .string()
-    .min(3, 'Username must be at least 3 characters')
-    .max(15, { message: 'Username must be at most 15 characters long' })
+    .trim()
+    .transform(val => (val === '' ? undefined : val))
+    .refine(val => val === undefined || val.length >= 3, {
+      message: 'Username must be at least 3 characters',
+    })
+    .refine(val => val === undefined || val.length <= 15, {
+      message: 'Username must be at most 15 characters long',
+    })
     .optional(),
+
   email: z
     .string()
     .trim()
