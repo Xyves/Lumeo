@@ -12,6 +12,9 @@ export async function GET(
 
   const { id } = await params;
   try {
+    if (!userId) {
+      throw new Error('User ID is null');
+    }
     const Post = await getPost({ id, userId });
     return NextResponse.json(Post, { status: 201 });
   } catch (error) {

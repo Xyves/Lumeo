@@ -8,9 +8,9 @@ export default function SearchUser({
   image,
   id,
 }: {
-  name: string;
-  image: string;
+  name: string | null;
   id: string;
+  image: string | null;
 }) {
   return (
     <Link href={`/profile/${id}`}>

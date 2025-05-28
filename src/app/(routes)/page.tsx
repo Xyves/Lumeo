@@ -21,7 +21,6 @@ export default function Home() {
       router.push('/feed');
     }
   }, [status, router]);
-  // console.log(session);
   if (status === 'loading') {
     return null;
   }

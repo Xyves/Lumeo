@@ -16,11 +16,12 @@ import CommentsList from '@/components/Comments/CommentsList';
 import CreateComments from '@/components/Comments/CreateComments';
 import { useCommentsLoader } from '@/hooks/useCommentsLoader';
 import { usePopup } from '@/context/PopupContext';
+import type { CommentInterface, singlePostInterface } from '@/types';
 
 TimeAgo.addDefaultLocale(en);
 export default function Page() {
-  const [post, setPost] = useState();
-  const [comments, setComments] = useState([]);
+  const [post, setPost] = useState<singlePostInterface>();
+  const [comments, setComments] = useState<CommentInterface[]>([]);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const params = useParams();
@@ -29,8 +30,8 @@ export default function Page() {
   const { loadComments } = useCommentsLoader();
   const { showPopup } = usePopup();
   const router = useRouter();
-  console.log('post author:', post);
   useEffect(() => {
+    if (!id || !session?.user.id) return;
     loadPost({ setPost, postId: id, setLoading, userId: session?.user.id });
     loadComments({
       setComments,
@@ -39,9 +40,9 @@ export default function Page() {
       userId: session?.user.id,
     });
   }, []);
-  console.log('Current post:', post);
   const memoizedComments = useMemo(() => comments, [comments]);
   const handleDeletePost = async () => {
+    if (!post?.author.id) return;
     showPopup({ isVisible: true, text: 'Loading', type: 'loading' });
     if (!id || !post?.author?.id || !session?.user?.id) {
       return;
@@ -65,8 +66,7 @@ export default function Page() {
       router.push('/feed');
     }, 2000);
   };
-  if (loading || !post) return <div>Loading...</div>;
-
+  if (loading || !post) return null;
   return (
     <MainLayout>
       <div className=" mb-24 w-full  mx-auto h-auto overflow-y-auto bg-[#131415] mt-10 pb-6 overflow-x-hidden">
@@ -82,10 +82,11 @@ export default function Page() {
             <h2 className="lg:text-2xl md:text-xl sm:text-lg flex items-center ml-2">
               {post.author.name}
             </h2>
-            {post.author.id === session.user.id ? (
+            {post.author.id === session?.user.id ? (
               <button
                 onClick={handleDeletePost}
                 className="pi ml-auto pi-trash text-red-700 size-16 active:text-red-900 hover:text-red-500"
+                type="button"
               />
             ) : null}
           </div>
@@ -123,14 +124,11 @@ export default function Page() {
               type="post"
             />
 
-            <CommentsButton
-              commentsCount={post.commentCount}
-              postId={post.id}
-            />
+            <CommentsButton commentsCount={post.commentCount} id={post.id} />
           </div>
         </div>
         {/* The post id:{id} */}
-        <CreateComments postId={post.id} setComments={setComments} />
+        <CreateComments postId={post.id} setCommentsAction={setComments} />
         <CommentsList memoizedComments={memoizedComments} />
       </div>
     </MainLayout>

@@ -90,13 +90,13 @@ export default function RegisterForm() {
     }));
   };
   return (
-    <div className="  lg:w-2/5  sm:w-full md:w-full bg-white rounded-lg shadow dark:border md:mt-0    dark:bg-gray-800 justify-center items-center flex dark:border-gray-700 ">
-      <div className="p-6 space-y-4 md:space-y-6 sm:p-8  lg:w-1/2 sm:w-full md:w-full   items-center ">
-        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+    <div className=" h-full lg:w-2/5  sm:w-full md:w-full bg-white rounded-lg shadow dark:border md:mt-0    dark:bg-gray-800 justify-center items-center flex dark:border-gray-700 ">
+      <div className="p-6 space-y-4 md:space-y-6 sm:p-8  lg:w-1/2 sm:w-full md:w-full   items-center  justify-center">
+        <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center ">
           Create an account
         </h1>
         <form
-          className="space-y-4 md:space-y-6 "
+          className="space-y-4 md:space-y-6 flex flex-col items-center mx-auto"
           method="POST"
           onSubmit={registerUser}
         >

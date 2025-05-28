@@ -3,24 +3,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import { OrbitProgress } from 'react-loading-indicators';
 import { useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
 
 import MainLayout from '@/layouts/MainLayout/MainLayout';
 import CreatePost from '@/components/Feed/CreatePost';
 import PostsList from '@/components/Feed/PostsList';
-import { LoadPostsArgs, usePostLoader } from '@/hooks/usePostLoader';
+import type { LoadPostsArgs } from '@/hooks/usePostLoader';
+import { usePostLoader } from '@/hooks/usePostLoader';
 import type { PostInterface } from '@/types';
 import { createDeletePostHandler } from '@/lib/utils';
 
 export default function Feed() {
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
   const [hasFetched, setHasFetched] = useState(false);
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [start, setStart] = useState<number>(0);
   const { data: session } = useSession();
-  console.log(session);
   const { loadPosts, updateStart } = usePostLoader();
   const delay = (ms: any) => new Promise(resolve => setTimeout(resolve, ms));
   const feedType = 'feed';
@@ -35,7 +33,6 @@ export default function Feed() {
           userId: session.user.id,
           setPosts,
           setLoading,
-          setHasMore,
           feedType,
         });
       }
@@ -58,9 +55,9 @@ export default function Feed() {
 
   return (
     <MainLayout>
-      <div className=" w-full  p-7 overflow-y-auto  mr-auto max-h-[95%] scrollbar scrollbar-thumb-sky-700 scrollbar-track-sky-300">
+      <div className=" w-full  p-2 md:p-7 overflow-y-auto  mr-auto max-h-[95%] scrollbar scrollbar-thumb-sky-700 scrollbar-track-sky-300">
         {/* bg-[#1f1e1c] */}
-        <CreatePost setPosts={setPosts} />
+        <CreatePost setPostsAction={setPosts} />
         {Array.isArray(posts) &&
           hasFetched &&
           posts.length === 0 &&
@@ -83,7 +80,7 @@ export default function Feed() {
               variant="track-disc"
               speedPlus={2}
               easing="linear"
-              color={'blue'}
+              color="blue"
             />
           </div>
         )}

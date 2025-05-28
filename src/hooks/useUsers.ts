@@ -1,11 +1,19 @@
 import { NextResponse } from 'next/server';
 
-import type { followType } from '@/types';
+import type { followType, UpdateUserResponse } from '@/types';
 
-export default async function fetchUsers({ userId, input, onlyFollowed }) {
+export default async function fetchUsers({
+  userId,
+  input,
+  onlyFollowed,
+}: {
+  userId?: string;
+  input?: string;
+  onlyFollowed: boolean;
+}) {
   try {
     const res = await fetch(
-      `/api/users/?input=${input}&userId=${userId}&followed=${onlyFollowed}`,
+      `/api/users/?input=${input ?? ''}&userId=${userId}&followed=${onlyFollowed}`,
       {
         method: 'GET',
         headers: {
@@ -70,7 +78,11 @@ export async function updateFollowUser({
     return NextResponse.json('Something went wrong', { status: 400 });
   }
 }
-export async function updateUserHook({ form }: any) {
+export async function updateUserHook({
+  form,
+}: {
+  form: FormData;
+}): Promise<UpdateUserResponse> {
   try {
     const id = form.get('id');
     const res = await fetch(`/api/profile/${id}`, {
@@ -78,16 +90,18 @@ export async function updateUserHook({ form }: any) {
       body: form,
     });
     if (!res.ok) {
-      return NextResponse.json('Something went wrong', {
-        statusCode: 400,
-      } as any);
+      return {
+        statusCode: res.status,
+        data: { message: 'Something went wrong' },
+      };
     }
     const data = await res.json();
     console.log(data);
     return { statusCode: res.status, data };
   } catch (error) {
-    return NextResponse.json('Something went wrong', {
-      statusCode: 400,
-    } as any);
+    return {
+      statusCode: 500,
+      data: { message: 'Unexpected error occurred' },
+    };
   }
 }

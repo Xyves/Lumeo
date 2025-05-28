@@ -7,7 +7,9 @@ interface AuthLayoutProps {
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
     <div className="flex h-full w-full ">
-      <div className=" flex flex-1 bg-gray-800 ">{children}</div>
+      <div className=" flex flex-1 flex-col md:flex-row bg-gray-800 ">
+        {children}
+      </div>
     </div>
   );
 };

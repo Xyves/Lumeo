@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 
 import { Inter } from 'next/font/google';
+import type { NextAuthOptions } from 'next-auth';
 import { getServerSession } from 'next-auth';
 
 import type { ChildrenProps } from '@/types';
@@ -8,7 +9,7 @@ import Popup from '@/components/popup/Popup';
 import PopupProvider from '@/context/PopupContext';
 
 import ClientSessionProvider from './ClientSessionProvider';
-import { authOptions } from './api/auth/[...nextauth]/route';
+import { authOptions as rawAuthOptions } from './api/auth/[...nextauth]/route';
 
 export const metadata = {
   description:
@@ -23,6 +24,7 @@ const inter = Inter({
   adjustFontFallback: false,
 });
 export default async function RootLayout({ children }: ChildrenProps) {
+  const authOptions = rawAuthOptions as NextAuthOptions;
   // Await the session data
   const session = await getServerSession(authOptions);
 

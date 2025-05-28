@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import type { loadProfileType, loadUsersType } from '@/types';
+import type { loadProfileType, loadUsersType, UpdateUserArgs } from '@/types';
 
 import fetchUsers, {
   fetchUserProfile,
@@ -63,17 +63,24 @@ export function useUsersLoader() {
     },
     []
   );
-  const updateUser = useCallback(async ({ form, setUser }) => {
-    try {
-      const { statusCode, data } = await updateUserHook({ form });
-      if (statusCode === 200 || statusCode === 201) {
-        setUser(data);
+  const updateUser = useCallback(
+    async ({ form, setUser }: UpdateUserArgs): Promise<any> => {
+      console.log('updateUser:', form, setUser);
+      try {
+        const response = await updateUserHook({ form });
+        if (!response) {
+          return;
+        }
+        const { statusCode, data } = response;
+        if (statusCode === 200 || statusCode === 201) {
+          setUser(data);
+        }
+        return { statusCode };
+      } catch (err) {
+        console.error('Initial user load error', err);
       }
-
-      return { statusCode, data };
-    } catch (err) {
-      console.error('Initial user load error', err);
-    }
-  }, []);
+    },
+    []
+  );
   return { loadUsers, loadProfile, changeFollowState, updateUser };
 }

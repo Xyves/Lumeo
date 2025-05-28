@@ -11,14 +11,15 @@ import { usePopup } from '@/context/PopupContext';
 import type { editProfileSchema } from '@/schema';
 import { validateForm } from '@/lib/utils';
 import { useUsersLoader } from '@/hooks/useUsersLoader';
+import type { ProfileModalArgs } from '@/hooks/usePostLoader';
 
 export default function ProfileModal({
   modalVisible,
-  setModalVisible,
+  setModalVisibleAction,
   user,
   id,
-  setUser,
-}) {
+  setUserAction,
+}: ProfileModalArgs) {
   const { updateUser } = useUsersLoader();
   const { showPopup } = usePopup();
   const { data: session, status } = useSession();
@@ -34,7 +35,7 @@ export default function ProfileModal({
     email: string;
     file: File | null;
   }>({
-    id,
+    id: id || '',
     name: '',
     email: '',
     file: null,
@@ -68,13 +69,21 @@ export default function ProfileModal({
     const form = new FormData();
     if (Object.keys(newErrors).length === 0) {
       Object.entries(formData).forEach(([key, value]) => {
-        if (value !== '' && value !== initialData[key]) {
-          form.append(key, value);
+        const typedKey = key as keyof typeof initialData;
+        if (value !== '' && value !== null && value !== initialData[typedKey]) {
+          if (value instanceof File) {
+            form.append(key, value);
+          } else if (typeof value === 'string') {
+            form.append(key, value);
+          }
         }
       });
 
       form.append('id', formData.id);
-      const { statusCode, data } = await updateUser({ form, setUser });
+      const { statusCode } = await updateUser({
+        form,
+        setUser: setUserAction,
+      });
       console.log('status:', status);
       if (statusCode === 200 || statusCode === 201) {
         showPopup({
@@ -93,24 +102,30 @@ export default function ProfileModal({
           text: "Can't update user",
           type: 'error',
         });
+        setTimeout(async () => {
+          showPopup({ isVisible: false, text: '', type: 'undefined' });
+        }, 2000);
       }
     } else {
       showPopup({
         isVisible: true,
-        text: "Can't update user !!",
+        text: "Can't update user",
         type: 'error',
       });
+      setTimeout(async () => {
+        showPopup({ isVisible: false, text: '', type: 'undefined' });
+      }, 2000);
     }
   };
   return (
-    <div className="fixed inset-0 z-40 w-1/4  my-6 h-fit flex items-center justify-center backdrop-blur-lg bg-gray-900  mx-auto bg-opacity-50 ">
+    <div className="fixed inset-0 z-30 w-1/4  my-6 h-fit flex items-center justify-center backdrop-blur-lg bg-gray-900  mx-auto bg-opacity-50 ">
       <div className="flex flex-col">
         <div className="flex px-1 py-3 justify-around">
           <h1 className="text-3xl">Edit Profile</h1>
           <button
             className="ml-auto text-2xl"
             type="button"
-            onClick={() => setModalVisible(false)}
+            onClick={() => setModalVisibleAction(!modalVisible)}
           >
             <CircleX className="hover:text-gray-100" />
           </button>
@@ -139,7 +154,7 @@ export default function ProfileModal({
                 <input
                   type="file"
                   name="file"
-                  id="file"
+                  id="file-upload"
                   className="hidden"
                   onChange={e => {
                     handleFileChange(e);
@@ -188,12 +203,21 @@ export default function ProfileModal({
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
               )}
-              <button
-                type="submit"
-                className="bg-[#44138e] px-8 py-2 rounded-3xl  w-full hover:bg-[#3d1f84] mt-4 text-slate-50"
-              >
-                Save & Sign Me Out
-              </button>
+              {session?.user.name === 'Guest' ? (
+                <button
+                  type="button"
+                  className="bg-red-900 px-8 py-2 rounded-3xl  w-full mt-4 active:bg-red-700"
+                >
+                  Can't update Guest!
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-[#44138e] px-8 py-2 rounded-3xl  w-full hover:bg-[#3d1f84] mt-4 text-slate-50"
+                >
+                  Save & Sign Me Out
+                </button>
+              )}
             </div>
           </form>
         </div>

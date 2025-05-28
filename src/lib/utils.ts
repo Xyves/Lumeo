@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { signOut } from 'next-auth/react';
 
 import { editProfileSchema, RegisterSchema } from '@/schema';
 
@@ -21,7 +22,7 @@ export function createDeletePostHandler<T extends { id: string }>(
     setPosts(prev => prev.filter(post => post.id !== postId));
   };
 }
-export const validateForm = (data, type) => {
+export const validateForm = (data: any, type: 'editUser' | 'register') => {
   try {
     if (type === 'register') {
       RegisterSchema.parse(data);
@@ -35,4 +36,7 @@ export const validateForm = (data, type) => {
     }
     return {};
   }
+};
+export const logoutUser = () => {
+  signOut({ callbackUrl: `/` });
 };

@@ -4,7 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+
 import { usePopup } from '@/context/PopupContext';
+
 import GithubAuthButton from './GithubAuthButton';
 
 export default function LoginWindow() {
@@ -58,21 +60,24 @@ export default function LoginWindow() {
     }
   };
   return (
-    <div className="w-2/5  bg-[#1f2937] text-[#f1f1f1] flex justify-center items-center flex-col  space-y-4 md:space-y-6 sm:p-8 ">
-      <h1 className="text-7xl">Hi there!</h1>
-      <h2 className="text-2xl">
-        Welcome to{' '}
-        <span className="underline font-[cyberwayriders]">Lumeo</span>
+    <div className="w-full md:w-2/5 bg-[#1f2937] h-full  text-[#f1f1f1] flex justify-center items-center flex-col  py-20 md:py-3 space-y-5 md:space-y-6 sm:p-8   md:h-full sm:h-full">
+      <h2 className="flex items-center tracking-[.25rem]">
+        <p className="text-2xl font-[cyberwayriders] font-bold">
+          Welcome to &nbsp;
+        </p>
+        <span className=" font-[cyberwayriders]  text-2xl md:text-3xl font-bold">
+          Lumeo
+        </span>
       </h2>
 
       <form
         onSubmit={e => loginUser(e, { isGuest: false })}
-        className="flex flex-col [&>button]:p-3 py-24  gap-3 w-1/2    "
+        className="flex flex-col [&>button]:p-3 py-2 md:py-8 lg:py-24  gap-3 md:w-1/2 w-3/4     "
         method="get"
       >
         <label
           htmlFor="name"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          className="block  text-sm font-medium text-gray-900 dark:text-white"
         >
           Nickname
         </label>
@@ -90,7 +95,7 @@ export default function LoginWindow() {
         />
         <label
           htmlFor="password"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          className="block text-sm font-medium text-gray-900 dark:text-white"
         >
           Password
         </label>
@@ -99,7 +104,7 @@ export default function LoginWindow() {
           name="password"
           id="password"
           placeholder="••••••••"
-          className="bg-gray-50 border mb-8 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="bg-gray-50 border mb-2 md:mb-8 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           value={data.password}
           onChange={(e: any) => {
             setData({ ...data, password: e.target.value });

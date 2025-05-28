@@ -1,16 +1,16 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { OrbitProgress } from 'react-loading-indicators';
 
 import MainLayout from '@/layouts/MainLayout/MainLayout';
-import { LoadPostsArgs, usePostLoader } from '@/hooks/usePostLoader';
+import type { LoadPostsArgs } from '@/hooks/usePostLoader';
+import { usePostLoader } from '@/hooks/usePostLoader';
 import PostsList from '@/components/Feed/PostsList';
 import CreatePost from '@/components/Feed/CreatePost';
 import { createDeletePostHandler } from '@/lib/utils';
-import { PostInterface } from '@/types';
+import type { PostInterface } from '@/types';
 
 export default function Explore() {
   const [loading, setLoading] = useState(false);
@@ -45,12 +45,11 @@ export default function Explore() {
     } as LoadPostsArgs);
   }, []);
   const handleDeletePost = createDeletePostHandler(setPosts);
-
   const memoizedPosts = useMemo(() => posts, [posts]);
   return (
     <MainLayout>
       <div className=" w-full  p-7 overflow-y-auto my-4 mx-auto scrollbar scrollbar-thumb-sky-700 scrollbar-track-sky-300 bg-[rgba(0,0,0,0.6)] max-h-[95%]">
-        <CreatePost setPosts={setPosts} />
+        <CreatePost setPostsAction={setPosts} />
         <PostsList
           memoizedPosts={memoizedPosts}
           setStart={setStart}
@@ -63,7 +62,7 @@ export default function Explore() {
               variant="track-disc"
               speedPlus={2}
               easing="linear"
-              color={'blue'}
+              color="blue"
             />
           </div>
         )}

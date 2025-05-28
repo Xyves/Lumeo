@@ -7,9 +7,15 @@ import { useSession } from 'next-auth/react';
 
 import { useTargetRef } from '@/context/RefContext';
 import { usePostLoader } from '@/hooks/usePostLoader';
+import type { PostInterface } from '@/types';
 
-export default function CreatePost({ setPosts }) {
-  const { data: session, status } = useSession();
+export default function CreatePost({
+  setPostsAction,
+}: {
+  setPostsAction: React.Dispatch<React.SetStateAction<PostInterface[]>>;
+}) {
+  console.log('Set posts:', setPostsAction);
+  const { data: session } = useSession();
   const { handleNewPost } = usePostLoader();
   const [postData, setPostData] = useState<{
     content: string;
@@ -29,16 +35,22 @@ export default function CreatePost({ setPosts }) {
       setPostData({ ...postData, file });
     }
   };
+  if (!session) {
+    return null;
+  }
   const submitPost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (postData.content.length < 3) {
       console.error('Failed to create post');
       return;
     }
+
     const formData = new FormData();
     formData.append('content', postData.content);
-    formData.append('id', session?.user.id);
-    formData.append('file', postData.file);
+    formData.append('id', session.user.id);
+    if (postData.file) {
+      formData.append('file', postData.file);
+    }
 
     const response = await fetch('/api/posts', {
       method: 'POST',
@@ -51,13 +63,13 @@ export default function CreatePost({ setPosts }) {
         name: session?.user.name,
         image: session?.user.image,
       };
-      handleNewPost(setPosts, newPost);
+      handleNewPost(setPostsAction, newPost);
       setPostData({ ...postData, content: '' });
     } else {
       console.error('Failed to create post');
     }
 
-    if (formRef) {
+    if (formRef.current) {
       formRef.current.reset();
     }
   };
@@ -72,6 +84,7 @@ export default function CreatePost({ setPosts }) {
             <Image
               className="rounded-3xl"
               fill
+              alt="user image"
               src={session?.user?.image || '/images/default_user.webp'}
             />
           </div>
@@ -91,10 +104,12 @@ export default function CreatePost({ setPosts }) {
    border-[.09rem]  bg-[rgba(0,0,0,0.8)]"
           />
         </div>
-        <div className=" flex items-end justify-center  pt-1 py-2">
-          <div className="flex items-center ml-auto space-x-2 mr-3 h-full ">
+        <div className=" flex items-end justify-end  pt-1 py-2">
+          <div className="flex items-end ml-auto space-x-2 mr-3 h-full ">
             {fileName && (
-              <p className="text-sm text-[#00e6fe]">Selected: {fileName}</p>
+              <p className="text-sm text-[#00e6fe] break-words max-w-[350px] whitespace-normal">
+                Selected: {fileName}
+              </p>
             )}
             <label
               htmlFor="file-upload"

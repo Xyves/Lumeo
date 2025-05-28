@@ -5,7 +5,15 @@ import React, { useState } from 'react';
 
 import { useCommentsLoader } from '@/hooks/useCommentsLoader';
 
-export default function CreateComments({ postId, setComments }) {
+export default function CreateComments({
+  postId,
+  setCommentsAction,
+}: {
+  postId: string;
+  setCommentsAction: (comment: any) => void;
+}) {
+  console.log('error ts postId', postId);
+  console.log('error ts setCommentsAction', setCommentsAction);
   const [input, setInput] = useState('');
   const { data: session } = useSession();
   const { handleNewComment } = useCommentsLoader();
@@ -14,17 +22,17 @@ export default function CreateComments({ postId, setComments }) {
 
     const response = await fetch(`/api/posts/${postId}/comments`, {
       method: 'POST',
-      body: JSON.stringify({ userId: session.user.id, input }),
+      body: JSON.stringify({ userId: session?.user.id, input }),
     });
     if (input.length < 3) return;
     if (response.ok) {
       const newComment = await response.json();
       console.log('new comment is:', newComment);
       newComment.user = {
-        name: session.user.name,
-        image: session.user.image,
+        name: session?.user.name,
+        image: session?.user.image,
       };
-      handleNewComment(setComments, newComment);
+      handleNewComment(setCommentsAction, newComment);
       setInput('');
     } else {
       console.error('Failed to create post');

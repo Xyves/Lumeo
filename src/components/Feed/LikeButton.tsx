@@ -26,6 +26,7 @@ export default function LikeButton({
   const [likesCount, setLikesCount] = useState(likeCount);
   const [liked, setLiked] = useState(isLiked);
   const changeLike = async () => {
+    if (!session?.user.id) return;
     try {
       if (type === 'post') {
         updateLikeStatus({

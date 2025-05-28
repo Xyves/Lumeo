@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 import { PrismaClient } from '@prisma/client';
 
+import type { CloudinaryResponseInterface } from '@/types';
+
 import uploadFile from './cloudinaryService';
 
 const prisma = new PrismaClient();
@@ -83,10 +85,9 @@ export const getUserLikedPosts = async (profileId: string, userId: string) => {
   const likedPosts = await prisma.post.findMany({
     orderBy: { date: 'desc' },
     where: {
-      authorId: profileId,
       likes: {
         some: {
-          user_id: userId,
+          user_id: profileId,
         },
       },
     },
@@ -183,8 +184,11 @@ export const createPost = async ({
   let cloudinaryResponse = null;
   console.log(file);
   if (file && file.size > 0) {
-    cloudinaryResponse = await uploadFile(file);
+    cloudinaryResponse = (await uploadFile(
+      file
+    )) as CloudinaryResponseInterface;
   }
+  console.log('cloudinaryResponse', cloudinaryResponse);
   const imageUrl = cloudinaryResponse?.secure_url;
 
   return prisma.post.create({

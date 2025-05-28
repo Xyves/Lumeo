@@ -1,4 +1,4 @@
-import NewFollows from '@/components/Aside/NewFollowsers';
+import NewFollows from '@/components/Aside/NewFollowers';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import { RefProvider } from '@/context/RefContext';
 import type { ChildrenProps } from '@/types';
@@ -10,7 +10,7 @@ export default function MainLayout({ children }: ChildrenProps) {
         <div className="h-auto flex">
           <Sidebar />
         </div>
-        <div className=" sm:w-full md:w-3/5 lg:w-2/5 h-screen  flex px-10 mx-auto">
+        <div className=" sm:w-full md:w-3/5 lg:w-2/5 h-screen  flex md:px-10 px-2 mx-auto">
           {children}
         </div>
         <NewFollows />

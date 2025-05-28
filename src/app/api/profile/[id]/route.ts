@@ -41,7 +41,10 @@ export async function PATCH(
       id,
       updateData,
     });
-    return NextResponse.json(updatedUser, { status: 201 });
+    return NextResponse.json({
+      statusCode: 201,
+      data: updatedUser,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to update profile' },

@@ -15,31 +15,34 @@ interface FollowerInterface {
   id: string;
 }
 export default function Follower({ name, profile_url, id }: FollowerInterface) {
-  console.log(profile_url);
   const router = useRouter();
   return (
-    <div className="">
-      <button
-        type="button"
-        id={id}
-        className="flex my-4 items-center w-full justify-between"
-        onClick={() => router.push(`/profile/${id}`)}
-      >
-        <Link href={`/profile/${id}`} className="flex rounded-3xl items-center">
-          <Image
-            src={profile_url || '/images/default_user.webp'}
-            alt=""
-            width={35}
-            height={35}
-            className="rounded-2xl"
-          />
-          <span className="ml-2 text-sm hover:underline">{name}</span>
-        </Link>
+    <div
+      role="button"
+      id={id}
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          router.push(`/profile/${id}`);
+        }
+      }}
+      className="flex my-4 items-center w-full justify-between "
+      onClick={() => router.push(`/profile/${id}`)}
+    >
+      <Link href={`/profile/${id}`} className="flex rounded-3xl items-center">
+        <Image
+          src={profile_url || '/images/default_user.webp'}
+          alt=""
+          width={35}
+          height={35}
+          className="rounded-2xl"
+        />
+        <span className="ml-2 text-sm hover:underline">{name}</span>
+      </Link>
 
-        <div className="ml-auto my-auto">
-          <FollowButton followedId={id} isFollowing={false} />
-        </div>
-      </button>
+      <div className="ml-auto my-auto">
+        <FollowButton followedId={id} isFollowing={false} />
+      </div>
     </div>
   );
 }

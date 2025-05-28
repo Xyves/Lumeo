@@ -10,7 +10,6 @@ import {
   User,
   Telescope,
   Plus,
-  PlusCircle,
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';

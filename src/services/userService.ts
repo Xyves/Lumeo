@@ -1,6 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-import type { editProfileType, getUsersProps } from '@/types';
+import type {
+  CloudinaryResponseInterface,
+  editProfileType,
+  followType,
+  getUsersProps,
+} from '@/types';
 
 import uploadFile from './cloudinaryService';
 
@@ -29,13 +34,16 @@ export const signUser = async (
   });
 };
 export const getUsers = async (
-  input,
-  userId,
-  followed
+  input: getUsersProps['input'],
+  userId: getUsersProps['userId'],
+  followed: getUsersProps['followed']
 ) => {
-  const followedBoolean = followed === 'true';
-  console.log({ input, userId, followed });
-  return prisma.user.findMany({
+  const followedBoolean = !!followed;
+  if (!userId) {
+    throw new Error('Missing user ID');
+  }
+
+  const users = await prisma.user.findMany({
     where: {
       NOT: {
         id: userId,
@@ -63,8 +71,10 @@ export const getUsers = async (
       updatedAt: true,
     },
   });
+  console.log('New optional followers:', users);
+  return users;
 };
-export const getProfile = async (id, authorId) => {
+export const getProfile = async (id: string, authorId: string | null) => {
   const user = await prisma.user.findFirst({
     where: {
       id,
@@ -86,6 +96,9 @@ export const getProfile = async (id, authorId) => {
       isFollowing: false,
     };
   console.log('Checking follow between:', { authorId, id });
+  if (!authorId) {
+    throw new Error('Missing author ID');
+  }
 
   const followExists = await prisma.follower.findFirst({
     where: {
@@ -103,7 +116,11 @@ export const getProfile = async (id, authorId) => {
     isFollowing: !!followExists,
   };
 };
-export const followUser = async ({ followerId, followedId, isFollowed }) => {
+export const followUser = async ({
+  followerId,
+  followedId,
+  isFollowed,
+}: followType) => {
   console.log(followerId, followedId, isFollowed);
   return prisma.$transaction(
     !isFollowed
@@ -173,11 +190,16 @@ export const patchUser = async ({
   updateData: editProfileType;
 }) => {
   const { name, email, file } = updateData;
+  if (id === '0c7b68cc-a94e-4863-a6e7-d9c9be97940e') {
+    throw new Error('You cannot update Guest.');
+  }
 
   let cloudinaryResponse = null;
   console.log(file);
   if (file && file.size > 0) {
-    cloudinaryResponse = await uploadFile(file);
+    cloudinaryResponse = (await uploadFile(
+      file
+    )) as CloudinaryResponseInterface;
   }
   const data: any = {};
 
@@ -185,7 +207,6 @@ export const patchUser = async ({
   if (email) data.email = email;
   if (cloudinaryResponse?.secure_url)
     data.image = cloudinaryResponse.secure_url;
-  console.log('5', data);
   return prisma.user.update({
     where: { id },
     data,

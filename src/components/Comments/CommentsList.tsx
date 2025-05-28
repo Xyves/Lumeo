@@ -1,13 +1,13 @@
 import React from 'react';
 
-import type { commentType } from '@/types';
+import type { CommentInterface} from '@/types';
 
 import PostComment from './PostComment';
 
 export default function CommentsList({
   memoizedComments,
 }: {
-  memoizedComments: commentType;
+  memoizedComments: CommentInterface[];
 }) {
   console.log('memoizedComments', memoizedComments);
   return (

@@ -97,11 +97,11 @@ const deletePost = ({ postId, commentId, userId }: toggleLikeType) => {
       },
     }),
   ]);
-  return prisma.comment.deleteMany({
-    where: {
-      id: commentId,
-      user_id: userId,
-    },
-  });
+  // return prisma.comment.deleteMany({
+  //   where: {
+  //     id: commentId,
+  //     user_id: userId,
+  //   },
+  // });
 };
 export { createPostComment, deletePost };

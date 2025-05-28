@@ -8,6 +8,11 @@ export async function GET(req: Request) {
   const userId = searchParams.get('userId');
   const start = parseInt(searchParams.get('start') || '0', 10);
   const feedType = searchParams.get('feedType');
+  if (!userId || (feedType !== 'feed' && feedType !== 'explore'))
+    return NextResponse.json(
+      { error: 'Failed to fetch posts' },
+      { status: 500 }
+    );
   try {
     const newPosts = await getPostsWithUsers(start, userId, feedType);
     return NextResponse.json(newPosts, { status: 201 });
@@ -28,14 +33,15 @@ export const config = {
 export async function POST(req: Request) {
   const formData = await req.formData();
 
-  const content = formData.get('content');
-  const file = formData.get('file');
-  const authorId = formData.get('id');
+  const content = (formData.get('content') as string) ?? '';
+  const fileData = formData.get('file');
+  const file: File | null = fileData instanceof File ? fileData : null;
+  const authorId = (formData.get('id') as string) ?? '';
 
   try {
     const newPost = await createPost({
       content,
-      ...(file && { file }),
+      file,
       authorId,
     });
     return NextResponse.json(newPost, { status: 201 });

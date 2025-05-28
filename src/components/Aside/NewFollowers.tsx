@@ -4,12 +4,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 import { useUsersLoader } from '@/hooks/useUsersLoader';
+import type { FollowerType } from '@/types';
 
 import Follower from './Follower';
 
 export default function NewFollows() {
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<FollowerType[]>([]);
   const { loadUsers } = useUsersLoader();
   const { data: session, status } = useSession();
   useEffect(() => {
@@ -17,17 +18,17 @@ export default function NewFollows() {
     loadUsers({
       userId: session?.user.id,
       setLoading,
-      setUsers: users => setUsers(users.slice(0, 10)),
-      input: null,
+      setUsers,
+      input: undefined,
       onlyFollowed: true,
     });
-  }, [session?.user?.id, loadUsers]);
+  }, [session?.user?.id, loadUsers, status]);
   const memoizedUsers = useMemo(() => users.slice(0, 10), [users]);
+  console.log('memoizedUsers', users);
   if (memoizedUsers.length === 0) {
     return null;
   }
-  if (status === 'loading') return null;
-
+  if (status === 'loading' || loading) return null;
   return (
     <aside className=" max-w-1/4 mr-auto p-3  lg:inline-block hidden font-lunar my-auto">
       <div className="  p-4 rounded-3xl  border-2 border-purple-800 bg-[rgb(26,27,31)] text-white">
@@ -36,13 +37,13 @@ export default function NewFollows() {
           People you might know
         </h2>
         <div className="my-6">
-          {memoizedUsers.map(follower => {
+          {memoizedUsers.map(user => {
             return (
               <Follower
-                name={follower.name}
-                profile_url={follower.image}
-                id={follower.id}
-                key={follower.id}
+                name={user.name}
+                profile_url={user.image}
+                id={user.id}
+                key={user.id}
               />
             );
           })}

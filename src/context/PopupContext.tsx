@@ -39,9 +39,7 @@ export default function PopupProvider({
     [popupData, showPopup]
   );
   return (
-    <div>
-      <PopupContext.Provider value={value}>{children}</PopupContext.Provider>
-    </div>
+    <PopupContext.Provider value={value}>{children}</PopupContext.Provider>
   );
 }
 export const usePopup = () => {

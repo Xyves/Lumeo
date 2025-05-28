@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import { MessageCircle, Heart } from 'lucide-react';
 import 'primeicons/primeicons.css';
@@ -50,7 +51,7 @@ export default function Post({
       ref={innerRef}
     >
       <div className="cursor-pointer rounded-lg">
-        <section className="  w-full flex-row flex items-center p-3 rounded-t-md">
+        <section className="  w-full flex-row flex items-center px-3 py-2 md:p-3 rounded-t-md">
           <div className="w-12 h-12  relative flex-col flex">
             <Link
               href={`/profile/${authorId}`}
@@ -61,7 +62,7 @@ export default function Post({
                 src={profile_image || '/images/default_user.webp'}
                 fill
                 alt="profile image"
-                className="rounded-full aspect-square object-cover absolute"
+                className="rounded-full aspect-square object-cover absolute border-[1px] border-gray-500"
               />
             </Link>
           </div>
@@ -69,52 +70,83 @@ export default function Post({
             href={`/profile/${authorId}`}
             onClick={e => e.stopPropagation()}
           >
-            <p className="ml-2 lg:text-lg hover:underline font-bold font-courier text-[#8b28cd]">
+            <p className="ml-2 lg:text-xl  text-lg  hover:underline font-bold font-courier text-[#8b28cd]">
               {authorName}
             </p>
           </Link>
           <div className="relative group inline-block w-fit">
-            <p className="lg:text-sm text-purple-300">
-              - {date && <ReactTimeAgo date={new Date(date)} locale="en-US" />}
+            <p className="lg:text-xs text-xs text-purple-300">
+              &nbsp;
+              {date && <ReactTimeAgo date={new Date(date)} locale="en-US" />}
             </p>
             <div className="absolute bottom-full mb-1 hidden w-max rounded bg-gray-800 px-2 py-1 text-xs text-white group-hover:block z-10">
               {new Date(date).toLocaleString()}
             </div>
           </div>
 
-          {authorId === session.user.id ? (
+          {authorId === session?.user.id ? (
             <button
               onClick={handleDeletePost}
               className="pi ml-auto pi-trash text-red-700 size-16 active:text-red-900 hover:text-red-500"
+              type="button"
             />
           ) : null}
         </section>
-        <section
-          className="w-full flex-col flex tracking-[.26rem]"
-          onClick={e => router.push(`/post/${id}`)}
-        >
-          {/* // text-[#edd852] */}
-          <p
-            className="py-6 ml-6 px-2  
-          text-[#F1E3E4x]
-           border-[#14a014] font-serif "
+        <section className="w-full flex-col flex pb-5 md:pb-0 tracking-wider">
+          <div
+            role="button"
+            onClick={() => router.push(`/post/${id}`)}
+            tabIndex={0}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                router.push(`/post/${id}`);
+              }
+            }}
+            className="outline-none"
           >
-            {content}
-          </p>
-          {/* bg-[#1F2937] */}
-          {post_image ? (
-            <Zoom>
-              <div className="h-80 w-full flex items-center overflow-hidden mb-3   justify-center">
-                <img src={post_image} alt="" className="  object-contain" />
-              </div>
-            </Zoom>
-          ) : (
-            ''
-          )}
+            {/* // text-[#edd852] */}
+            <p
+              className=" py-2 md:py-6 ml-6 px-2  
+          text-[#F1E3E4x]
+           border-[#14a014]  "
+            >
+              {content}
+            </p>
+            {/* bg-[#1F2937] */}
+            {post_image ? (
+              <Zoom>
+                <div
+                  className=" w-full flex items-center overflow-hidden mb-3 md:px-3 px-2 justify-center"
+                  role="button"
+                  tabIndex={0}
+                  onClick={e => e.stopPropagation()}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
+                >
+                  <img src={post_image} alt="" className="  object-contain" />
+                </div>
+              </Zoom>
+            ) : (
+              ''
+            )}
+          </div>
         </section>
         <section
-          onClick={e => e.stopPropagation()}
           className="h-1/4  py-3 w-full flex-row flex items-center pl-6 rounded-b-md bg-[rgb(68,12,124)]"
+          role="button"
+          tabIndex={0}
+          onClick={e => e.stopPropagation()}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
         >
           <LikeButton
             likeCount={likeCount}

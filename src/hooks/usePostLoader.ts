@@ -1,5 +1,8 @@
 import type React from 'react';
 import { useCallback } from 'react';
+import { boolean } from 'zod';
+
+import type { fetchUserPostsType } from '@/types';
 
 import fetchPosts, {
   deletePostById,
@@ -11,11 +14,29 @@ import fetchPosts, {
 
 export type LoadPostsArgs = {
   start: number;
-  userId: string;
+  userId: string | undefined;
+  authorId?: string | undefined;
   setPosts: React.Dispatch<React.SetStateAction<any[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  feedType: string;
-  setHasMore: React.Dispatch<React.SetStateAction<boolean>>;
+  feedType?: string;
+};
+export type ProfileModalArgs = {
+  modalVisible: boolean;
+  setModalVisibleAction: React.Dispatch<React.SetStateAction<boolean>>;
+  id: string | string[];
+  setUserAction: React.Dispatch<React.SetStateAction<any>>;
+  user: {
+    name?: string | undefined;
+    email?: string | undefined;
+    image?: string | undefined;
+    file?: string | undefined;
+  };
+};
+export type loadPostArg = {
+  setPost: React.Dispatch<React.SetStateAction<any>>;
+  postId: string | string[];
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  userId: string;
 };
 export function usePostLoader() {
   const loadPosts = useCallback(
@@ -24,7 +45,6 @@ export function usePostLoader() {
       start,
       userId,
       setLoading,
-      setHasMore,
       feedType,
     }: LoadPostsArgs) => {
       setLoading(true);
@@ -33,13 +53,11 @@ export function usePostLoader() {
         if (start === 0) {
           if (!data || Object.keys(data).length === 0) {
             console.warn('No post found. Skipping setPost.');
-            setHasMore(false);
             return; // Stop further processing
           }
           setPosts(data);
         } else {
           if (!data || data.length === 0) {
-            setHasMore(false);
             return;
           }
           setPosts(prev => [...prev, ...data]);
@@ -53,7 +71,7 @@ export function usePostLoader() {
     [fetchPosts]
   );
   const loadPost = useCallback(
-    async ({ setPost, postId, setLoading, userId }) => {
+    async ({ setPost, postId, setLoading, userId }: loadPostArg) => {
       setLoading(true);
       try {
         const data = await fetchPost({ postId, userId });
@@ -67,18 +85,28 @@ export function usePostLoader() {
     },
     [fetchPost]
   );
-  const deletePostFromDb = useCallback(async ({ id, authorId, userId }) => {
-    console.log('Waiting to delete post id of', id);
-    try {
-      const data = await deletePostById({ id, authorId, userId });
-      return data;
-    } catch (err) {
-      console.error("Can't delete post", err);
-    }
-  }, []);
+  const deletePostFromDb = useCallback(
+    async ({ id, authorId, userId }: fetchUserPostsType) => {
+      console.log('Waiting to delete post id of', id);
+      if (!id) return null;
+      try {
+        const data = await deletePostById({ id, authorId, userId });
+        return data;
+      } catch (err) {
+        console.error("Can't delete post", err);
+      }
+    },
+    []
+  );
 
   const loadUserPosts = useCallback(
-    async ({ setPosts, start, userId, setLoading, authorId }) => {
+    async ({
+      setPosts,
+      start,
+      userId,
+      setLoading,
+      authorId,
+    }: LoadPostsArgs) => {
       setLoading(true);
       try {
         const data = await fetchUserPosts({ start, userId, authorId });
@@ -114,7 +142,7 @@ export function usePostLoader() {
     },
     []
   );
-  const updateStart = useCallback(setStart => {
+  const updateStart = useCallback((setStart: any) => {
     setStart((prev: any) => prev + 5);
   }, []);
   const handleNewPost = useCallback((setPosts, newPost) => {

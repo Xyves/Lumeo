@@ -6,86 +6,81 @@ import Image from 'next/image';
 import { Calendar, CircleX, PenLine } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 import { OrbitProgress } from 'react-loading-indicators';
-import type { z } from 'zod';
 
-import { usePopup } from '@/context/PopupContext';
 import { useUsersLoader } from '@/hooks/useUsersLoader';
 import MainLayout from '@/layouts/MainLayout/MainLayout';
 import FollowButton from '@/components/Aside/FollowButton';
 import PostsList from '@/components/Feed/PostsList';
 import { usePostLoader } from '@/hooks/usePostLoader';
-import type { PostInterface } from '@/types';
-import { createDeletePostHandler } from '@/lib/utils';
+import type { PostInterface, profileUserInterface } from '@/types';
+import { createDeletePostHandler, logoutUser } from '@/lib/utils';
 import ProfileModal from '@/components/popup/ProfileModal';
+import PostsLikesToggle from '@/components/Profile/PostsLikesToggle ';
 
 export default function Page() {
   const { loadProfile } = useUsersLoader();
   const { loadUserPosts, updateStart, loadLikedPosts } = usePostLoader();
   const [loading, setLoading] = useState<boolean>(false);
-  const [user, setUser] = useState();
-  const [view, setView] = useState<'posts' | 'likes'>('posts');
+  const [user, setUser] = useState<profileUserInterface>();
   const [modalVisible, setModalVisible] = useState(false);
   const { data: session, status } = useSession();
   const params = useParams();
   const { id } = params;
-  const [hasFetched, setHasFetched] = useState(false);
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [start, setStart] = useState<number>(0);
-
+  const [view, setView] = useState<'posts' | 'likes'>('posts');
+  console.log('user', user);
   const handleDeletePost = createDeletePostHandler(setPosts);
 
   // const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
+  const fixedId = Array.isArray(id) ? id[0] : id;
   useEffect(() => {
-    if (view !== 'posts') return;
+    if (view !== 'posts' || !id || !session?.user?.id) return;
 
     loadUserPosts({
       start: 0,
       userId: session.user.id,
-      authorId: id,
+      authorId: fixedId,
       setPosts,
       setLoading,
     });
-    setHasFetched(true);
-  }, [view]);
+  }, [view, id, session?.user.id]);
 
   useEffect(() => {
-    if (view !== 'likes') return;
+    if (view !== 'likes' || !id) return;
 
     loadLikedPosts({
-      userId: session.user.id,
+      userId: session?.user.id,
+      profileId: id,
       setLoading,
       setPosts,
-      profileId: id,
     });
-    setHasFetched(true);
-  }, [view]);
+  }, [view, session?.user.id]);
   const memoizedPosts = useMemo(() => posts, [posts]);
   useEffect(() => {
     if (status !== 'authenticated') return;
+    if (typeof id !== 'string') return;
     loadProfile({
       setLoading,
       setUser,
       id,
       authorId: session.user.id,
     });
-  }, []);
-  console.log('displayed user:', user);
+  }, [status, id, session?.user.id]);
   if (status === 'loading') {
     return null;
   }
   return (
     <MainLayout>
-      {modalVisible && (
+      {modalVisible && user && id && (
         <ProfileModal
           modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
+          setModalVisibleAction={setModalVisible}
           user={user}
           id={id}
-          setUser={setUser}
+          setUserAction={setUser}
         />
       )}
-
       <div
         className={` mb-24 w-full  mx-auto h-full bg-[#131415]  overflow-y-auto max-h-[95%] rounded-md border-purple-400 border-[1px] border-solid  relative ${modalVisible ? 'filter blur-sm' : ''}`}
       >
@@ -98,16 +93,27 @@ export default function Page() {
               width={115}
               alt="user profile image"
               height={110}
-              src={user?.image || '/images/default_user.webp'}
+              src={
+                user?.image?.trim() ? user.image : '/images/default_user.webp'
+              }
             />
             {id === session?.user.id ? (
-              <button
-                className="w-32 h-12 p-2  ml-auto relative right-0 -top-10 mr-10  rounded-3xl bg-[white] text-black hover:bg-gray-300"
-                type="button"
-                onClick={() => setModalVisible(!modalVisible)}
-              >
-                Edit Profile
-              </button>
+              <div className="ml-auto flex-col flex">
+                <button
+                  className="w-32 h-12 p-2   relative right-0 -top-10 mr-10  rounded-3xl bg-[white] text-black hover:bg-gray-300"
+                  type="button"
+                  onClick={() => setModalVisible(!modalVisible)}
+                >
+                  Edit Profile
+                </button>
+                <button
+                  className="w-32  bg-red-600 rounded-3xl z-50  p-2   relative  -top-10 mr-10 mt-3 active:bg-red-700"
+                  type="button"
+                  onClick={logoutUser}
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
               user?.id && (
                 <div className="relative right-0 ml-auto mt-5  -top-10 mr-10  rounded-3xl">
@@ -139,21 +145,9 @@ export default function Page() {
             </div>
           </div>
         </div>
+
         <div className={`w-full bg-green-600 flex `}>
-          <button
-            className={` bg-yellow-400 w-1/2 text-center py-3 ${view === 'posts' ? 'border-2 active:bg-yellow-600 hover:bg-yellow-300' : ''}`}
-            type="button"
-            onClick={e => setView('posts')}
-          >
-            Posts
-          </button>
-          <button
-            className={`bg-blue-700 w-1/2 text-center py-3 ${view === 'likes' ? 'border-2  active:bg-blue-800 hover:bg-blue-700' : ''}`}
-            type="button"
-            onClick={e => setView('likes')}
-          >
-            Likes
-          </button>
+          <PostsLikesToggle view={view} setView={setView} />
         </div>
         <div className="flex flex-col overflow-y-auto  px-4 mt-3">
           {loading && (
@@ -166,15 +160,12 @@ export default function Page() {
               />
             </div>
           )}
-          {Array.isArray(posts) &&
-            hasFetched &&
-            posts.length === 0 &&
-            !loading && (
-              <div className="text-center text-gray-500 mt-4">
-                No posts found.
-              </div>
-            )}
-          {hasFetched && posts.length > 0 && (
+          {Array.isArray(posts) && posts.length === 0 && !loading && (
+            <div className="text-center text-gray-500 mt-4">
+              No posts found.
+            </div>
+          )}
+          {posts.length > 0 && (
             <div className="mt-10">
               <PostsList
                 memoizedPosts={memoizedPosts}

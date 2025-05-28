@@ -5,11 +5,8 @@ import type {
   fetchLikedPostsType,
   fetchPostType,
   fetchUserPostsType,
-  PostInterface,
   toggleLikeType,
 } from '@/types';
-
-import type { LoadPostsArgs } from './usePostLoader';
 
 export default async function fetchPosts({
   start,

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -22,7 +23,7 @@ export default function PostComment({
         <Link href="/profile/X">
           <Image
             className="!size-12 rounded-full shadow-md object-cover object-center mt-1 flex-shrink-0"
-            src={profile_url || null}
+            src={profile_url || ''}
             width={250}
             height={150}
             alt=""

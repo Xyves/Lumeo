@@ -11,7 +11,7 @@ export default function SearchContainer({
   setInput: any;
 }) {
   const [value, setValue] = useState('');
-  const inputRef = useRef('');
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const clearInput = () => {
     setInput('');
     // inputRef.current?.focus();

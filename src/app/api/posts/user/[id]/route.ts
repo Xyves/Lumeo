@@ -11,6 +11,11 @@ export async function GET(
   const authorId = id;
   const start = parseInt(searchParams.get('start') || '0', 10);
   const userId = searchParams.get('userId');
+  if (!userId)
+    return NextResponse.json(
+      { error: 'Failed to fetch posts' },
+      { status: 500 }
+    );
   try {
     const newPosts = await getUserPosts(start, userId, authorId);
     return NextResponse.json(newPosts, { status: 201 });

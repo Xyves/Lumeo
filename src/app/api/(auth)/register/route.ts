@@ -17,7 +17,6 @@ export async function POST(req: Request) {
     });
   }
   const { name, email, password }: RegisterType = result.data;
-  console.log({ name, email, password });
   if (!name || !email || !password) {
     return new NextResponse(
       JSON.stringify({ error: 'Missing name, email, or password' }),

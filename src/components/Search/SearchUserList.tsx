@@ -4,7 +4,7 @@ import type { searchUserType } from '@/types';
 
 import SearchUser from './SearchUser';
 
-export default function SearchUserList({ users }: { users: searchUserType }) {
+export default function SearchUserList({ users }: { users: searchUserType[] }) {
   if (!users || !Array.isArray(users)) {
     return <p>No users found.</p>;
   }

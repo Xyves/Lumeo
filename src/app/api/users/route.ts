@@ -5,16 +5,18 @@ import type { getUsersProps } from '@/types';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const input = searchParams.get('input');
   const userId = searchParams.get('userId');
-  const followed = searchParams.get('followed');
-  const cleanedInput = input === 'null' || input === '' ? null : input;
+  const followedParam = searchParams.get('followed');
+  const followed =
+    followedParam === 'true'
+      ? true
+      : followedParam === 'false'
+        ? false
+        : undefined;
+  let input = searchParams.get('input');
+  input = input === 'null' || input === '' ? null : input;
   try {
-    const newUsers: getUsersProps = await getUsers(
-      cleanedInput,
-      userId,
-      followed
-    );
+    const newUsers: getUsersProps[] = await getUsers(input, userId, followed);
     // console.log(newUsers);
     return NextResponse.json(newUsers, { status: 201 });
   } catch (error) {
