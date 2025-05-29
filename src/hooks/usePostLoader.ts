@@ -5,6 +5,7 @@ import { boolean } from 'zod';
 import type { fetchUserPostsType } from '@/types';
 
 import fetchPosts, {
+  createNewPostHook,
   deletePostById,
   fetchLikedPosts,
   fetchPost,
@@ -26,10 +27,10 @@ export type ProfileModalArgs = {
   id: string | string[];
   setUserAction: React.Dispatch<React.SetStateAction<any>>;
   user: {
-    name?: string | undefined;
-    email?: string | undefined;
-    image?: string | undefined;
-    file?: string | undefined;
+    name?: string;
+    email?: string;
+    image?: string;
+    file?: string;
   };
 };
 export type loadPostArg = {
@@ -39,6 +40,33 @@ export type loadPostArg = {
   userId: string;
 };
 export function usePostLoader() {
+  const createNewPost = useCallback(
+    async ({
+      content,
+      id,
+      file,
+      name,
+      image,
+    }: {
+      content: string;
+      id: string;
+      file: File | null;
+      name: string;
+      image: string;
+    }) => {
+      const formData = new FormData();
+      formData.append('content', content);
+      formData.append('id', id);
+      formData.append('name', name);
+      formData.append('image', image);
+      if (file) {
+        formData.append('file', file);
+      }
+      const newPost = await createNewPostHook({ formData });
+      return newPost;
+    },
+    []
+  );
   const loadPosts = useCallback(
     async ({
       setPosts,
@@ -128,7 +156,17 @@ export function usePostLoader() {
     []
   );
   const loadLikedPosts = useCallback(
-    async ({ userId, setLoading, setPosts, profileId }) => {
+    async ({
+      userId,
+      setLoading,
+      setPosts,
+      profileId,
+    }: {
+      userId: string | undefined;
+      setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+      setPosts: React.Dispatch<React.SetStateAction<any>>;
+      profileId: string | string[] | any;
+    }) => {
       setLoading(true);
       try {
         const data = await fetchLikedPosts({ profileId, userId });
@@ -145,9 +183,19 @@ export function usePostLoader() {
   const updateStart = useCallback((setStart: any) => {
     setStart((prev: any) => prev + 5);
   }, []);
-  const handleNewPost = useCallback((setPosts, newPost) => {
-    setPosts((prev: any) => [newPost, ...prev]);
-  }, []);
+  const handleNewPost = useCallback(
+    ({
+      setPostsAction,
+      newPost,
+    }: {
+      setPostsAction: React.Dispatch<React.SetStateAction<any>>;
+      newPost: any;
+    }) => {
+      console.log('new post added:', newPost);
+      setPostsAction((prev: any) => [newPost, ...prev]);
+    },
+    []
+  );
   const updateLikeStatus = useCallback(
     async ({
       userId,
@@ -182,5 +230,6 @@ export function usePostLoader() {
     loadUserPosts,
     loadLikedPosts,
     deletePostFromDb,
+    createNewPost,
   };
 }

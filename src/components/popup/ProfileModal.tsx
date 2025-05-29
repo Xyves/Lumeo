@@ -30,7 +30,7 @@ export default function ProfileModal({
   type FormErrors = Partial<Record<keyof FormData, string[]>>;
   const [errors, setErrors] = useState<FormErrors>({});
   const [formData, setFormData] = useState<{
-    id: string;
+    id: string | string[];
     name: string;
     email: string;
     file: File | null;
@@ -78,8 +78,9 @@ export default function ProfileModal({
           }
         }
       });
-
-      form.append('id', formData.id);
+      if (formData.id) {
+        form.append('id', formData.id as string);
+      }
       const { statusCode } = await updateUser({
         form,
         setUser: setUserAction,

@@ -8,14 +8,39 @@ import type {
   toggleLikeType,
 } from '@/types';
 
+export async function createNewPostHook({ formData }: { formData: FormData }) {
+  console.log('formData:', formData);
+  try {
+    const response = await fetch('/api/posts', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create post');
+    }
+    if (response.ok) {
+      const newPost = await response.json();
+      newPost.author = {
+        name: formData.get('name') as string,
+        image: formData.get('image') as string,
+        authorId: formData.get('id') as string,
+      };
+      return newPost;
+    }
+    return response.json();
+  } catch (error) {
+    return NextResponse.json('Something went wrong', { status: 400 });
+  }
+}
 export default async function fetchPosts({
   start,
   userId,
   feedType,
 }: {
   start: number;
-  userId: string;
-  feedType: string;
+  userId: string | undefined;
+  feedType: string | undefined;
 }) {
   try {
     const res = await fetch(

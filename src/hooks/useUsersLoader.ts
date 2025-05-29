@@ -4,11 +4,28 @@ import type { loadProfileType, loadUsersType, UpdateUserArgs } from '@/types';
 
 import fetchUsers, {
   fetchUserProfile,
+  registerUser,
   updateFollowUser,
   updateUserHook,
 } from './useUsers';
 
 export function useUsersLoader() {
+  const registerUserCallback = useCallback(
+    async ({
+      data,
+    }: {
+      data: { name: string; email: string; password: string };
+    }) => {
+      console.log('data', data);
+      try {
+        const response = await registerUser({ data });
+        return response;
+      } catch (err) {
+        console.error('Cannot register user', err);
+      }
+    },
+    []
+  );
   const loadUsers = useCallback(
     async ({
       userId,
@@ -82,5 +99,11 @@ export function useUsersLoader() {
     },
     []
   );
-  return { loadUsers, loadProfile, changeFollowState, updateUser };
+  return {
+    loadUsers,
+    loadProfile,
+    changeFollowState,
+    updateUser,
+    registerUserCallback,
+  };
 }

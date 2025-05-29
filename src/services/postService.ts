@@ -15,19 +15,26 @@ export const getPostsWithUsers = async (
   const isFeed = feedType === 'feed';
   console.log('working');
   const posts = await prisma.post.findMany({
-    take: 50,
+    take: 100,
     orderBy: { date: 'desc' },
     where: isFeed
       ? {
-          author: {
-            followers: {
-              none: {
-                followerUserId: userId, // Check if the current user follows this author
+          OR: [
+            {
+              authorId: userId, // Your own posts
+            },
+            {
+              author: {
+                following: {
+                  some: {
+                    followerUserId: userId,
+                  },
+                },
               },
             },
-          },
+          ],
         }
-      : {}, // If feedType is not 'feed', return all posts
+      : {},
     select: {
       id: true,
       image_url: true,

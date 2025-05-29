@@ -37,6 +37,7 @@ export default function Post({
   const { deletePostFromDb } = usePostLoader();
 
   const { data: session } = useSession();
+  console.log('post author Id:', authorId, authorName,content);
   const handleDeletePost = async () => {
     console.log('Trying to delete post', id, authorId, session?.user.id);
     await deletePostFromDb({ id, authorId, userId: session?.user.id });

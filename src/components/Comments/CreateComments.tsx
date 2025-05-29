@@ -32,15 +32,11 @@ export default function CreateComments({
         name: session?.user.name,
         image: session?.user.image,
       };
-      handleNewComment(setCommentsAction, newComment);
+      handleNewComment({ setCommentsAction, newComment });
       setInput('');
     } else {
       console.error('Failed to create post');
     }
-
-    // if (formRef) {
-    //   formRef.current.reset();
-    // }
   };
   return (
     <div className="my-6 mx-10 ">

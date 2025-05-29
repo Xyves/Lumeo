@@ -8,11 +8,13 @@ import type { z } from 'zod';
 import { RegisterSchema } from '@/schema';
 import { usePopup } from '@/context/PopupContext';
 import { validateForm } from '@/lib/utils';
+import { useUsersLoader } from '@/hooks/useUsersLoader';
 
 type FormData = z.infer<typeof RegisterSchema>;
 type FormErrors = Partial<Record<keyof FormData, string[]>>;
 export default function RegisterForm() {
   const { showPopup } = usePopup();
+  const { registerUserCallback } = useUsersLoader();
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -33,20 +35,13 @@ export default function RegisterForm() {
     setErrors(newErrors);
     console.log({ data });
     if (Object.keys(newErrors).length === 0) {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (response.ok) {
+      const response = await registerUserCallback({ data });
+      if (response?.ok) {
         showPopup({
           isVisible: true,
           text: 'User Registered',
           type: 'success',
         });
-
         setTimeout(() => {
           showPopup({
             isVisible: false,

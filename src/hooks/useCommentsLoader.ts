@@ -4,7 +4,17 @@ import fetchComments from './useComments';
 
 export function useCommentsLoader() {
   const loadComments = useCallback(
-    async ({ setComments, postId, userId, setLoading }) => {
+    async ({
+      setComments,
+      postId,
+      userId,
+      setLoading,
+    }: {
+      setComments: any;
+      postId: string | string[];
+      userId: string;
+      setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    }) => {
       setLoading(true);
       try {
         const data = await fetchComments({ postId, userId });
@@ -18,9 +28,18 @@ export function useCommentsLoader() {
     },
     [fetchComments]
   );
-  const handleNewComment = useCallback((setComments, newComment) => {
-    console.log(newComment);
-    setComments(prev => [newComment, ...prev]);
-  }, []);
+  const handleNewComment = useCallback(
+    ({
+      setCommentsAction,
+      newComment,
+    }: {
+      setCommentsAction: React.Dispatch<React.SetStateAction<any>>;
+      newComment: any;
+    }) => {
+      console.log(newComment);
+      setCommentsAction((prev: any) => [newComment, ...prev]);
+    },
+    []
+  );
   return { loadComments, handleNewComment };
 }

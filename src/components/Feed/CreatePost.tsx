@@ -16,7 +16,7 @@ export default function CreatePost({
 }) {
   console.log('Set posts:', setPostsAction);
   const { data: session } = useSession();
-  const { handleNewPost } = usePostLoader();
+  const { handleNewPost, createNewPost } = usePostLoader();
   const [postData, setPostData] = useState<{
     content: string;
     file: File | null;
@@ -44,26 +44,16 @@ export default function CreatePost({
       console.error('Failed to create post');
       return;
     }
-
-    const formData = new FormData();
-    formData.append('content', postData.content);
-    formData.append('id', session.user.id);
-    if (postData.file) {
-      formData.append('file', postData.file);
-    }
-
-    const response = await fetch('/api/posts', {
-      method: 'POST',
-      body: formData,
+    const newPost = await createNewPost({
+      content: postData.content,
+      id: session.user.id,
+      file: postData.file,
+      name: session.user.name,
+      image: session.user.image,
     });
 
-    if (response.ok) {
-      const newPost = await response.json();
-      newPost.author = {
-        name: session?.user.name,
-        image: session?.user.image,
-      };
-      handleNewPost(setPostsAction, newPost);
+    if (newPost) {
+      handleNewPost({ setPostsAction, newPost });
       setPostData({ ...postData, content: '' });
     } else {
       console.error('Failed to create post');
