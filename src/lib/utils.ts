@@ -40,5 +40,6 @@ export const validateForm = (data: any, type: 'editUser' | 'register') => {
   }
 };
 export const logoutUser = () => {
-  signOut({ callbackUrl: `/` });
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  signOut({ callbackUrl: `${baseUrl}/` });
 };
