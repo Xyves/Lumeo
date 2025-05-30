@@ -2,8 +2,11 @@ import { NextResponse } from 'next/server';
 
 import { createPostComment, getComments } from '@/services/commentsService';
 
-export async function GET(req: Request, context: { params?: { id?: string } }) {
-  const id = context.params?.id;
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
   if (!id) {
     return new Response('Missing comment ID', { status: 400 });
   }
@@ -24,9 +27,9 @@ export async function GET(req: Request, context: { params?: { id?: string } }) {
 }
 export async function POST(
   request: Request,
-  context: { params?: { id?: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = context.params?.id;
+  const { id } = await params;
   if (!id) {
     return new Response('Missing comment ID', { status: 400 });
   }

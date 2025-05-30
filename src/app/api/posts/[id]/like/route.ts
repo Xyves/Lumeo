@@ -4,9 +4,10 @@ import { handleLikePrisma } from '@/services/postService';
 
 export async function POST(
   req: Request,
-  context: { params?: { id?: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = context.params?.id;
+  const { id } = await params;
+
   if (!id) {
     return new Response('Missing comment ID', { status: 400 });
   }

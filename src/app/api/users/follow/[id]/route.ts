@@ -4,10 +4,11 @@ import { followUser } from '@/services/userService';
 
 export async function POST(
   req: Request,
-  context: { params?: { id?: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { followerId, isFollowed } = await req.json();
-  const id = context.params?.id;
+  const { id } = await params;
+
   if (!id) {
     return new Response('Missing comment ID', { status: 400 });
   }
