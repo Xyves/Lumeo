@@ -5,7 +5,7 @@ import { redirect, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import GithubProvider from 'next-auth/providers/github';
 
 import { prismaDB } from './prismaDB';
