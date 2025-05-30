@@ -4,7 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 
 import { prismaDB } from '@/lib/prismaDB';
-import { authOptions } from '@/lib/auth';
+import { authOptions } from '@/lib/authOptions.server';
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
