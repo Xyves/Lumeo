@@ -8,8 +8,9 @@ import type { ChildrenProps } from '@/types';
 import Popup from '@/components/popup/Popup';
 import PopupProvider from '@/context/PopupContext';
 
+import { authOptions as rawAuthOptions } from '../lib/auth';
+
 import ClientSessionProvider from './ClientSessionProvider';
-import { authOptions as rawAuthOptions } from './api/auth/[...nextauth]/route';
 
 export const metadata = {
   description:
