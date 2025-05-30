@@ -2,8 +2,11 @@ import { NextResponse } from 'next/server';
 
 import { getProfile, patchUser } from '@/services/userService';
 
-export async function GET(req: Request, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function GET(req: Request, context: { params?: { id?: string } }) {
+  const id = context.params?.id;
+  if (!id) {
+    return new Response('Missing comment ID', { status: 400 });
+  }
   const { searchParams } = new URL(req.url);
 
   const authorId = searchParams.get('authorId');
@@ -17,8 +20,14 @@ export async function GET(req: Request, context: { params: { id: string } }) {
     );
   }
 }
-export async function PATCH(req: Request, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function PATCH(
+  req: Request,
+  context: { params?: { id?: string } }
+) {
+  const id = context.params?.id;
+  if (!id) {
+    return new Response('Missing comment ID', { status: 400 });
+  }
   const formData = await req.formData();
   const name = formData.get('name');
   const email = formData.get('email');

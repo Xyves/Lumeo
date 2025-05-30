@@ -2,8 +2,11 @@ import { NextResponse } from 'next/server';
 
 import { createPostComment, getComments } from '@/services/commentsService';
 
-export async function GET(req: Request, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function GET(req: Request, context: { params?: { id?: string } }) {
+  const id = context.params?.id;
+  if (!id) {
+    return new Response('Missing comment ID', { status: 400 });
+  }
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get('userId');
   try {
@@ -21,9 +24,12 @@ export async function GET(req: Request, context: { params: { id: string } }) {
 }
 export async function POST(
   request: Request,
-  context: { params: { id: string } }
+  context: { params?: { id?: string } }
 ) {
-  const { id } = context.params;
+  const id = context.params?.id;
+  if (!id) {
+    return new Response('Missing comment ID', { status: 400 });
+  }
 
   const { input, userId } = await request.json();
 

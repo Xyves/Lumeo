@@ -2,8 +2,14 @@ import { NextResponse } from 'next/server';
 
 import { handleLikePrisma } from '@/services/postService';
 
-export async function POST(req: Request, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function POST(
+  req: Request,
+  context: { params?: { id?: string } }
+) {
+  const id = context.params?.id;
+  if (!id) {
+    return new Response('Missing comment ID', { status: 400 });
+  }
   const { userId } = await req.json();
   // console.log(userId, id);
   try {

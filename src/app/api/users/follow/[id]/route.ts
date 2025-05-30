@@ -2,9 +2,15 @@ import { NextResponse } from 'next/server';
 
 import { followUser } from '@/services/userService';
 
-export async function POST(req: Request, context: { params: { id: string } }) {
+export async function POST(
+  req: Request,
+  context: { params?: { id?: string } }
+) {
   const { followerId, isFollowed } = await req.json();
-  const { id } = context.params;
+  const id = context.params?.id;
+  if (!id) {
+    return new Response('Missing comment ID', { status: 400 });
+  }
 
   try {
     const newFollow = await followUser({
