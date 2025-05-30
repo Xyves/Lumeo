@@ -2,11 +2,8 @@ import { NextResponse } from 'next/server';
 
 import { getProfile, patchUser } from '@/services/userService';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
+export async function GET(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { searchParams } = new URL(req.url);
 
   const authorId = searchParams.get('authorId');
@@ -20,11 +17,8 @@ export async function GET(
     );
   }
 }
-export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
+export async function PATCH(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params;
   const formData = await req.formData();
   const name = formData.get('name');
   const email = formData.get('email');

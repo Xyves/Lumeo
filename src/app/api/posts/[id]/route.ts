@@ -2,15 +2,12 @@ import { NextResponse } from 'next/server';
 
 import { deletePost, editPost, getPost } from '@/services/postService';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: Request, context: { params: { id: string } }) {
   const { searchParams } = new URL(req.url);
 
   const userId = searchParams.get('userId');
 
-  const { id } = await params;
+  const { id } = context.params;
   try {
     if (!userId) {
       throw new Error('User ID is null');
@@ -24,11 +21,8 @@ export async function GET(
     );
   }
 }
-export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
+export async function PATCH(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params;
 
   const { content, image_url, authorId } = await req.json();
   try {
@@ -40,9 +34,9 @@ export async function PATCH(
 }
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = context.params;
   const { authorId, userId } = await req.json();
   try {
     const deletedPost = await deletePost(id, authorId, userId);

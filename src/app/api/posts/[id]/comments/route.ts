@@ -2,11 +2,8 @@ import { NextResponse } from 'next/server';
 
 import { createPostComment, getComments } from '@/services/commentsService';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
+export async function GET(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get('userId');
   try {
@@ -24,9 +21,9 @@ export async function GET(
 }
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = context.params;
 
   const { input, userId } = await request.json();
 

@@ -2,13 +2,10 @@ import { NextResponse } from 'next/server';
 
 import { getUserLikedPosts } from '@/services/postService';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: Request, context: { params: { id: string } }) {
   const { searchParams } = new URL(req.url);
 
-  const { id } = await params;
+  const { id } = context.params;
   const userId = searchParams.get('userId');
   const profileId = id;
   // console.log('profileID:', profileId, 'userId:', userId);

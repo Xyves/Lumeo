@@ -2,12 +2,9 @@ import { NextResponse } from 'next/server';
 
 import { followUser } from '@/services/userService';
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, context: { params: { id: string } }) {
   const { followerId, isFollowed } = await req.json();
-  const { id } = await params;
+  const { id } = context.params;
 
   try {
     const newFollow = await followUser({
