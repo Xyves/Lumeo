@@ -8,7 +8,7 @@ import type { ChildrenProps } from '@/types';
 import Popup from '@/components/popup/Popup';
 import PopupProvider from '@/context/PopupContext';
 
-import { authOptions as rawAuthOptions } from '../lib/auth';
+import { authOptions as rawAuthOptions } from '../lib/authOptions.server';
 
 import ClientSessionProvider from './ClientSessionProvider';
 
