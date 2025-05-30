@@ -62,8 +62,6 @@ model Follower {
   followerUserId    String  
   followedUserId    String   
   followedAt        DateTime @default(now())
-
-  // Define the relations
   followerUser      User     @relation("Followers", fields: [followerUserId], references: [id])
   followedUser      User     @relation("Following", fields: [followedUserId], references: [id])
 
@@ -99,7 +97,6 @@ model Post {
   authorId     String
   comments     Comment[]
   likes        Like[]
-
   author       User      @relation(fields: [authorId], references: [id])
 }
 
