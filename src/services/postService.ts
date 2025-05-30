@@ -13,7 +13,6 @@ export const getPostsWithUsers = async (
   feedType: 'feed' | 'explore'
 ) => {
   const isFeed = feedType === 'feed';
-  console.log('working');
   const posts = await prisma.post.findMany({
     take: 100,
     orderBy: { date: 'desc' },
@@ -60,7 +59,7 @@ export const getPostsWithUsers = async (
     },
   });
   if (!posts || posts.length === 0) {
-    console.log('No posts found');
+    // console.log('No posts found');
     return [];
   }
   const postsWithIsLiked = posts.map(({ likes, ...post }) => ({
@@ -69,7 +68,7 @@ export const getPostsWithUsers = async (
   }));
   const paginated = postsWithIsLiked.slice(start, start + 5);
 
-  console.log('Fetched posts:', paginated);
+  // console.log('Fetched posts:', paginated);
 
   return paginated;
 };
@@ -85,7 +84,7 @@ export const deletePost = async (
   const deleted = await prisma.post.delete({
     where: { id },
   });
-  console.log('post has been deleted', id);
+  // console.log('post has been deleted', id);
   return deleted;
 };
 export const getUserLikedPosts = async (profileId: string, userId: string) => {
@@ -123,7 +122,7 @@ export const getUserLikedPosts = async (profileId: string, userId: string) => {
     },
   });
   if (!likedPosts || likedPosts.length === 0) {
-    console.log('No posts found');
+    // console.log('No posts found');
     return [];
   }
   const updatedPosts = likedPosts.map(({ likes, ...post }) => ({
@@ -137,7 +136,6 @@ export const getUserPosts = async (
   userId: string,
   authorId: string
 ) => {
-  console.log('working', userId, authorId, start);
   const posts = await prisma.post.findMany({
     orderBy: { date: 'desc' },
     where: {
@@ -168,14 +166,14 @@ export const getUserPosts = async (
     },
   });
   if (!posts || posts.length === 0) {
-    console.log('No posts found');
+    // console.log('No posts found');
     return [];
   }
   const postsWithIsLiked = posts.map(({ likes, ...post }) => ({
     ...post,
     isLiked: likes.length > 0,
   }));
-  console.log('Fetched posts:', postsWithIsLiked);
+  // console.log('Fetched posts:', postsWithIsLiked);
 
   return postsWithIsLiked;
 };
@@ -189,13 +187,11 @@ export const createPost = async ({
   authorId: string;
 }) => {
   let cloudinaryResponse = null;
-  console.log(file);
   if (file && file.size > 0) {
     cloudinaryResponse = (await uploadFile(
       file
     )) as CloudinaryResponseInterface;
   }
-  console.log('cloudinaryResponse', cloudinaryResponse);
   const imageUrl = cloudinaryResponse?.secure_url;
 
   return prisma.post.create({
@@ -221,7 +217,6 @@ export const handleLikePrisma = async ({
         post_id: id,
       },
     });
-    console.log(existingLike);
     if (!existingLike) {
       return prisma.$transaction([
         prisma.like.create({
@@ -287,7 +282,7 @@ export const getPost = async ({
     ...post!,
     isLiked: post!.likes.length > 0,
   };
-  console.log('fetches signle post:', postWithIsLiked);
+  // console.log('fetches single post:', postWithIsLiked);
   return postWithIsLiked;
 };
 export const editPost = ({
@@ -326,7 +321,7 @@ export const handleCommentLikePrisma = async ({
         commentId: id,
       },
     });
-    console.log(existingLike);
+    // console.log(existingLike);
     if (!existingLike) {
       return prisma.$transaction([
         prisma.commentLike.create({

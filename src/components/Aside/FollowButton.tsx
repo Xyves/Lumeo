@@ -14,7 +14,6 @@ export default function FollowButton({
   isFollowing,
 }: FollowBtnProps) {
   const [isFollowed, setIsFollowed] = useState(isFollowing || false);
-  // console.log('is followed status is:', isFollowed);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const { changeFollowState } = useUsersLoader();

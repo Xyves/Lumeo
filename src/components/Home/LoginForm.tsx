@@ -35,7 +35,6 @@ export default function LoginWindow() {
       ...(isGuest ? guestData : data),
       redirect: false,
     });
-    console.log(res);
     if (res?.error) {
       showPopup({
         isVisible: true,

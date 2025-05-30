@@ -71,7 +71,6 @@ export const getUsers = async (
       updatedAt: true,
     },
   });
-  console.log('New optional followers:', users);
   return users;
 };
 export const getProfile = async (id: string, authorId: string | null) => {
@@ -95,7 +94,7 @@ export const getProfile = async (id: string, authorId: string | null) => {
       ...user,
       isFollowing: false,
     };
-  console.log('Checking follow between:', { authorId, id });
+  // console.log('Checking follow between:', { authorId, id });
   if (!authorId) {
     throw new Error('Missing author ID');
   }
@@ -107,10 +106,10 @@ export const getProfile = async (id: string, authorId: string | null) => {
     },
     select: { id: true },
   });
-  console.log({
-    ...user,
-    isFollowing: !!followExists,
-  });
+  // console.log({
+  //   ...user,
+  //   isFollowing: !!followExists,
+  // });
   return {
     ...user,
     isFollowing: !!followExists,
@@ -121,7 +120,6 @@ export const followUser = async ({
   followedId,
   isFollowed,
 }: followType) => {
-  console.log(followerId, followedId, isFollowed);
   return prisma.$transaction(
     !isFollowed
       ? [
@@ -195,7 +193,6 @@ export const patchUser = async ({
   }
 
   let cloudinaryResponse = null;
-  console.log(file);
   if (file && file.size > 0) {
     cloudinaryResponse = (await uploadFile(
       file

@@ -12,7 +12,6 @@ export default function Popup() {
   }
   const { popupData } = context;
   const { isVisible, text, type } = popupData;
-  console.log('Displaying popup:', popupData);
   if (!isVisible) return null;
   let content;
 

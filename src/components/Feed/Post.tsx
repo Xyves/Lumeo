@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import React from 'react';
-import { MessageCircle, Heart } from 'lucide-react';
+
 import 'primeicons/primeicons.css';
 
 import Zoom from 'react-medium-image-zoom';
@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import { usePostLoader } from '@/hooks/usePostLoader';
-import type { PostComponentInterface, PostInterface } from '@/types';
+import type { PostComponentInterface } from '@/types';
 
 import LikeButton from './LikeButton';
 import CommentsButton from './commentButton';
@@ -37,9 +37,9 @@ export default function Post({
   const { deletePostFromDb } = usePostLoader();
 
   const { data: session } = useSession();
-  console.log('post author Id:', authorId, authorName,content);
+  // console.log('post author Id:', authorId);
   const handleDeletePost = async () => {
-    console.log('Trying to delete post', id, authorId, session?.user.id);
+    // console.log('Trying to delete post', id, authorId, session?.user.id);
     await deletePostFromDb({ id, authorId, userId: session?.user.id });
     await deletePost(id);
   };
@@ -106,7 +106,6 @@ export default function Post({
             }}
             className="outline-none"
           >
-            {/* // text-[#edd852] */}
             <p
               className=" py-2 md:py-6 ml-6 px-2  
           text-[#F1E3E4x]
@@ -114,7 +113,6 @@ export default function Post({
             >
               {content}
             </p>
-            {/* bg-[#1F2937] */}
             {post_image ? (
               <Zoom>
                 <div

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { signOut } from 'next-auth/react';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 
 import { editProfileSchema, RegisterSchema } from '@/schema';
 

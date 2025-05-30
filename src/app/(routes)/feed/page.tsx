@@ -56,7 +56,6 @@ export default function Feed() {
   return (
     <MainLayout>
       <div className=" w-full  p-2 md:p-7 overflow-y-auto  mr-auto max-h-[95%] scrollbar scrollbar-thumb-sky-700 scrollbar-track-sky-300">
-        {/* bg-[#1f1e1c] */}
         <CreatePost setPostsAction={setPosts} />
         {Array.isArray(posts) &&
           hasFetched &&

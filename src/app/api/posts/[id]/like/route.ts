@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server';
 
 import { handleLikePrisma } from '@/services/postService';
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = await params;
   const { userId } = await req.json();
-  console.log(userId, id);
+  // console.log(userId, id);
   try {
     const newLike = await handleLikePrisma({
       id,

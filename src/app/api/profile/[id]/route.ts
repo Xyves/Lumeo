@@ -10,7 +10,6 @@ export async function GET(
   const { searchParams } = new URL(req.url);
 
   const authorId = searchParams.get('authorId');
-  console.log(id);
   try {
     const profile = await getProfile(id, authorId);
     return NextResponse.json(profile, { status: 201 });
@@ -35,7 +34,6 @@ export async function PATCH(
   if (email && email !== 'null') updateData.email = email;
   if (file && file !== 'null' && typeof file !== 'string')
     updateData.file = file;
-  console.log('99', updateData, id);
   try {
     const updatedUser = await patchUser({
       id,

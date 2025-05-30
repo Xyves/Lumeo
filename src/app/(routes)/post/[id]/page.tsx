@@ -30,6 +30,7 @@ export default function Page() {
   const { loadComments } = useCommentsLoader();
   const { showPopup } = usePopup();
   const router = useRouter();
+
   useEffect(() => {
     if (!id || !session?.user.id) return;
     loadPost({ setPost, postId: id, setLoading, userId: session?.user.id });
@@ -66,6 +67,7 @@ export default function Page() {
       router.push('/feed');
     }, 2000);
   };
+
   if (loading || !post) return null;
   return (
     <MainLayout>
@@ -127,7 +129,6 @@ export default function Page() {
             <CommentsButton commentsCount={post.commentCount} id={post.id} />
           </div>
         </div>
-        {/* The post id:{id} */}
         <CreateComments postId={post.id} setCommentsAction={setComments} />
         <CommentsList memoizedComments={memoizedComments} />
       </div>

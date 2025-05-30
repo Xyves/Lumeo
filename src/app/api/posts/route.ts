@@ -24,12 +24,6 @@ export async function GET(req: Request) {
   }
 }
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(req: Request) {
   const formData = await req.formData();
 
@@ -52,3 +46,8 @@ export async function POST(req: Request) {
     );
   }
 }
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

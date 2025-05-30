@@ -35,11 +35,9 @@ export default async function fetchUsers({
         },
       }
     );
-    console.log(input, userId);
     if (!res.ok)
       return NextResponse.json('Something went wrong', { status: 400 });
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     return NextResponse.json('Something went wrong', { status: 400 });
@@ -63,7 +61,6 @@ export async function fetchUserProfile({
       return NextResponse.json('Something went wrong', { status: 400 });
     }
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     return NextResponse.json('Something went wrong', { status: 400 });
@@ -86,7 +83,6 @@ export async function updateFollowUser({
       return NextResponse.json('Something went wrong', { status: 400 });
     }
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     return NextResponse.json('Something went wrong', { status: 400 });
@@ -110,7 +106,6 @@ export async function updateUserHook({
       };
     }
     const data = await res.json();
-    console.log(data);
     return { statusCode: res.status, data };
   } catch (error) {
     return {

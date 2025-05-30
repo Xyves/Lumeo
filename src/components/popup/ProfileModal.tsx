@@ -85,7 +85,6 @@ export default function ProfileModal({
         form,
         setUser: setUserAction,
       });
-      console.log('status:', status);
       if (statusCode === 200 || statusCode === 201) {
         showPopup({
           isVisible: true,

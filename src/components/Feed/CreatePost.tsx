@@ -14,7 +14,6 @@ export default function CreatePost({
 }: {
   setPostsAction: React.Dispatch<React.SetStateAction<PostInterface[]>>;
 }) {
-  console.log('Set posts:', setPostsAction);
   const { data: session } = useSession();
   const { handleNewPost, createNewPost } = usePostLoader();
   const [postData, setPostData] = useState<{
@@ -51,8 +50,8 @@ export default function CreatePost({
       name: session.user.name,
       image: session.user.image,
     });
-
     if (newPost) {
+      console.log('newPost:', newPost);
       handleNewPost({ setPostsAction, newPost });
       setPostData({ ...postData, content: '' });
     } else {
@@ -117,7 +116,10 @@ export default function CreatePost({
             />
           </div>
           {/* img(add photo) */}
-          <button className="bg-[#5521cf] px-8 py-2 rounded-3xl  mr-10 hover:bg-[#3d1f84] text-slate-50">
+          <button
+            className="bg-[#5521cf] px-8 py-2 rounded-3xl  mr-10 hover:bg-[#3d1f84] text-slate-50"
+            type="submit"
+          >
             Post
           </button>
         </div>

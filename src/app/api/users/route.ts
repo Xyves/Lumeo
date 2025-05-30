@@ -17,7 +17,6 @@ export async function GET(req: Request) {
   input = input === 'null' || input === '' ? null : input;
   try {
     const newUsers: getUsersProps[] = await getUsers(input, userId, followed);
-    // console.log(newUsers);
     return NextResponse.json(newUsers, { status: 201 });
   } catch (error) {
     return NextResponse.json(

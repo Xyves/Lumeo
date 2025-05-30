@@ -16,7 +16,6 @@ export function useUsersLoader() {
     }: {
       data: { name: string; email: string; password: string };
     }) => {
-      console.log('data', data);
       try {
         const response = await registerUser({ data });
         return response;
@@ -82,7 +81,7 @@ export function useUsersLoader() {
   );
   const updateUser = useCallback(
     async ({ form, setUser }: UpdateUserArgs): Promise<any> => {
-      console.log('updateUser:', form, setUser);
+      // console.log('updatedUser:', form, setUser);
       try {
         const response = await updateUserHook({ form });
         if (!response) {

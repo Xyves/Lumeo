@@ -24,7 +24,6 @@ export default function NewFollows() {
     });
   }, [session?.user?.id, loadUsers, status]);
   const memoizedUsers = useMemo(() => users.slice(0, 10), [users]);
-  console.log('memoizedUsers', users);
   if (memoizedUsers.length === 0) {
     return null;
   }

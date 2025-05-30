@@ -27,10 +27,10 @@ export type ProfileModalArgs = {
   id: string | string[];
   setUserAction: React.Dispatch<React.SetStateAction<any>>;
   user: {
-    name?: string;
-    email?: string;
-    image?: string;
-    file?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    file?: string | null;
   };
 };
 export type loadPostArg = {
@@ -102,8 +102,8 @@ export function usePostLoader() {
     async ({ setPost, postId, setLoading, userId }: loadPostArg) => {
       setLoading(true);
       try {
-        const data = await fetchPost({ postId, userId });
-        console.log('Fetched data:', data);
+        const data = await fetchPost({ postId: postId as string, userId });
+        // console.log('Fetched data:', data);
         setPost(data);
       } catch (err) {
         console.error('Initial load error', err);
@@ -115,7 +115,6 @@ export function usePostLoader() {
   );
   const deletePostFromDb = useCallback(
     async ({ id, authorId, userId }: fetchUserPostsType) => {
-      console.log('Waiting to delete post id of', id);
       if (!id) return null;
       try {
         const data = await deletePostById({ id, authorId, userId });
@@ -170,7 +169,7 @@ export function usePostLoader() {
       setLoading(true);
       try {
         const data = await fetchLikedPosts({ profileId, userId });
-        console.log('Fetched data:', data);
+        // console.log('Fetched data:', data);
         setPosts(data);
       } catch (err) {
         console.error('Initial load error', err);
@@ -191,7 +190,7 @@ export function usePostLoader() {
       setPostsAction: React.Dispatch<React.SetStateAction<any>>;
       newPost: any;
     }) => {
-      console.log('new post added:', newPost);
+      // console.log('new post added:', newPost);
       setPostsAction((prev: any) => [newPost, ...prev]);
     },
     []

@@ -11,7 +11,7 @@ export async function GET(
   const { id } = await params;
   const userId = searchParams.get('userId');
   const profileId = id;
-  console.log('profileID:', profileId, 'userId:', userId);
+  // console.log('profileID:', profileId, 'userId:', userId);
   if (!userId)
     return NextResponse.json(
       { error: 'Failed to fetch posts' },

@@ -1,7 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { NextResponse } from 'next/server';
+import { useCallback, useRef, useState } from 'react';
 
 import Post from './Post';
 
@@ -25,19 +24,18 @@ export default function PostsList({
 
       observer.current = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting) {
-          console.log('👀 Last post is visible!');
+          // console.log(' Last post is visible!');
           handleUpdateStart(setStart);
         }
       });
 
       if (node) {
         observer.current.observe(node);
-        console.log('📌 Observing node:', node);
+        // console.log(' Observing node:', node);
       }
     },
     [loading]
   );
-  console.log(memoizedPosts);
 
   if (!Array.isArray(memoizedPosts)) {
     return null;

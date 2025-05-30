@@ -9,7 +9,6 @@ export default function CommentsList({
 }: {
   memoizedComments: CommentInterface[];
 }) {
-  console.log('memoizedComments', memoizedComments);
   return (
     <div className="flex w-full flex-col ">
       {Array.isArray(memoizedComments) &&

@@ -9,7 +9,6 @@ import type {
 } from '@/types';
 
 export async function createNewPostHook({ formData }: { formData: FormData }) {
-  console.log('formData:', formData);
   try {
     const response = await fetch('/api/posts', {
       method: 'POST',
@@ -54,12 +53,13 @@ export default async function fetchPosts({
     );
     if (!res.ok) {
       console.error('Fetch failed with status:', res.status);
-      return null;
+      return [];
     }
     const data = await res.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    return NextResponse.json('Something went wrong', { status: 400 });
+    console.error('Error fetching posts:', error);
+    return [];
   }
 }
 export async function fetchPost({ postId, userId }: fetchPostType) {
@@ -138,12 +138,13 @@ export async function fetchUserPosts({
     );
     if (!res.ok) {
       console.error('Fetch failed with status:', res.status);
-      return null;
+      return [];
     }
     const data = await res.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    return NextResponse.json('Something went wrong', { status: 400 });
+    console.error('Fetch error:', error);
+    return [];
   }
 }
 export async function fetchLikedPosts({

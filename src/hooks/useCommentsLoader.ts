@@ -19,9 +19,9 @@ export function useCommentsLoader() {
       try {
         const data = await fetchComments({ postId, userId });
         setComments(data);
-        console.log('set comments:', data);
+        // console.log('set comments:', data);
       } catch (err) {
-        console.error('Initial load error', err);
+        // console.error('Initial load error', err);
       } finally {
         setLoading(false);
       }
@@ -36,7 +36,7 @@ export function useCommentsLoader() {
       setCommentsAction: React.Dispatch<React.SetStateAction<any>>;
       newComment: any;
     }) => {
-      console.log(newComment);
+      // console.log(newComment);
       setCommentsAction((prev: any) => [newComment, ...prev]);
     },
     []

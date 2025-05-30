@@ -1,10 +1,10 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { Calendar, CircleX, PenLine } from 'lucide-react';
-import { useSession, signOut } from 'next-auth/react';
+import { Calendar } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { OrbitProgress } from 'react-loading-indicators';
 
 import { useUsersLoader } from '@/hooks/useUsersLoader';
@@ -12,10 +12,10 @@ import MainLayout from '@/layouts/MainLayout/MainLayout';
 import FollowButton from '@/components/Aside/FollowButton';
 import PostsList from '@/components/Feed/PostsList';
 import { usePostLoader } from '@/hooks/usePostLoader';
-import type { PostInterface, profileUserInterface } from '@/types';
 import { createDeletePostHandler, logoutUser } from '@/lib/utils';
 import ProfileModal from '@/components/popup/ProfileModal';
 import PostsLikesToggle from '@/components/Profile/PostsLikesToggle ';
+import type { PostInterface, profileUserInterface } from '@/types';
 
 export default function Page() {
   const { loadProfile } = useUsersLoader();
@@ -29,16 +29,14 @@ export default function Page() {
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [start, setStart] = useState<number>(0);
   const [view, setView] = useState<'posts' | 'likes'>('posts');
-  console.log('user', user);
   const handleDeletePost = createDeletePostHandler(setPosts);
 
-  // const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
   const fixedId = Array.isArray(id) ? id[0] : id;
   useEffect(() => {
     if (view !== 'posts' || !id || !session?.user?.id) return;
 
     loadUserPosts({
-      start: 0,
+      start,
       userId: session.user.id,
       authorId: fixedId,
       setPosts,
@@ -56,7 +54,9 @@ export default function Page() {
       setPosts,
     });
   }, [view, session?.user.id]);
+
   const memoizedPosts = useMemo(() => posts, [posts]);
+
   useEffect(() => {
     if (status !== 'authenticated') return;
     if (typeof id !== 'string') return;

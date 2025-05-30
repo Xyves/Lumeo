@@ -19,11 +19,9 @@ export default function Explore() {
   const { data: session } = useSession();
   const { loadPosts, updateStart } = usePostLoader();
   const feedType = 'explore';
-
   useEffect(() => {
     if (start !== 0) {
       if (session && session.user) {
-        // delay(200);
         loadPosts({
           start,
           userId: session.user.id,

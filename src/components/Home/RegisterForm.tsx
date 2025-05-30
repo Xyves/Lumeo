@@ -33,7 +33,6 @@ export default function RegisterForm() {
     showPopup({ isVisible: true, text: 'Loading', type: 'loading' });
     const newErrors = validateForm(data, 'register');
     setErrors(newErrors);
-    console.log({ data });
     if (Object.keys(newErrors).length === 0) {
       const response = await registerUserCallback({ data });
       if (response?.ok) {
