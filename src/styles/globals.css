@@ -91,3 +91,6 @@ body {
 .scrollbar-track-light::-moz-scrollbar-track {
   background-color: #e0e7ff; /* Tailwind blue-100 */
 }
+.hover-rotate-slow {
+  @apply hover:motion-rotate-in-[1turn] motion-duration-1500;
+}

@@ -38,5 +38,6 @@ const config: Config = {
       },
     },
   },
+  plugins: [require('tailwindcss-motion')],
 };
 export default config;

@@ -64,7 +64,7 @@ export default function CreatePost({
   };
   return (
     <div
-      className="w-full  border-2 rounded-md p-3 mb-10 border-purple-800 bg-[rgba(0,0,0,0.9)] "
+      className="w-full  border-2 rounded-md p-3 mb-10 border-white-800 bg-[rgba(0,0,0,0.9)] "
       ref={targetRef}
     >
       <form method="POST" onSubmit={submitPost} ref={formRef}>

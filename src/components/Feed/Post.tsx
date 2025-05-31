@@ -46,7 +46,7 @@ export default function Post({
   const router = useRouter();
   return (
     <div
-      className="flex-col flex [&>section]:px-4 mb-6 last:mb-24 border-[#5b34ac] border-2 rounded-lg   bg-[rgba(0,0,0,0.6)]
+      className="flex-col flex [&>section]:px-4 mb-6 last:mb-24 border-gray-500 hover:bg-gray-900 hover:opacity-85 border-2 rounded-lg   bg-[rgba(0,0,0,0.6)]
       "
       data-user-id={id}
       ref={innerRef}

@@ -60,7 +60,7 @@ export default function Sidebar() {
             title="Feed Page"
             className={`${pathname === '/feed' ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2 `}
           >
-            <House className="lg:size-10 size-6 mr-2 flex items-center" />
+            <House className="lg:size-10 size-6 mr-2 flex items-center hover-rotate-slow" />
             <p className="overflow-visible  md:text-sm truncate lg:text-2xl hover:underline">
               Home
             </p>
@@ -70,7 +70,7 @@ export default function Sidebar() {
             title="Feed Page"
             className={`${pathname === '/explore' ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2`}
           >
-            <Telescope className="lg:size-10 size-6 mr-2 flex items-center" />
+            <Telescope className="lg:size-10 size-6 mr-2 flex items-center hover-rotate-slow" />
             <p className="overflow-visible  sm:text-base truncate lg:text-2xl md:text-sm hover:underline ">
               Explore
             </p>
@@ -79,7 +79,7 @@ export default function Sidebar() {
             href="/search"
             className={`${pathname === '/search' ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2`}
           >
-            <UserRoundSearch className="lg:size-10 size-6 mr-2 flex items-center" />
+            <UserRoundSearch className="lg:size-10 size-6 mr-2 flex items-center hover-rotate-slow" />
             <p className="overflow-visible  sm:text-base truncate lg:text-2xl hover:underline  md:text-xl">
               Search
             </p>
@@ -89,7 +89,7 @@ export default function Sidebar() {
             className={`${pathname.startsWith('/profile/') ? 'text-[#00ffff]' : ''}
  flex justify-start items-center   font-bold  rounded-md transition-colors mb-2`}
           >
-            <UserRound className="lg:size-10 size-6  mr-2 flex items-center" />
+            <UserRound className="lg:size-10 size-6  mr-2 flex items-center hover-rotate-slow " />
             <p className="overflow-visible   sm:text-base truncate lg:text-2xl md:text-sm hover:underline ">
               Profile
             </p>
@@ -99,7 +99,7 @@ export default function Sidebar() {
             type="button"
             className={`${pathname === '/create' ? 'text-[#00ffff]' : ''} flex justify-start items-center   font-bold  rounded-md transition-colors mb-2`}
           >
-            <SendHorizontal className="lg:size-10 size-6 mr-2 flex items-center" />
+            <SendHorizontal className="lg:size-10 size-6 mr-2 flex items-center hover-rotate-slow" />
             <p className="overflow-visible  sm:text-base truncate lg:text-2xl md:text-sm hover:underline ">
               New Post
             </p>
@@ -116,7 +116,7 @@ export default function Sidebar() {
             <div
               aria-haspopup="true"
               aria-expanded="false"
-              className=" py-3  flex w-full items-center bg-[rgb(174,60,255)] hover:bg-[rgb(144,70,197)]"
+              className=" py-3  flex w-full items-center bg-[rgb(174,60,255)] hover:bg-[rgb(144,70,197)] "
             >
               {session?.user?.image ? (
                 <Image
@@ -124,7 +124,7 @@ export default function Sidebar() {
                   alt="profile icon"
                   width={36}
                   height={36}
-                  className="rounded-full ml-2"
+                  className="rounded-full ml-2 "
                 />
               ) : (
                 <User />
@@ -160,7 +160,7 @@ export default function Sidebar() {
               title="Feed Page"
               className={`${pathname === '/feed' ? 'text-[#942efb]' : ''} font-bold rounded-md transition-colors py-2 flex flex-col items-center`}
             >
-              <House className="size-6 mb-1" />
+              <House className="size-6 mb-1 " />
               <p className="md:text-sm lg:text-2xl hover:underline">Home</p>
             </Link>
           </div>
@@ -170,7 +170,7 @@ export default function Sidebar() {
               title="Explore Page"
               className={`${pathname === '/explore' ? 'text-[#942efb]' : ''} font-bold rounded-md transition-colors py-2 flex flex-col items-center`}
             >
-              <Telescope className="size-6 mb-1" />
+              <Telescope className="size-6 mb-1 " />
               <p className="md:text-sm lg:text-2xl hover:underline">Explore</p>
             </Link>
           </div>
@@ -180,7 +180,7 @@ export default function Sidebar() {
               title="Create post"
               className={` font-bold rounded-md transition-colors py-2 flex flex-col items-center flex-shrink-0`}
             >
-              <Plus className="size-16 min-w-12    absolute -top-6 bg-purple-700 text-white rounded-full p-3  border-[#e5e7eb]  " />
+              <Plus className="size-16 min-w-12    absolute -top-6 bg-purple-700 text-white rounded-full p-3  border-[#e5e7eb]   " />
             </Link>
           </div>
           <div className="text-white w-1/5 h-full flex flex-col items-center justify-center">
@@ -189,7 +189,7 @@ export default function Sidebar() {
               title="Search Page"
               className={`${pathname === '/search' ? 'text-[#942efb]' : ''} font-bold rounded-md transition-colors py-2 flex flex-col items-center`}
             >
-              <UserRoundSearch className="size-6 mb-1" />
+              <UserRoundSearch className="size-6 mb-1 " />
               <p className="md:text-sm lg:text-2xl hover:underline">Search</p>
             </Link>
           </div>
@@ -199,7 +199,7 @@ export default function Sidebar() {
               title="Profile Page"
               className={`${pathname.startsWith('/profile/') ? 'text-[#942efb]' : ''} font-bold rounded-md transition-colors py-2 flex flex-col items-center`}
             >
-              <UserRound className="size-6 mb-1" />
+              <UserRound className="size-6 mb-1 " />
               <p className="md:text-sm lg:text-2xl hover:underline">Profile</p>
             </Link>
           </div>

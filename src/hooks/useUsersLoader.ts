@@ -64,13 +64,11 @@ export function useUsersLoader() {
       followerId: string,
       followedId: string,
       isFollowed: boolean,
-      setIsFollowed: (value: boolean) => void,
       setLoading: (value: boolean) => void
     ) => {
       setLoading(true);
       try {
         await updateFollowUser({ followerId, followedId, isFollowed });
-        setIsFollowed(!isFollowed);
       } catch (err) {
         console.error('Initial user load error', err);
       } finally {
