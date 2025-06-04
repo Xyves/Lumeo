@@ -59,7 +59,10 @@ export default function LoginWindow() {
     }
   };
   return (
-    <div className="w-full md:w-2/5 bg-[#1f2937] h-full  text-[#f1f1f1] flex justify-center items-center flex-col  py-20 md:py-3 space-y-5 md:space-y-6 sm:p-8   md:h-full sm:h-full">
+    <div
+      className="w-full md:w-2/5 bg-[#1f2937] h-full  text-[#f1f1f1] flex justify-center items-center flex-col  py-20 md:py-3 space-y-5 md:space-y-6 sm:p-8   md:h-full sm:h-full"
+      data-testid="login-form"
+    >
       <h2 className="flex items-center tracking-[.25rem]">
         <p className="text-2xl font-[cyberwayriders] font-bold">
           Welcome to &nbsp;

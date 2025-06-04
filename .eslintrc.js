@@ -3,6 +3,7 @@ module.exports = {
     browser: true,
     es2020: true,
     node: true,
+    jest: true,
   },
   extends: [
     'airbnb',
@@ -14,7 +15,8 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:@next/next/recommended',
     'prettier',
-    'plugin:prettier/recommended',  'next',
+    'plugin:prettier/recommended',
+    'next',
     'next/core-web-vitals',
   ],
   parser: '@typescript-eslint/parser',
