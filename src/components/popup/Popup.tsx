@@ -18,7 +18,10 @@ export default function Popup() {
   switch (type) {
     case 'success':
       content = (
-        <div className="popup-message flex justify-between py-2 items-center bg-white rounded-2xl pr-8 h-16 z-50 blur-none">
+        <div
+          className="popup-message flex justify-between py-2 items-center bg-white rounded-2xl pr-8 h-16 z-50 blur-none"
+          role="alert"
+        >
           <video
             src="/images/success-animation.webm"
             autoPlay
@@ -32,7 +35,10 @@ export default function Popup() {
       break;
     case 'error':
       content = (
-        <div className="popup-message flex justify-between py-2 items-center z-50 bg-white rounded-2xl pr-8 h-16">
+        <div
+          className="popup-message flex justify-between py-2 items-center z-50 bg-white rounded-2xl pr-8 h-16"
+          role="alert"
+        >
           <video
             src="/images/fail-animation.webm"
             autoPlay
@@ -46,7 +52,10 @@ export default function Popup() {
       break;
     case 'loading':
       content = (
-        <div className="popup-message flex justify-between py-2 items-center bg-white z-50 rounded-2xl px-8  h-16">
+        <div
+          className="popup-message flex justify-between py-2 items-center bg-white z-50 rounded-2xl px-8  h-16"
+          role="alert"
+        >
           <OrbitProgress
             variant="track-disc"
             color="#1a2bc5"
@@ -63,7 +72,10 @@ export default function Popup() {
       content = null;
   }
   return (
-    <div className="fixed top-0 left-1/2 transform -translate-x-1/2 py-2 px-6 shadow-md flex items-center justify-center z-50">
+    <div
+      className="fixed top-0 left-1/2 transform -translate-x-1/2 py-2 px-6 shadow-md flex items-center justify-center z-50"
+      role="alert"
+    >
       {content}
     </div>
   );

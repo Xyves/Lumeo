@@ -116,6 +116,7 @@ export default function LoginWindow() {
         <button
           className="bg-[#05036d] text-[#f1f1f1] hover:bg-[#0f2f70]"
           type="submit"
+          data-testid="login-button"
         >
           Login
         </button>

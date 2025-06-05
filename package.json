@@ -19,7 +19,7 @@
     "postbuild": "next-sitemap && yarn prisma generate",
     "check:types": "tsc --noEmit",
     "postinstall": "yarn prisma generate",
-    "test": "NODE_OPTIONS='--loader ts-node/esm' jest"
+    "test": "set NODE_OPTIONS=--loader ts-node/esm && jest"
   },
   "lint-staged": {
     "*.{js,jsx,md,ts,tsx,html,css,scss}": "yarn prettier",

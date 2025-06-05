@@ -12,6 +12,9 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transform: {
-    '^.+\\.(ts|tsx|js|jsx)$': 'babel-jest',
+    '^.+\\.(ts|tsx|js|jsx)$': [
+      'babel-jest',
+      { configFile: './babel.config.test.js' },
+    ],
   },
 };

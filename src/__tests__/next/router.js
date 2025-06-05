@@ -1,6 +1,5 @@
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
-  Router: {
-    push: jest.fn(),
-  },
-}));
+export const useRouter = () => ({
+  push: jest.fn(),
+  replace: jest.fn(),
+  prefetch: jest.fn(),
+});
