@@ -72,10 +72,7 @@ export default function Popup() {
       content = null;
   }
   return (
-    <div
-      className="fixed top-0 left-1/2 transform -translate-x-1/2 py-2 px-6 shadow-md flex items-center justify-center z-50"
-      role="alert"
-    >
+    <div className="fixed top-0 left-1/2 transform -translate-x-1/2 py-2 px-6 shadow-md flex items-center justify-center z-50">
       {content}
     </div>
   );

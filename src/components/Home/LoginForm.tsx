@@ -63,18 +63,18 @@ export default function LoginWindow() {
       className="w-full md:w-2/5 bg-[#1f2937] h-full  text-[#f1f1f1] flex justify-center items-center flex-col  py-20 md:py-3 space-y-5 md:space-y-6 sm:p-8   md:h-full sm:h-full"
       data-testid="login-form"
     >
-      <h2 className="flex items-center tracking-[.25rem]">
-        <p className="text-2xl font-[cyberwayriders] font-bold">
+      <h2 className="flex items-center tracking-[.35rem]">
+        <p className="text-xl sm:text-2xl font-lunar md:text-xl lg:text-3xl font-bold">
           Welcome to &nbsp;
         </p>
-        <span className=" font-[cyberwayriders]  text-2xl md:text-3xl font-bold">
+        <span className=" font-lunar  text-xl md:text-xl lg:text-3xl font-bold">
           Lumeo
         </span>
       </h2>
 
       <form
         onSubmit={e => loginUser(e, { isGuest: false })}
-        className="flex flex-col [&>button]:p-3 py-2 md:py-8 lg:py-24  gap-3 md:w-1/2 w-3/4     "
+        className="flex flex-col [&>button]:p-3 py-2 md:py-8 lg:py-24  gap-3 md:w-3/4 lg:w-1/2 w-3/4     "
         method="get"
       >
         <label
@@ -114,7 +114,7 @@ export default function LoginWindow() {
           required
         />
         <button
-          className="bg-[#05036d] text-[#f1f1f1] hover:bg-[#0f2f70]"
+          className="bg-[#05036d] text-[#f1f1f1] hover:bg-[#0f2f70] rounded-lg"
           type="submit"
           data-testid="login-button"
         >
@@ -123,7 +123,7 @@ export default function LoginWindow() {
 
         <GithubAuthButton />
         <button
-          className="bg-[#05036d] text-[#f1f1f1] hover:bg-[#0f2f70]"
+          className="bg-[#2b29aa] text-[#f1f1f1] hover:bg-[#0f2f70] rounded-lg"
           type="button"
           onClick={e => loginUser(e, { isGuest: true })}
         >

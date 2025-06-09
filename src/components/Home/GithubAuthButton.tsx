@@ -8,7 +8,7 @@ export default function GithubAuthButton() {
   };
   return (
     <button
-      className="bg-[#02012b] text-[#f1f1f1] flex  w-full hover:bg-[#1e1e44f8]"
+      className="bg-[#02012b] text-[#f1f1f1] flex  w-full hover:bg-[#1e1e44f8] rounded-lg"
       type="button"
       onClick={handleClick}
     >

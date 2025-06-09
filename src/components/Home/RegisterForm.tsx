@@ -85,16 +85,16 @@ export default function RegisterForm() {
   };
   return (
     <div className=" h-full lg:w-2/5  sm:w-full md:w-full bg-white rounded-lg shadow dark:border md:mt-0    dark:bg-gray-800 justify-center items-center flex dark:border-gray-700 ">
-      <div className="p-6 space-y-4 md:space-y-6 sm:p-8  lg:w-1/2 sm:w-full md:w-full   items-center  justify-center">
-        <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center ">
-          Create an account
+      <div className="p-6 space-y-4 md:space-y-6 sm:p-8  w-full sm:w-full md:w-full   items-center  justify-center">
+        <h1 className="text-4xl font-bold leading-tight tracking-wide text-gray-900 md:text-5xl dark:text-white text-center font-glitch ">
+          Create new account
         </h1>
         <form
-          className="space-y-4 md:space-y-6 flex flex-col items-center mx-auto"
+          className="space-y-4 md:space-y-6 flex flex-col items-center mx-auto  "
           method="POST"
           onSubmit={registerUser}
         >
-          <div>
+          <div className="w-3/4  md:w-3/4 lg:w-1/2">
             <label
               htmlFor="name"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -115,7 +115,7 @@ export default function RegisterForm() {
               <p className="text-red-500 text-sm mt-1">{errors.name}</p>
             )}
           </div>
-          <div>
+          <div className="w-3/4  md:w-3/4 lg:w-1/2">
             <label
               htmlFor="email"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -136,7 +136,7 @@ export default function RegisterForm() {
               <p className="text-red-500 text-sm mt-1">{errors.email}</p>
             )}
           </div>
-          <div>
+          <div className="w-3/4  md:w-3/4 lg:w-1/2">
             <label
               htmlFor="password"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -169,11 +169,12 @@ export default function RegisterForm() {
 
           <button
             type="submit"
-            className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+            data-testid="register-button"
+            className="text-white bg-[#0C0F19] w-1/3 rounded-2xl hover:bg-brand-main focus:bg-brand-accent focus:outline-none font-medium text-sm px-5 py-2.5 text-center dark:bg-brand-main dark:hover:bg-brand-main dark:focus:bg-brand-accent transition duration-200 ease-in-out"
           >
-            Create an account
+            Create account
           </button>
-          <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+          <p className="text-lg lg:text-md font-light text-gray-500 dark:text-gray-400">
             Already have an account?{' '}
             <Link
               href="/"
