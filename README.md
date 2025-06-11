@@ -12,11 +12,11 @@ Deployed on [Netlify](https://lumeo-xyves.netlify.app)
 You can access the app through your web browser. Here are some key features:
 
 - **Landing Page**: Contains login buttons and logic. Login with GitHub and Guest functionality.
-- **Feed**: Secured route displaying tweets from users you follow.
+- **Feed**: Secured route displaying posts from users you follow.
 - **Explore**: Secured route showcasing featured posts from all users.
 - **Search**: Public route with the ability to search users.
 - **User Profile**: Public route displaying user profile, follower/following count, and the ability to follow/unfollow users. Users can change their name, picture, and email from their profile. Displays user's posts and liked posts.
-- **Post Details**: Public route showing post details, likes, retweets, and replies.
+- **Post Details**: Public route showing post details, likes, and replies.
 
 ## Tech Stack & Features
 
